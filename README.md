@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/essence-logo.png" width="300"/>
+</p>
+
 # Essence
 
 **Essence Alpha – Week 1**
