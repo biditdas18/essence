@@ -1,3 +1,20 @@
+# Ignore Python cache
 __pycache__/
 *.pyc
-embeddings/
+
+# Ignore Jupyter checkpoint files
+.ipynb_checkpoints/
+
+# Ignore FAISS index files (they can be rebuilt locally)
+embeddings/*.index
+
+# Ignore virtual environment
+.venv/
+
+# Ignore OS/macOS files
+.DS_Store
+
+# Ignore temporary log or output files
+*.log
+*.tmp
+
