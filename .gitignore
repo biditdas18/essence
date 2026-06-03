@@ -5,8 +5,15 @@ __pycache__/
 # Ignore Jupyter checkpoint files
 .ipynb_checkpoints/
 
-# Ignore FAISS index files (they can be rebuilt locally)
+# Ignore large binary/data files (rebuild or download locally)
 embeddings/*.index
+embeddings/*.npy
+embeddings/*.pkl
+data/*.tsv
+data/*.csv
+data/*.gz
+data/*.zip
+results/*.csv
 
 # Ignore virtual environment
 .venv/

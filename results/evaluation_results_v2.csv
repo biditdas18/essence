@@ -1,0 +1,298 @@
+user_id,system,recall@10,long_tail_recall@10
+user_000336,CF (Popularity),0.0,0.0
+user_000336,Content (Avg Emb),0.0,0.0
+user_000336,Essence (K=3),0.0,0.0
+user_000157,CF (Popularity),0.0,0.0
+user_000157,Content (Avg Emb),0.0,0.0
+user_000157,Essence (K=3),0.0,0.0
+user_000853,CF (Popularity),0.1,0.0
+user_000853,Content (Avg Emb),0.0,0.0
+user_000853,Essence (K=3),0.1,0.0
+user_000883,CF (Popularity),0.0,0.0
+user_000883,Content (Avg Emb),0.0,0.0
+user_000883,Essence (K=3),0.0,0.0
+user_000967,CF (Popularity),0.0,0.0
+user_000967,Content (Avg Emb),0.0,0.0
+user_000967,Essence (K=3),0.0,0.0
+user_000045,CF (Popularity),0.0,0.0
+user_000045,Content (Avg Emb),0.0,0.0
+user_000045,Essence (K=3),0.0,0.0
+user_000406,CF (Popularity),0.0,0.0
+user_000406,Content (Avg Emb),0.0,0.0
+user_000406,Essence (K=3),0.0,0.0
+user_000099,CF (Popularity),0.0,0.0
+user_000099,Content (Avg Emb),0.2,0.0
+user_000099,Essence (K=3),1.0,0.125
+user_000982,CF (Popularity),0.0,0.0
+user_000982,Content (Avg Emb),0.0,0.0
+user_000982,Essence (K=3),0.0,0.0
+user_000204,CF (Popularity),0.0,0.0
+user_000204,Content (Avg Emb),0.1,0.0
+user_000204,Essence (K=3),0.1,0.0
+user_000272,CF (Popularity),0.0,
+user_000272,Content (Avg Emb),0.0,
+user_000272,Essence (K=3),0.0,
+user_000855,CF (Popularity),0.0,
+user_000855,Content (Avg Emb),0.0,
+user_000855,Essence (K=3),0.0,
+user_000664,CF (Popularity),0.0,0.0
+user_000664,Content (Avg Emb),0.0,0.0
+user_000664,Essence (K=3),0.0,0.0
+user_000282,CF (Popularity),0.0,0.0
+user_000282,Content (Avg Emb),0.0,0.0
+user_000282,Essence (K=3),0.0,0.0
+user_000805,CF (Popularity),0.0,0.0
+user_000805,Content (Avg Emb),0.0,0.0
+user_000805,Essence (K=3),0.3,0.0
+user_000408,CF (Popularity),0.0,0.0
+user_000408,Content (Avg Emb),0.0,0.0
+user_000408,Essence (K=3),0.0,0.0
+user_000435,CF (Popularity),0.0,0.0
+user_000435,Content (Avg Emb),0.0,0.0
+user_000435,Essence (K=3),0.3,0.0
+user_000368,CF (Popularity),0.0,0.0
+user_000368,Content (Avg Emb),0.0,0.0
+user_000368,Essence (K=3),0.0,0.0
+user_000907,CF (Popularity),0.0,0.0
+user_000907,Content (Avg Emb),0.0,0.0
+user_000907,Essence (K=3),0.0,0.0
+user_000410,CF (Popularity),0.0,0.0
+user_000410,Content (Avg Emb),0.0,0.0
+user_000410,Essence (K=3),0.0,0.0
+user_000657,CF (Popularity),0.0,0.0
+user_000657,Content (Avg Emb),0.0,0.0
+user_000657,Essence (K=3),0.0,0.0
+user_000817,CF (Popularity),0.0,0.0
+user_000817,Content (Avg Emb),0.2,0.0
+user_000817,Essence (K=3),0.2,0.0
+user_000638,CF (Popularity),0.0,0.0
+user_000638,Content (Avg Emb),0.0,0.0
+user_000638,Essence (K=3),0.0,0.0
+user_000171,CF (Popularity),0.0,0.0
+user_000171,Content (Avg Emb),0.1,0.0
+user_000171,Essence (K=3),0.1,0.0
+user_000608,CF (Popularity),0.0,0.0
+user_000608,Content (Avg Emb),0.0,0.0
+user_000608,Essence (K=3),0.0,0.0
+user_000736,CF (Popularity),0.0,0.0
+user_000736,Content (Avg Emb),0.0,0.0
+user_000736,Essence (K=3),0.0,0.0
+user_000455,CF (Popularity),0.0,0.0
+user_000455,Content (Avg Emb),0.0,0.0
+user_000455,Essence (K=3),0.0,0.0
+user_000723,CF (Popularity),0.0,0.0
+user_000723,Content (Avg Emb),0.0,0.0
+user_000723,Essence (K=3),0.1,0.0
+user_000321,CF (Popularity),0.0,0.0
+user_000321,Content (Avg Emb),0.0,0.0
+user_000321,Essence (K=3),0.0,0.0
+user_000049,CF (Popularity),0.0,0.0
+user_000049,Content (Avg Emb),0.0,0.0
+user_000049,Essence (K=3),0.0,0.0
+user_000098,CF (Popularity),0.0,0.0
+user_000098,Content (Avg Emb),0.1,0.0
+user_000098,Essence (K=3),0.1,0.0
+user_000448,CF (Popularity),0.0,0.0
+user_000448,Content (Avg Emb),0.0,0.0
+user_000448,Essence (K=3),0.0,0.0
+user_000416,CF (Popularity),0.0,0.0
+user_000416,Content (Avg Emb),0.0,0.0
+user_000416,Essence (K=3),0.0,0.0
+user_000859,CF (Popularity),0.0,0.0
+user_000859,Content (Avg Emb),0.0,0.0
+user_000859,Essence (K=3),0.1,0.0
+user_000192,CF (Popularity),0.1,0.0
+user_000192,Content (Avg Emb),0.0,0.0
+user_000192,Essence (K=3),0.0,0.0
+user_000955,CF (Popularity),0.0,0.0
+user_000955,Content (Avg Emb),0.0,0.0
+user_000955,Essence (K=3),0.0,0.0
+user_000487,CF (Popularity),0.0,0.0
+user_000487,Content (Avg Emb),0.1,0.0
+user_000487,Essence (K=3),0.0,0.0
+user_000402,CF (Popularity),0.0,
+user_000402,Content (Avg Emb),0.1,
+user_000402,Essence (K=3),0.0,
+user_000014,CF (Popularity),0.1,0.0
+user_000014,Content (Avg Emb),0.0,0.0
+user_000014,Essence (K=3),0.0,0.0
+user_000561,CF (Popularity),0.0,0.0
+user_000561,Content (Avg Emb),0.4,0.0
+user_000561,Essence (K=3),0.4,0.0
+user_000759,CF (Popularity),0.0,0.0
+user_000759,Content (Avg Emb),0.0,0.0
+user_000759,Essence (K=3),0.0,0.0
+user_000232,CF (Popularity),0.0,0.0
+user_000232,Content (Avg Emb),0.1,0.0
+user_000232,Essence (K=3),0.1,0.0
+user_000328,CF (Popularity),0.0,0.0
+user_000328,Content (Avg Emb),0.2,0.0
+user_000328,Essence (K=3),0.3,0.0
+user_000567,CF (Popularity),0.0,0.0
+user_000567,Content (Avg Emb),0.1,0.0
+user_000567,Essence (K=3),0.0,0.0
+user_000956,CF (Popularity),0.0,0.0
+user_000956,Content (Avg Emb),0.0,0.0
+user_000956,Essence (K=3),0.0,0.0
+user_000057,CF (Popularity),0.0,0.0
+user_000057,Content (Avg Emb),0.0,0.0
+user_000057,Essence (K=3),0.0,0.0
+user_000335,CF (Popularity),0.0,0.0
+user_000335,Content (Avg Emb),0.1,0.0
+user_000335,Essence (K=3),0.1,0.5
+user_000228,CF (Popularity),0.0,0.0
+user_000228,Content (Avg Emb),0.0,0.0
+user_000228,Essence (K=3),0.6,0.1
+user_000597,CF (Popularity),0.0,0.0
+user_000597,Content (Avg Emb),0.0,0.0
+user_000597,Essence (K=3),0.0,0.0
+user_000547,CF (Popularity),0.0,0.0
+user_000547,Content (Avg Emb),0.0,0.0
+user_000547,Essence (K=3),0.1,0.0
+user_000308,CF (Popularity),0.0,0.0
+user_000308,Content (Avg Emb),0.2,0.0
+user_000308,Essence (K=3),0.4,0.0
+user_000473,CF (Popularity),0.0,0.0
+user_000473,Content (Avg Emb),0.0,0.0
+user_000473,Essence (K=3),0.0,0.0
+user_000143,CF (Popularity),0.1,0.0
+user_000143,Content (Avg Emb),0.0,0.0
+user_000143,Essence (K=3),0.0,0.0
+user_000399,CF (Popularity),0.0,0.0
+user_000399,Content (Avg Emb),0.0,0.0
+user_000399,Essence (K=3),0.0,0.0
+user_000796,CF (Popularity),0.2,0.0
+user_000796,Content (Avg Emb),0.0,0.0
+user_000796,Essence (K=3),0.0,0.0
+user_000146,CF (Popularity),0.0,0.0
+user_000146,Content (Avg Emb),0.0,0.0
+user_000146,Essence (K=3),0.0,0.0
+user_000843,CF (Popularity),0.0,0.0
+user_000843,Content (Avg Emb),0.0,0.0
+user_000843,Essence (K=3),0.0,0.0
+user_000419,CF (Popularity),0.0,0.0
+user_000419,Content (Avg Emb),0.1,0.0
+user_000419,Essence (K=3),0.0,0.0
+user_000225,CF (Popularity),0.0,0.0
+user_000225,Content (Avg Emb),1.0,0.1
+user_000225,Essence (K=3),0.0,0.0
+user_000972,CF (Popularity),0.0,0.0
+user_000972,Content (Avg Emb),0.0,0.0
+user_000972,Essence (K=3),0.0,0.0
+user_000352,CF (Popularity),0.0,0.0
+user_000352,Content (Avg Emb),0.0,0.0
+user_000352,Essence (K=3),0.0,0.0
+user_000008,CF (Popularity),0.0,0.0
+user_000008,Content (Avg Emb),0.2,0.0
+user_000008,Essence (K=3),0.5,0.2
+user_000088,CF (Popularity),0.0,0.0
+user_000088,Content (Avg Emb),0.0,0.0
+user_000088,Essence (K=3),0.1,0.0
+user_000286,CF (Popularity),0.0,0.0
+user_000286,Content (Avg Emb),0.0,0.0
+user_000286,Essence (K=3),0.0,0.0
+user_000386,CF (Popularity),0.0,
+user_000386,Content (Avg Emb),0.0,
+user_000386,Essence (K=3),0.0,
+user_000996,CF (Popularity),0.0,0.0
+user_000996,Content (Avg Emb),0.0,0.0
+user_000996,Essence (K=3),0.2,0.2
+user_000184,CF (Popularity),0.0,0.0
+user_000184,Content (Avg Emb),0.0,0.0
+user_000184,Essence (K=3),0.0,0.0
+user_000106,CF (Popularity),0.0,0.0
+user_000106,Content (Avg Emb),0.0,0.0
+user_000106,Essence (K=3),0.0,0.0
+user_000183,CF (Popularity),0.0,
+user_000183,Content (Avg Emb),0.0,
+user_000183,Essence (K=3),0.0,
+user_000985,CF (Popularity),0.0,0.0
+user_000985,Content (Avg Emb),0.0,0.0
+user_000985,Essence (K=3),0.0,0.0
+user_000777,CF (Popularity),0.0,0.0
+user_000777,Content (Avg Emb),0.0,0.0
+user_000777,Essence (K=3),0.0,0.0
+user_000048,CF (Popularity),0.0,0.0
+user_000048,Content (Avg Emb),0.0,0.0
+user_000048,Essence (K=3),0.0,0.0
+user_000864,CF (Popularity),0.0,0.0
+user_000864,Content (Avg Emb),0.1,0.2
+user_000864,Essence (K=3),0.2,0.0
+user_000548,CF (Popularity),0.1,0.0
+user_000548,Content (Avg Emb),0.0,0.0
+user_000548,Essence (K=3),0.0,0.0
+user_000526,CF (Popularity),0.0,0.0
+user_000526,Content (Avg Emb),0.0,0.0
+user_000526,Essence (K=3),0.0,0.0
+user_000541,CF (Popularity),0.0,0.0
+user_000541,Content (Avg Emb),0.0,0.0
+user_000541,Essence (K=3),0.0,0.0
+user_000785,CF (Popularity),0.0,0.0
+user_000785,Content (Avg Emb),0.0,0.0
+user_000785,Essence (K=3),0.0,0.0
+user_000748,CF (Popularity),0.0,0.0
+user_000748,Content (Avg Emb),0.0,0.0
+user_000748,Essence (K=3),0.0,0.0
+user_000948,CF (Popularity),0.1,0.0
+user_000948,Content (Avg Emb),0.0,0.0
+user_000948,Essence (K=3),0.0,0.0
+user_000784,CF (Popularity),0.0,0.0
+user_000784,Content (Avg Emb),0.0,0.0
+user_000784,Essence (K=3),0.0,0.0
+user_000677,CF (Popularity),0.0,0.0
+user_000677,Content (Avg Emb),0.0,0.0
+user_000677,Essence (K=3),0.0,0.0
+user_000560,CF (Popularity),0.0,0.0
+user_000560,Content (Avg Emb),0.0,0.0
+user_000560,Essence (K=3),0.0,0.0
+user_000519,CF (Popularity),0.0,0.0
+user_000519,Content (Avg Emb),0.0,0.0
+user_000519,Essence (K=3),0.0,0.0
+user_000247,CF (Popularity),0.0,0.0
+user_000247,Content (Avg Emb),0.0,0.0
+user_000247,Essence (K=3),0.2,0.0
+user_000333,CF (Popularity),0.0,0.0
+user_000333,Content (Avg Emb),0.1,0.0
+user_000333,Essence (K=3),0.0,0.0
+user_000786,CF (Popularity),0.0,0.0
+user_000786,Content (Avg Emb),0.0,0.0
+user_000786,Essence (K=3),0.0,0.0
+user_000176,CF (Popularity),0.0,0.0
+user_000176,Content (Avg Emb),0.0,0.0
+user_000176,Essence (K=3),0.2,0.0
+user_000140,CF (Popularity),0.0,0.0
+user_000140,Content (Avg Emb),0.0,0.0
+user_000140,Essence (K=3),0.0,0.0
+user_000916,CF (Popularity),0.0,0.0
+user_000916,Content (Avg Emb),0.0,0.0
+user_000916,Essence (K=3),0.0,0.0
+user_000101,CF (Popularity),0.0,0.0
+user_000101,Content (Avg Emb),0.0,0.0
+user_000101,Essence (K=3),0.1,0.0
+user_000364,CF (Popularity),0.0,0.0
+user_000364,Content (Avg Emb),0.0,0.0
+user_000364,Essence (K=3),0.0,0.0
+user_000556,CF (Popularity),0.0,0.0
+user_000556,Content (Avg Emb),0.0,0.0
+user_000556,Essence (K=3),0.0,0.0
+user_000375,CF (Popularity),0.0,0.0
+user_000375,Content (Avg Emb),0.1,0.0
+user_000375,Essence (K=3),0.1,0.0
+user_000674,CF (Popularity),0.0,0.0
+user_000674,Content (Avg Emb),0.0,0.0
+user_000674,Essence (K=3),0.0,0.0
+user_000301,CF (Popularity),0.0,0.0
+user_000301,Content (Avg Emb),0.0,0.0
+user_000301,Essence (K=3),0.0,0.0
+user_000077,CF (Popularity),0.0,0.0
+user_000077,Content (Avg Emb),0.0,0.0
+user_000077,Essence (K=3),0.0,0.0
+user_000846,CF (Popularity),0.0,0.0
+user_000846,Content (Avg Emb),0.3,0.0
+user_000846,Essence (K=3),0.1,0.25
+user_000563,CF (Popularity),0.0,0.0
+user_000563,Content (Avg Emb),0.1,0.0
+user_000563,Essence (K=3),0.0,0.0
+user_000080,CF (Popularity),0.0,0.0
+user_000080,Content (Avg Emb),0.1,0.0
+user_000080,Essence (K=3),0.0,0.0
