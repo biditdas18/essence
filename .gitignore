@@ -9,11 +9,11 @@ __pycache__/
 embeddings/*.index
 embeddings/*.npy
 embeddings/*.pkl
+data/raw/
 data/*.tsv
 data/*.csv
 data/*.gz
 data/*.zip
-results/*.csv
 
 # Ignore virtual environment
 .venv/
