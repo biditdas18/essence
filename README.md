@@ -48,7 +48,18 @@ signal involved.**
 
 ### Experimental Results
 
-#### Last.fm-1K (Music) — 99 users, 22,767 tracks
+All systems evaluated under full-catalog ranking protocol
+(no negative sampling). Absolute recall values are low
+by construction — the meaningful signal is the relative
+pattern across systems evaluated under identical
+conditions. Lift = Recall@10 divided by expected random
+recall (10 slots / catalog size).
+
+---
+
+**Table 1 — Last.fm-1K (Music)**
+99 users · 22,767 tracks · Random baseline Recall@10 ≈ 0.0004
+Embeddings: item metadata (track name + artist name)
 
 | System | Recall@10 | Lift vs Random | LT-Recall@10 | LT / Content |
 |---|---|---|---|---|
@@ -57,11 +68,18 @@ signal involved.**
 | Content (Avg Embedding) | 0.0414 | 104x | 0.0032 | 1.0x |
 | **Essence (K=3)** | **0.0616** | **154x** | **0.0146** | **4.5x** |
 
-CF achieves zero long-tail recall. Essence achieves 4.5x 
-above the content baseline on long-tail recall and 154x 
-above random overall.
+CF achieves zero long-tail recall. Essence achieves 4.5x
+above the content baseline on LT-Recall and 154x above
+random overall. LT/Content = how many times better
+Essence recovers niche items compared to the content
+baseline (the reference at 1.0x).
 
-#### Amazon Books (E-commerce) — 2,000 users, 61,727 items
+---
+
+**Table 2 — Amazon Books, Pass 1 (E-commerce, Metadata Embeddings)**
+2,000 users · 61,727 items · Random baseline Recall@10 ≈ 0.0002
+Embeddings: item metadata (title + author name)
+Same embedding approach as Table 1 — cross-domain replication.
 
 | System | Recall@10 | Lift vs Random | LT-Recall@10 | LT / Content |
 |---|---|---|---|---|
@@ -70,8 +88,47 @@ above random overall.
 | Content (Avg Embedding) | 0.0239 | 120x | 0.0198 | 1.0x |
 | **Essence (K=3)** | **0.0280** | **140x** | **0.0254** | **1.28x** |
 
-Pattern replicates across domains. CF again scores zero 
-long-tail recall. Essence achieves 140x above random.
+Pattern replicates across domains. CF scores zero
+long-tail recall again. Essence achieves 140x above
+random. The LT/Content ratio (1.28x) is lower than
+Last.fm (4.5x) — consistent with Amazon's denser
+interaction structure producing more coherent average
+embeddings.
+
+---
+
+**Table 3 — Amazon Books, Pass 2 (E-commerce, User-Review Embeddings)**
+2,000 users · 61,727 items · Random baseline Recall@10 ≈ 0.0002
+Embeddings: user's own review text for consumed items (100% coverage).
+Taste profiles built from first-person user language.
+Candidates scored using metadata embeddings (Pass 1).
+
+| System | Recall@10 | Lift vs Random | LT-Recall@10 | LT / Content |
+|---|---|---|---|---|
+| Random | 0.0002 | 1x | 0.0001 | — |
+| CF (Popularity) | 0.0034 | 17x | 0.0000 | — |
+| Content (Avg Embedding) | 0.0039 | 20x | 0.0038 | 1.0x |
+| **Essence (K=3)** | **0.0047** | **24x** | **0.0052** | **1.36x** |
+
+Absolute recall degrades versus Pass 1 due to two
+factors: (1) embedding space mismatch — taste profiles
+encoded in review-text space, candidates scored in
+metadata space; (2) input noise — user reviews
+sometimes describe delivery, packaging, or personal
+circumstances rather than the item's content. When
+noise dominates the embedding input, cluster quality
+degrades.
+
+Key finding: Essence's LT/Content ratio improves from
+Pass 1 to Pass 2 (1.28x → 1.36x), suggesting the
+K-means clustering mechanism remains robust to
+embedding noise. The degradation is a property of
+cross-space retrieval and input quality, not of the
+clustering mechanism itself.
+
+Critical design principle: what goes into the embedding
+determines what Essence can find. Embedding input
+curation is essential for production deployments.
 
 ### Repository Structure
 
