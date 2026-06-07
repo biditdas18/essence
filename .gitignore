@@ -25,3 +25,9 @@ data/*.zip
 *.log
 *.tmp
 
+# Amazon raw data and large binary files
+data/amazon_raw/
+*.pkl
+embeddings/
+debug/
+
