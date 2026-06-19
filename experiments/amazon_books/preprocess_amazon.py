@@ -110,21 +110,23 @@ sampled_users = {uid: filtered_users[uid] for uid in sampled_uids}
 print(f"  Users after subsample: {len(sampled_users):,}")
 
 
-# ─── 6. 80/20 train/test split per user (seed 42) ─────────────────────────────
-print("Splitting train/test ...")
+# ─── 6. Chronological 80/20 split per user ────────────────────────────────────
+# Sort each user's items by timestamp ascending; first 80% = train, last 20% = test.
+# This is consistent with recommenders.py's active-centroid selection, which uses
+# the chronologically LAST r items of the train set (seen[-10:] after sort_values).
+print("Splitting train/test (chronological) ...")
 train_records = []  # list of (user_id, item_id, timestamp)
 test_records  = []
 
 for uid in sampled_uids:
-    items = sampled_users[uid]  # list of (item_id, timestamp)
-    rng2  = random.Random(SEED + hash(uid) % (2**31))
-    shuffled = items[:]
-    rng2.shuffle(shuffled)
-    n_test  = max(1, round(len(shuffled) * 0.20))
-    n_train = len(shuffled) - n_test
-    for iid, ts in shuffled[:n_train]:
+    items = sampled_users[uid]  # list of (item_id, timestamp) — deduped
+    # Sort by timestamp ascending; timestamps are ms-epoch integers as strings
+    items_sorted = sorted(items, key=lambda x: int(x[1]) if str(x[1]).isdigit() else x[1])
+    n_test  = max(1, round(len(items_sorted) * 0.20))
+    n_train = len(items_sorted) - n_test
+    for iid, ts in items_sorted[:n_train]:
         train_records.append((uid, iid, ts))
-    for iid, ts in shuffled[n_train:]:
+    for iid, ts in items_sorted[n_train:]:
         test_records.append((uid, iid, ts))
 
 print(f"  Train: {len(train_records):,}  Test: {len(test_records):,}")

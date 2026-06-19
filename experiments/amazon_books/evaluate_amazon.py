@@ -78,8 +78,9 @@ def top_k_unseen(query_vec: np.ndarray, seen_mask: np.ndarray,
     """
     scores              = C @ query_vec          # (N,)
     scores[seen_mask]   = -2.0                   # mask out seen items
-    top_idx             = np.argpartition(scores, -k)[-k:]
-    top_idx             = top_idx[np.argsort(scores[top_idx])[::-1]]
+    # Full stable sort (score desc, tie-break by index asc) — deterministic even
+    # when argpartition would produce ambiguous boundary sets on tied scores.
+    top_idx = np.lexsort((np.arange(len(scores)), -scores))[:k]
     return [item_ids[i] for i in top_idx]
 
 

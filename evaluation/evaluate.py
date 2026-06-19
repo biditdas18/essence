@@ -15,6 +15,7 @@ Run:
 """
 
 import argparse
+import hashlib
 import pickle
 import sys
 from pathlib import Path
@@ -23,13 +24,32 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
+
+def _stable_user_seed(user_id) -> int:
+    """Return a per-user seed that is independent of PYTHONHASHSEED.
+
+    hash() on strings is randomised across interpreter invocations unless
+    PYTHONHASHSEED is fixed.  MD5 of the string representation gives a
+    stable 32-bit integer regardless of the runtime environment.
+    """
+    return int.from_bytes(
+        hashlib.md5(str(user_id).encode()).digest()[:4], "big"
+    )
+
 # ---------------------------------------------------------------------------
 # Path setup — allow running from any working directory
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
-from models.recommenders import cf_recommend, content_recommend, essence_recommend
+from models.recommenders import (
+    random_recommend,
+    popularity_recommend,
+    cf_itemknn_recommend,
+    build_itemknn_model,
+    content_recommend,
+    essence_recommend,
+)
 
 DATA_DIR       = BASE_DIR / "data"
 EMBEDDINGS_DIR = BASE_DIR / "embeddings"
@@ -45,19 +65,31 @@ RESULTS_CSV_DEFAULT = RESULTS_DIR / "evaluation_results.csv"
 
 def recall_at_k(recommended: list, actual: list, k: int = 10) -> float:
     """
-    Of items user actually interacted with in the test set,
-    what fraction appear in the top-K recommendations?
+    Standard Recall@K: fraction of the user's test items that appear in
+    the top-K recommendations.
+
+        Recall@K = |{recommended[:k]} ∩ actual| / |actual|
+
+    Denominator is the full test set size, NOT min(|actual|, k).
+    The min() variant inflates recall when |actual| >> k and was removed
+    in Phase 4b after it was found to create a spurious metric artifact
+    (Essence < Content on LT-Recall for Last.fm under the old formula).
     """
     if not actual:
         return 0.0
     hits = len(set(recommended[:k]) & set(actual))
-    return hits / min(len(actual), k)
+    return hits / len(actual)
 
 
 def long_tail_recall_at_k(recommended: list, actual: list,
                            long_tail_ids: set, k: int = 10):
     """
-    Same as recall@k but restricted to long-tail items only.
+    Standard LT-Recall@K: same as recall_at_k but restricted to long-tail
+    items only.
+
+        LT-Recall@K = |{recommended[:k]} ∩ actual_lt| / |actual_lt|
+
+    Denominator is the full LT test set size for the user, NOT min(|actual_lt|, k).
     Returns None if the user has no long-tail items in their test set
     (those users are excluded from the LT-Recall average).
     """
@@ -65,7 +97,7 @@ def long_tail_recall_at_k(recommended: list, actual: list,
     if not actual_lt:
         return None  # skip users with no long-tail test items
     hits = len(set(recommended[:k]) & set(actual_lt))
-    return hits / min(len(actual_lt), k)
+    return hits / len(actual_lt)
 
 
 # ---------------------------------------------------------------------------
@@ -102,17 +134,28 @@ def run_evaluation(n_users: int = 200, K: int = 3, M: int = 10,
     print(f"[eval] Evaluating {len(sampled_users)} users "
           f"(K={K}, M={M}, seed={seed}) …\n")
 
+    # Precompute ItemKNN model once (not per user)
+    print("[eval] Building ItemKNN model …")
+    itemknn_model = build_itemknn_model(train_df)
+
     rows = []
 
     for user_id in tqdm(sampled_users, desc="Users"):
         actual = test_df[test_df["user_id"] == user_id]["track_id"].tolist()
 
         systems = {
-            "CF (Popularity)":   cf_recommend(user_id, train_df, M),
+            "Random":            random_recommend(user_id, train_df, M,
+                                                  seed=_stable_user_seed(user_id),
+                                                  item_embedding_map=item_embedding_map),
+            "Popularity":        popularity_recommend(user_id, train_df, M,
+                                                      item_embedding_map=item_embedding_map),
+            "CF (ItemKNN)":      cf_itemknn_recommend(user_id, train_df,
+                                                      itemknn_model, M,
+                                                      item_embedding_map=item_embedding_map),
             "Content (Avg Emb)": content_recommend(user_id, train_df,
-                                                    item_embedding_map, M),
+                                                   item_embedding_map, M),
             f"Essence (K={K})":  essence_recommend(user_id, train_df,
-                                                    item_embedding_map, K, M),
+                                                   item_embedding_map, K, M),
         }
 
         for system_name, recs in systems.items():

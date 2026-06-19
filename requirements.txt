@@ -1,5 +1,6 @@
 sentence-transformers
 scikit-learn
+scipy
 pandas
 numpy
 faiss-cpu

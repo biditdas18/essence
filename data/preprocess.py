@@ -129,45 +129,44 @@ def compute_long_tail(train_df: pd.DataFrame):
 
 def split_train_test(df: pd.DataFrame):
     """
-    Random track-ID hold-out split.
+    Chronological 80/20 split per user.
 
-    Why not chronological?
-    ----------------------
-    After deduplication each user has each track exactly once, so a
-    chronological 80/20 split produces train-tracks and test-tracks that are
-    completely disjoint by construction.  Recommenders that avoid seen (train)
-    items cannot hit any test item above chance level (~16 targets / 18 K
-    candidates), making recall identically zero across all 200 users.
+    For each user, rows are sorted by timestamp ascending. The first 80%
+    of unique (user, track) interactions form the train set; the last 20%
+    form the test set.
 
-    Random hold-out fix
-    -------------------
-    For each user we randomly set aside 20% of their unique track IDs as the
-    test set and keep 80% in train.  Because both halves come from the same
-    user's taste profile:
-      - Test items appear in the global embedding map (they're real tracks).
-      - Semantic recommenders (Content, Essence) will score items similar to
-        the user's train embedding, which biases toward the held-out items.
-      - This yields non-trivial recall and allows meaningful comparison.
+    Why chronological?
+    ------------------
+    Section 3.5 of the paper selects the active K-means centroid using the
+    user's "most recent r interactions." This requires the train set to have
+    a meaningful temporal ordering — random hold-out destroys that ordering
+    and makes "recency" arbitrary. Chronological split ensures that:
 
-    Seed is fixed for reproducibility.
+      1. The active centroid is selected from the user's genuinely most
+         recent train interactions (last 10 by timestamp).
+      2. Test items represent future listening behaviour, matching real
+         deployment conditions.
+      3. The evaluation protocol is internally consistent with the model
+         description in Section 3.5.
+
+    Previous versions used random hold-out. Phase 1 experiments confirmed
+    that chronological split produces non-zero, non-trivial results for all
+    systems (Essence, Content, Popularity) across all 99 users once the
+    embedding cache covers train ∪ test (which it does).
+
+    Note: after deduplication each user has each track exactly once, so
+    train and test are always disjoint regardless of split strategy.
     """
-    rng = np.random.default_rng(RANDOM_SEED)
-
     train_rows = []
     test_rows  = []
 
     for uid, group in df.groupby("user_id", sort=False):
-        track_ids = group["track_id"].tolist()
-        n         = len(track_ids)
-        n_test    = max(1, int(n * TEST_FRACTION))
-
-        # Randomly select test track IDs
-        test_idx_positions = rng.choice(n, size=n_test, replace=False)
-        test_mask = np.zeros(n, dtype=bool)
-        test_mask[test_idx_positions] = True
-
-        train_rows.append(group[~test_mask])
-        test_rows.append(group[test_mask])
+        group_sorted = group.sort_values("timestamp")
+        n       = len(group_sorted)
+        n_test  = max(1, round(n * TEST_FRACTION))
+        n_train = n - n_test
+        train_rows.append(group_sorted.iloc[:n_train])
+        test_rows.append(group_sorted.iloc[n_train:])
 
     train_df = pd.concat(train_rows).reset_index(drop=True)
     test_df  = pd.concat(test_rows).reset_index(drop=True)
