@@ -32,3 +32,17 @@ embeddings/*.npy
 
 # Scratch / debug
 debug/
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.log
+
+# scratch / verification run outputs (canonical results are *_v5 / *_v4 / *_peruser)
+experiments/amazon_books/results_amazon_rerun.csv
+experiments/amazon_books/results_amazon_pass2_rerun.csv
+experiments/amazon_books/results_amazon_v3.csv
+results/evaluation_results_v3.csv
+results/evaluation_results_v4.csv
+results/lastfm_det_run1.csv
+results/lastfm_det_run2.csv
