@@ -1,4 +1,6 @@
 \documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 % ── Packages ──────────────────────────────────────────────────────────────────
 \usepackage[margin=1in]{geometry}
@@ -83,8 +85,7 @@ of recent interaction history, and standard Recall@K. On long-tail items
 (those with a single training-set interaction), the non-personalized popularity
 baseline achieves exactly zero recall on both datasets, by construction, since
 globally popular items are never singletons. Item-based collaborative filtering
-recovers long-tail items only on the denser Amazon Books dataset, where it
-where its long-tail recall is comparable to the content baseline (overlapping 95\% confidence intervals); on the sparser Last.fm-1K it recovers
+recovers long-tail items only on the denser Amazon Books dataset, where its long-tail recall is comparable to the content baseline (overlapping 95\% confidence intervals); on the sparser Last.fm-1K it recovers
 none under deterministic ranking, matching the popularity baseline. On both,
 its overall recall falls well below the content baseline. Essence achieves the
 highest long-tail recall of all systems on both datasets: Long-Tail Recall@10
@@ -216,7 +217,7 @@ Multiple interest profiles  & No   & Yes  & Yes  & \textbf{Yes} \\
 Model training required     & Yes  & Yes  & Yes  & \textbf{No}  \\
 Long-tail item recovery     & Limited & ---  & ---  & \textbf{Yes} \\
 No cross-user data required & No   & No   & No   & \textbf{Yes} \\
-Designed to surface niche items & No & No & No & \textbf{Yes} \\
+Explicit long-tail objective & No & No & No & \textbf{Yes} \\
 Embedding source            & Co-occurrence & Co-occurrence
                             & Co-occurrence & \textbf{Item metadata} \\
 \bottomrule
@@ -308,11 +309,9 @@ sits between clusters and represents none of them well. $K$-means preserves
 the separation between interest modes, enabling targeted retrieval against
 each mode independently.
 
-$K=3$ was selected as the minimum number of centroids capable of
-representing the tripartite interest structure commonly observed in
-consumption behaviour (e.g., mood-based, genre-based, and era-based
-clusters). Sensitivity analysis over $K \in \{2, 3, 4, 5\}$ is a
-planned extension.
+$K=3$ was chosen as a simple, fixed setting that permits multiple interest
+modes while keeping the method lightweight; it was not tuned. A sensitivity
+analysis over $K \in \{2, 3, 4, 5\}$ is left to future work.
 
 For users with fewer than $K$ items, Essence falls back to the content
 baseline (single mean embedding).
