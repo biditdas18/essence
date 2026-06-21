@@ -1,0 +1,7 @@
+table,system,Recall@10,LT-Recall@10,LT/Content Ratio
+A_metadata,CF,0.0021,0.0000,0.0000
+A_metadata,Content,0.0173,0.0124,1.0000
+A_metadata,Essence,0.0221,0.0197,1.5879
+B_user_review,CF,0.0021,0.0000,0.0000
+B_user_review,Content,0.0027,0.0012,1.0000
+B_user_review,Essence,0.0041,0.0034,2.9286

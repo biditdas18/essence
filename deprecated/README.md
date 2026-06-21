@@ -1,0 +1,3 @@
+# Deprecated files
+
+`evaluate_amazon_SUPERSEDED.py` and `results_amazon_SUPERSEDED.csv` are from an earlier iteration of the Amazon Books pipeline in which the system labeled "CF" was in fact a global popularity baseline (not an item-based KNN model), the train/test split and evaluation protocol differed from the published setup, and the results do not correspond to any table in the paper. They are retained here for historical reference only. **Do not use these files to reproduce or verify the paper's results.** The correct scripts are `experiments/amazon_books/evaluate_amazon_peruser.py` (Pass 1 / Table 4) and `experiments/amazon_books/evaluate_amazon_pass2_peruser.py` (Pass 2 / Table 6), both of which reproduce the published numbers exactly.
