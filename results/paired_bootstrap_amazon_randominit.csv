@@ -1,0 +1,5 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,n_paired_users
+Amazon Books (random-init ablation),Recall@10,Essence (K=3),MIND (randominit),0.022122,0.003877,0.018245,0.014578,0.022145,1.0000,2000
+Amazon Books (random-init ablation),Recall@10,Essence (K=3),ComiRec (SA) (randominit),0.022122,0.003293,0.018829,0.015201,0.022853,1.0000,2000
+Amazon Books (random-init ablation),LT-Recall@10,Essence (K=3),MIND (randominit),0.019706,0.006553,0.013152,0.006269,0.020591,0.9999,1292
+Amazon Books (random-init ablation),LT-Recall@10,Essence (K=3),ComiRec (SA) (randominit),0.019706,0.010965,0.008741,0.001019,0.016462,0.9857,1292

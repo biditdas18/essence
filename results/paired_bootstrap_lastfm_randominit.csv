@@ -1,0 +1,5 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,n_paired_users
+Last.fm-1K (random-init ablation),Recall@10,Essence (K=3),MIND (randominit),0.011919,0.000694,0.011225,0.002738,0.023214,1.0000,99
+Last.fm-1K (random-init ablation),Recall@10,Essence (K=3),ComiRec (SA) (randominit),0.011919,0.000550,0.011369,0.002880,0.023435,0.9999,99
+Last.fm-1K (random-init ablation),LT-Recall@10,Essence (K=3),MIND (randominit),0.005907,0.000725,0.005183,-0.001449,0.016777,0.7582,92
+Last.fm-1K (random-init ablation),LT-Recall@10,Essence (K=3),ComiRec (SA) (randominit),0.005907,0.000836,0.005071,-0.001672,0.016886,0.7579,92

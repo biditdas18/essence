@@ -1,0 +1,19 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,n_paired_users
+Last.fm-1K,Recall@10,Essence (K=3),Random,0.011919,0.000106,0.011813,0.003347,0.023820,1.0000,99
+Last.fm-1K,Recall@10,Essence (K=3),Popularity,0.011919,0.002309,0.009609,0.000989,0.021603,0.9917,99
+Last.fm-1K,Recall@10,Essence (K=3),CF (ItemKNN),0.011919,0.001756,0.010163,0.001464,0.022595,0.9966,99
+Last.fm-1K,Recall@10,Essence (K=3),Content (Avg Emb),0.011919,0.003754,0.008164,0.000719,0.017929,0.9880,99
+Last.fm-1K,Recall@10,Essence (K=3),Last-Item,0.011919,0.026458,-0.014539,-0.025621,-0.006265,0.0000,99
+Last.fm-1K,Recall@10,Essence (K=3),Avg-Last-10,0.011919,0.025169,-0.013250,-0.024104,-0.004740,0.0002,99
+Last.fm-1K,Recall@10,Essence (K=3),Recency-Weighted,0.011919,0.030369,-0.018450,-0.034255,-0.007400,0.0000,99
+Last.fm-1K,Recall@10,Essence (K=3),MIND,0.011919,0.006152,0.005767,-0.001271,0.014930,0.9341,99
+Last.fm-1K,Recall@10,Essence (K=3),ComiRec (SA),0.011919,0.013660,-0.001741,-0.014641,0.012191,0.3775,99
+Last.fm-1K,LT-Recall@10,Essence (K=3),Random,0.005907,0.000000,0.005907,0.000000,0.017250,0.8686,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Popularity,0.005907,0.000000,0.005907,0.000000,0.017250,0.8705,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),CF (ItemKNN),0.005907,0.000000,0.005907,0.000000,0.017250,0.8706,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Content (Avg Emb),0.005907,0.002942,0.002965,-0.005305,0.015252,0.6109,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Last-Item,0.005907,0.006440,-0.000532,-0.013002,0.014236,0.4332,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Avg-Last-10,0.005907,0.013382,-0.007475,-0.023142,0.000945,0.1289,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Recency-Weighted,0.005907,0.015147,-0.009240,-0.025683,0.000000,0.0243,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),MIND,0.005907,0.001753,0.004154,-0.004314,0.016777,0.7123,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),ComiRec (SA),0.005907,0.005047,0.000861,-0.010093,0.014920,0.5305,92

@@ -1,0 +1,3 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (K5),lastfm,0.0056353040243534,0.0017531556802244,99,92,25.94308567047119,6,4.441174030303955,0.001,42,5,pretrained
+ComiRec (SA) (K5),lastfm,0.012691662878433417,0.0026798236826287318,99,92,33.92887234687805,9,3.9052414894104004,0.001,42,5,pretrained

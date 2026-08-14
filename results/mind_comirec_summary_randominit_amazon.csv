@@ -1,0 +1,3 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (randominit),amazon,0.0038770536627115,0.0065531475748194,2000,1292,185.9888997077942,7,4.502899768829345,0.001,42,4,random
+ComiRec (SA) (randominit),amazon,0.0032932059118538247,0.010964912280701754,2000,1292,212.30043482780457,9,4.336607406616211,0.001,42,4,random

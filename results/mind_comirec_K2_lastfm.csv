@@ -1,0 +1,199 @@
+user_id,system,recall@10,long_tail_recall@10
+user_000008,MIND (K2),0.0120481927710843,0.0
+user_000014,MIND (K2),0.0,0.0
+user_000045,MIND (K2),0.0,0.0
+user_000048,MIND (K2),0.0,0.0
+user_000049,MIND (K2),0.0178571428571428,0.0
+user_000057,MIND (K2),0.0253164556962025,0.0
+user_000077,MIND (K2),0.0,0.0
+user_000080,MIND (K2),0.0,0.0
+user_000088,MIND (K2),0.037037037037037,nan
+user_000098,MIND (K2),0.0,nan
+user_000099,MIND (K2),0.0704225352112676,nan
+user_000101,MIND (K2),0.0,0.0
+user_000106,MIND (K2),0.0,0.0
+user_000140,MIND (K2),0.0,0.0
+user_000143,MIND (K2),0.0,0.0
+user_000146,MIND (K2),0.0,0.0
+user_000157,MIND (K2),0.073170731707317,0.0
+user_000171,MIND (K2),0.0,0.0
+user_000176,MIND (K2),0.0119047619047619,0.0
+user_000183,MIND (K2),0.0,0.0
+user_000184,MIND (K2),0.0,0.0
+user_000192,MIND (K2),0.0,0.0
+user_000204,MIND (K2),0.0,0.0
+user_000225,MIND (K2),0.0219780219780219,0.0
+user_000228,MIND (K2),0.0,0.0
+user_000232,MIND (K2),0.0,0.0
+user_000247,MIND (K2),0.0,0.0
+user_000272,MIND (K2),0.0,0.0
+user_000282,MIND (K2),0.0,0.0
+user_000286,MIND (K2),0.0,0.0
+user_000301,MIND (K2),0.0555555555555555,0.0
+user_000308,MIND (K2),0.0,nan
+user_000321,MIND (K2),0.0,0.0
+user_000328,MIND (K2),0.0543478260869565,0.1612903225806451
+user_000333,MIND (K2),0.0,0.0
+user_000335,MIND (K2),0.0,0.0
+user_000336,MIND (K2),0.0,0.0
+user_000352,MIND (K2),0.0,0.0
+user_000364,MIND (K2),0.0,0.0
+user_000368,MIND (K2),0.0,0.0
+user_000375,MIND (K2),0.0,0.0
+user_000386,MIND (K2),0.0,0.0
+user_000399,MIND (K2),0.0,0.0
+user_000402,MIND (K2),0.0,0.0
+user_000406,MIND (K2),0.0,0.0
+user_000408,MIND (K2),0.0,0.0
+user_000410,MIND (K2),0.0,0.0
+user_000416,MIND (K2),0.0,0.0
+user_000419,MIND (K2),0.0,0.0
+user_000435,MIND (K2),0.0,0.0
+user_000448,MIND (K2),0.010204081632653,0.0
+user_000455,MIND (K2),0.0,0.0
+user_000473,MIND (K2),0.0,0.0
+user_000487,MIND (K2),0.0,0.0
+user_000519,MIND (K2),0.0,0.0
+user_000526,MIND (K2),0.0,0.0
+user_000541,MIND (K2),0.0,0.0
+user_000547,MIND (K2),0.0,nan
+user_000548,MIND (K2),0.0,0.0
+user_000556,MIND (K2),0.0,0.0
+user_000560,MIND (K2),0.0,0.0
+user_000561,MIND (K2),0.1333333333333333,0.0
+user_000563,MIND (K2),0.0,0.0
+user_000567,MIND (K2),0.0,0.0
+user_000597,MIND (K2),0.0,0.0
+user_000608,MIND (K2),0.0,0.0
+user_000638,MIND (K2),0.0,0.0
+user_000657,MIND (K2),0.0,0.0
+user_000664,MIND (K2),0.0,0.0
+user_000674,MIND (K2),0.0,0.0
+user_000677,MIND (K2),0.0,0.0
+user_000723,MIND (K2),0.0,0.0
+user_000736,MIND (K2),0.0,0.0
+user_000748,MIND (K2),0.0,0.0
+user_000759,MIND (K2),0.0,0.0
+user_000777,MIND (K2),0.0105263157894736,0.0
+user_000784,MIND (K2),0.0,0.0
+user_000785,MIND (K2),0.0,0.0
+user_000786,MIND (K2),0.0217391304347826,0.0
+user_000796,MIND (K2),0.0,0.0
+user_000805,MIND (K2),0.0,0.0
+user_000817,MIND (K2),0.0615384615384615,nan
+user_000843,MIND (K2),0.0,0.0
+user_000846,MIND (K2),0.0,0.0
+user_000853,MIND (K2),0.0,0.0
+user_000855,MIND (K2),0.0434782608695652,nan
+user_000859,MIND (K2),0.0,0.0
+user_000864,MIND (K2),0.0,0.0
+user_000883,MIND (K2),0.0,0.0
+user_000907,MIND (K2),0.0,0.0
+user_000916,MIND (K2),0.0,0.0
+user_000948,MIND (K2),0.0,0.0
+user_000955,MIND (K2),0.0,0.0
+user_000956,MIND (K2),0.0,0.0
+user_000967,MIND (K2),0.0105263157894736,0.0
+user_000972,MIND (K2),0.0206185567010309,0.0
+user_000982,MIND (K2),0.0,0.0
+user_000985,MIND (K2),0.0,0.0
+user_000996,MIND (K2),0.0,0.0
+user_000008,ComiRec (SA) (K2),0.08433734939759036,0.0
+user_000014,ComiRec (SA) (K2),0.0,0.0
+user_000045,ComiRec (SA) (K2),0.0,0.0
+user_000048,ComiRec (SA) (K2),0.0,0.0
+user_000049,ComiRec (SA) (K2),0.0,0.0
+user_000057,ComiRec (SA) (K2),0.0,0.0
+user_000077,ComiRec (SA) (K2),0.0,0.0
+user_000080,ComiRec (SA) (K2),0.0,0.0
+user_000088,ComiRec (SA) (K2),0.0,
+user_000098,ComiRec (SA) (K2),0.0,
+user_000099,ComiRec (SA) (K2),0.0,
+user_000101,ComiRec (SA) (K2),0.0,0.0
+user_000106,ComiRec (SA) (K2),0.0,0.0
+user_000140,ComiRec (SA) (K2),0.0,0.0
+user_000143,ComiRec (SA) (K2),0.017241379310344827,0.0
+user_000146,ComiRec (SA) (K2),0.0,0.0
+user_000157,ComiRec (SA) (K2),0.12195121951219512,0.0
+user_000171,ComiRec (SA) (K2),0.0,0.0
+user_000176,ComiRec (SA) (K2),0.0,0.0
+user_000183,ComiRec (SA) (K2),0.0,0.0
+user_000184,ComiRec (SA) (K2),0.0,0.0
+user_000192,ComiRec (SA) (K2),0.0,0.0
+user_000204,ComiRec (SA) (K2),0.0,0.0
+user_000225,ComiRec (SA) (K2),0.0,0.0
+user_000228,ComiRec (SA) (K2),0.0,0.0
+user_000232,ComiRec (SA) (K2),0.0,0.0
+user_000247,ComiRec (SA) (K2),0.08108108108108109,0.0
+user_000272,ComiRec (SA) (K2),0.0,0.0
+user_000282,ComiRec (SA) (K2),0.0,0.0
+user_000286,ComiRec (SA) (K2),0.0,0.0
+user_000301,ComiRec (SA) (K2),0.0,0.0
+user_000308,ComiRec (SA) (K2),0.38461538461538464,
+user_000321,ComiRec (SA) (K2),0.0,0.0
+user_000328,ComiRec (SA) (K2),0.043478260869565216,0.0
+user_000333,ComiRec (SA) (K2),0.0,0.0
+user_000335,ComiRec (SA) (K2),0.0,0.0
+user_000336,ComiRec (SA) (K2),0.0,0.0
+user_000352,ComiRec (SA) (K2),0.0,0.0
+user_000364,ComiRec (SA) (K2),0.0,0.0
+user_000368,ComiRec (SA) (K2),0.0,0.0
+user_000375,ComiRec (SA) (K2),0.0,0.0
+user_000386,ComiRec (SA) (K2),0.0,0.0
+user_000399,ComiRec (SA) (K2),0.0,0.0
+user_000402,ComiRec (SA) (K2),0.0,0.0
+user_000406,ComiRec (SA) (K2),0.0,0.0
+user_000408,ComiRec (SA) (K2),0.0,0.0
+user_000410,ComiRec (SA) (K2),0.0,0.0
+user_000416,ComiRec (SA) (K2),0.0,0.0
+user_000419,ComiRec (SA) (K2),0.0,0.0
+user_000435,ComiRec (SA) (K2),0.06349206349206349,0.0
+user_000448,ComiRec (SA) (K2),0.01020408163265306,0.0
+user_000455,ComiRec (SA) (K2),0.0,0.0
+user_000473,ComiRec (SA) (K2),0.014285714285714285,0.0
+user_000487,ComiRec (SA) (K2),0.0,0.0
+user_000519,ComiRec (SA) (K2),0.0,0.0
+user_000526,ComiRec (SA) (K2),0.0,0.0
+user_000541,ComiRec (SA) (K2),0.0,0.0
+user_000547,ComiRec (SA) (K2),0.041666666666666664,
+user_000548,ComiRec (SA) (K2),0.0,0.0
+user_000556,ComiRec (SA) (K2),0.109375,0.0
+user_000560,ComiRec (SA) (K2),0.0,0.0
+user_000561,ComiRec (SA) (K2),0.0,0.0
+user_000563,ComiRec (SA) (K2),0.0,0.0
+user_000567,ComiRec (SA) (K2),0.0,0.0
+user_000597,ComiRec (SA) (K2),0.0,0.0
+user_000608,ComiRec (SA) (K2),0.0,0.0
+user_000638,ComiRec (SA) (K2),0.0,0.0
+user_000657,ComiRec (SA) (K2),0.0,0.0
+user_000664,ComiRec (SA) (K2),0.011627906976744186,0.0
+user_000674,ComiRec (SA) (K2),0.01818181818181818,0.0
+user_000677,ComiRec (SA) (K2),0.0,0.0
+user_000723,ComiRec (SA) (K2),0.0,0.0
+user_000736,ComiRec (SA) (K2),0.0,0.0
+user_000748,ComiRec (SA) (K2),0.0,0.0
+user_000759,ComiRec (SA) (K2),0.0,0.0
+user_000777,ComiRec (SA) (K2),0.06315789473684211,0.0
+user_000784,ComiRec (SA) (K2),0.0,0.0
+user_000785,ComiRec (SA) (K2),0.0,0.0
+user_000786,ComiRec (SA) (K2),0.0,0.0
+user_000796,ComiRec (SA) (K2),0.028169014084507043,0.0
+user_000805,ComiRec (SA) (K2),0.0136986301369863,0.0
+user_000817,ComiRec (SA) (K2),0.0,
+user_000843,ComiRec (SA) (K2),0.0,0.0
+user_000846,ComiRec (SA) (K2),0.0,0.0
+user_000853,ComiRec (SA) (K2),0.015873015873015872,0.0
+user_000855,ComiRec (SA) (K2),0.043478260869565216,
+user_000859,ComiRec (SA) (K2),0.0,0.0
+user_000864,ComiRec (SA) (K2),0.0,0.0
+user_000883,ComiRec (SA) (K2),0.0,0.0
+user_000907,ComiRec (SA) (K2),0.0,0.0
+user_000916,ComiRec (SA) (K2),0.0,0.0
+user_000948,ComiRec (SA) (K2),0.0,0.0
+user_000955,ComiRec (SA) (K2),0.037037037037037035,0.0
+user_000956,ComiRec (SA) (K2),0.0,0.0
+user_000967,ComiRec (SA) (K2),0.031578947368421054,0.0
+user_000972,ComiRec (SA) (K2),0.030927835051546393,0.0
+user_000982,ComiRec (SA) (K2),0.0,0.0
+user_000985,ComiRec (SA) (K2),0.0,0.0
+user_000996,ComiRec (SA) (K2),0.0,0.0
