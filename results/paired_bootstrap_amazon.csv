@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,n_paired_users
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Random,0.022122,0.000117,0.022005,0.018440,0.025743,1.0000,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Popularity,0.022122,0.002122,0.020000,0.016249,0.024084,1.0000,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),CF (ItemKNN),0.022122,0.003123,0.018999,0.015268,0.022980,1.0000,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Content (Avg Emb),0.022122,0.017307,0.004815,0.001811,0.007920,0.9992,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Last-Item,0.022122,0.031066,-0.008944,-0.013270,-0.004637,0.0000,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Avg-Last-10,0.022122,0.023549,-0.001427,-0.004161,0.001318,0.1534,2000
+Amazon Books (Pass 1),Recall@10,Essence (K=3),Recency-Weighted,0.022122,0.025996,-0.003875,-0.006833,-0.000982,0.0042,2000
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Random,0.019706,0.000000,0.019706,0.013418,0.026594,1.0000,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Popularity,0.019706,0.000000,0.019706,0.013397,0.026749,1.0000,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),CF (ItemKNN),0.019706,0.013707,0.005998,-0.002350,0.014356,0.9169,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Content (Avg Emb),0.019706,0.012410,0.007296,0.001124,0.013766,0.9891,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Last-Item,0.019706,0.021530,-0.001824,-0.010733,0.006951,0.3368,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Avg-Last-10,0.019706,0.019641,0.000064,-0.006238,0.006083,0.5059,1292
+Amazon Books (Pass 1),LT-Recall@10,Essence (K=3),Recency-Weighted,0.019706,0.017927,0.001778,-0.003903,0.007670,0.7295,1292

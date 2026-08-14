@@ -299,7 +299,7 @@ def content_recommend(user_id, train_df, item_embedding_map: dict, M: int = 10):
 # ---------------------------------------------------------------------------
 
 def essence_recommend(user_id, train_df, item_embedding_map: dict,
-                      K: int = 3, M: int = 10):
+                      K: int = 3, M: int = 10, seed: int = 42):
     """
     Clusters user history into K centroids via K-means.
     Selects active centroid by proximity to mean of the last 10 items
@@ -322,6 +322,9 @@ def essence_recommend(user_id, train_df, item_embedding_map: dict,
     item_embedding_map : dict {track_id: np.ndarray}
     K                  : number of K-means clusters
     M                  : number of recommendations to return
+    seed               : K-means random_state (default 42, matches prior
+                         behavior); exposed for seed-variance sensitivity
+                         analysis (see evaluation/sensitivity.py)
 
     Returns
     -------
@@ -340,7 +343,7 @@ def essence_recommend(user_id, train_df, item_embedding_map: dict,
         return content_recommend(user_id, train_df, item_embedding_map, M)
 
     # Fit K-means on full user history
-    km = KMeans(n_clusters=K, random_state=42, n_init=10)
+    km = KMeans(n_clusters=K, random_state=seed, n_init=10)
     km.fit(np.array(vecs))
 
     # Active centroid: closest to mean of last 10 chronological train items
@@ -367,6 +370,162 @@ def essence_recommend(user_id, train_df, item_embedding_map: dict,
         for tid, emb in candidates.items()
     }
 
+    return sorted(scores, key=scores.get, reverse=True)[:M]
+
+
+# ---------------------------------------------------------------------------
+# System E: Last-Item Baseline
+# ---------------------------------------------------------------------------
+
+def last_item_recommend(user_id, train_df, item_embedding_map: dict, M: int = 10):
+    """
+    Scores all unseen items by cosine similarity to the embedding of the
+    single most recent train interaction (chronologically last by timestamp).
+
+    Parameters
+    ----------
+    user_id            : user identifier
+    train_df           : full training interactions DataFrame
+    item_embedding_map : dict {track_id: np.ndarray}
+    M                  : number of recommendations to return
+
+    Returns
+    -------
+    list of track_id strings, length <= M
+    """
+    user_rows = (
+        train_df[train_df["user_id"] == user_id]
+        .sort_values("timestamp")
+    )
+    seen = list(user_rows["track_id"])
+    vecs = [item_embedding_map[i] for i in seen if i in item_embedding_map]
+
+    if not vecs:
+        return []
+
+    query_vec = vecs[-1]
+    seen_set = set(seen)
+    candidates = {
+        tid: emb
+        for tid, emb in item_embedding_map.items()
+        if tid not in seen_set
+    }
+    scores = {
+        tid: cosine_similarity(query_vec, emb)
+        for tid, emb in candidates.items()
+    }
+    return sorted(scores, key=scores.get, reverse=True)[:M]
+
+
+# ---------------------------------------------------------------------------
+# System F: Average-of-Last-10 Baseline
+# ---------------------------------------------------------------------------
+
+def avg_last10_recommend(user_id, train_df, item_embedding_map: dict,
+                         M: int = 10, N: int = 10):
+    """
+    Scores all unseen items by cosine similarity to the mean embedding of
+    the user's last N train interactions (chronological, uniform weights).
+
+    Deliberately standalone (does not call into essence_recommend), even
+    though the "recent window" computation resembles Essence's active-
+    centroid selection step — this isolates the effect of clustering
+    (Essence) vs. plain recency-window averaging (this baseline).
+
+    Parameters
+    ----------
+    user_id            : user identifier
+    train_df           : full training interactions DataFrame
+    item_embedding_map : dict {track_id: np.ndarray}
+    M                  : number of recommendations to return
+    N                  : size of the recent window (default 10)
+
+    Returns
+    -------
+    list of track_id strings, length <= M
+    """
+    user_rows = (
+        train_df[train_df["user_id"] == user_id]
+        .sort_values("timestamp")
+    )
+    seen = list(user_rows["track_id"])
+    recent = seen[-N:]
+    recent_vecs = [item_embedding_map[i] for i in recent if i in item_embedding_map]
+
+    if not recent_vecs:
+        return []
+
+    query_vec = np.mean(recent_vecs, axis=0)
+    seen_set = set(seen)
+    candidates = {
+        tid: emb
+        for tid, emb in item_embedding_map.items()
+        if tid not in seen_set
+    }
+    scores = {
+        tid: cosine_similarity(query_vec, emb)
+        for tid, emb in candidates.items()
+    }
+    return sorted(scores, key=scores.get, reverse=True)[:M]
+
+
+# ---------------------------------------------------------------------------
+# System G: Recency-Weighted Baseline
+# ---------------------------------------------------------------------------
+
+def recency_weighted_recommend(user_id, train_df, item_embedding_map: dict,
+                               M: int = 10, N: int = 10, decay: float = 0.9):
+    """
+    Scores all unseen items by cosine similarity to an exponentially
+    recency-weighted mean of the user's last N train interactions: the
+    most recent item gets weight decay**0, the one before it decay**1, etc.
+
+    ponytail: N=10 and decay=0.9 are not tuned — they were picked to match
+    Essence's existing "last 10" window so the baseline is comparable.
+    Ceiling: no per-dataset validation of decay rate. Upgrade path: sweep
+    decay (and N) via the same sensitivity harness used for Essence's K
+    (see evaluation/sensitivity.py) if this baseline becomes load-bearing.
+
+    Parameters
+    ----------
+    user_id            : user identifier
+    train_df           : full training interactions DataFrame
+    item_embedding_map : dict {track_id: np.ndarray}
+    M                  : number of recommendations to return
+    N                  : size of the recent window (default 10)
+    decay              : exponential decay rate per step back in time,
+                         0 < decay <= 1 (default 0.9)
+
+    Returns
+    -------
+    list of track_id strings, length <= M
+    """
+    user_rows = (
+        train_df[train_df["user_id"] == user_id]
+        .sort_values("timestamp")
+    )
+    seen = list(user_rows["track_id"])
+    recent = seen[-N:]
+    recent_vecs = [item_embedding_map[i] for i in recent if i in item_embedding_map]
+
+    if not recent_vecs:
+        return []
+
+    # Most recent item first, weight decay**0; older items decay**1, decay**2, ...
+    weights = np.array([decay ** i for i in range(len(recent_vecs) - 1, -1, -1)])
+    weights = weights / weights.sum()
+    query_vec = np.average(np.array(recent_vecs), axis=0, weights=weights)
+
+    seen_set = set(seen)
+    candidates = {
+        tid: emb
+        for tid, emb in item_embedding_map.items()
+        if tid not in seen_set
+    }
+    scores = {
+        tid: cosine_similarity(query_vec, emb)
+        for tid, emb in candidates.items()
+    }
     return sorted(scores, key=scores.get, reverse=True)[:M]
 
 

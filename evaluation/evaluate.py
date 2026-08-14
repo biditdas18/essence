@@ -49,6 +49,9 @@ from models.recommenders import (
     build_itemknn_model,
     content_recommend,
     essence_recommend,
+    last_item_recommend,
+    avg_last10_recommend,
+    recency_weighted_recommend,
 )
 
 DATA_DIR       = BASE_DIR / "data"
@@ -154,6 +157,12 @@ def run_evaluation(n_users: int = 200, K: int = 3, M: int = 10,
                                                       item_embedding_map=item_embedding_map),
             "Content (Avg Emb)": content_recommend(user_id, train_df,
                                                    item_embedding_map, M),
+            "Last-Item":         last_item_recommend(user_id, train_df,
+                                                     item_embedding_map, M),
+            "Avg-Last-10":       avg_last10_recommend(user_id, train_df,
+                                                      item_embedding_map, M),
+            "Recency-Weighted":  recency_weighted_recommend(user_id, train_df,
+                                                            item_embedding_map, M),
             f"Essence (K={K})":  essence_recommend(user_id, train_df,
                                                    item_embedding_map, K, M),
         }

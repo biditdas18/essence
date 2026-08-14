@@ -4,6 +4,14 @@ Reads:
   results/evaluation_results_v5.csv          (Last.fm-1K, per-user)
   experiments/amazon_books/results_amazon_peruser.csv  (Amazon Books, per-user)
 Bootstrap: seed=42, n_resamples=10000.
+
+NOTE: this reports independent per-system CIs (i.e. the reader compares
+Essence's CI against a baseline's CI by eye — "CI overlap"). For a direct,
+statistically correct test of "is Essence better than baseline X", see
+evaluation/paired_bootstrap.py, which bootstraps the paired per-user
+difference and reports a CI on the difference itself. Kept here because it
+additionally reports n_hit / n_LThit support counts that paired_bootstrap.py
+does not.
 """
 
 import csv

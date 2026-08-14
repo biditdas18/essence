@@ -49,6 +49,8 @@ OUT_PATH = Path(__file__).parent / "results_amazon_rerun.csv"
 
 M = 10
 K = 3
+RECENCY_N = 10      # ponytail: matches Essence's "last 10" window, not independently tuned
+RECENCY_DECAY = 0.9  # ponytail: not tuned; see models/recommenders.recency_weighted_recommend
 
 
 # ─── Data loading ─────────────────────────────────────────────────────────────
@@ -75,6 +77,18 @@ def top_k_unseen(query_vec, seen_mask, C, item_ids, k=10):
     # when argpartition would produce ambiguous boundary sets on tied scores.
     top_idx = np.lexsort((np.arange(len(scores)), -scores))[:k]
     return [item_ids[i] for i in top_idx]
+
+
+def normalized(v):
+    v = np.asarray(v, dtype=np.float32)
+    return v / (np.linalg.norm(v) + 1e-8)
+
+
+def recency_weighted_query(recent_vecs, decay=RECENCY_DECAY):
+    """recent_vecs in chronological order (oldest first); most recent gets weight decay**0."""
+    weights = np.array([decay ** i for i in range(len(recent_vecs) - 1, -1, -1)])
+    weights = weights / weights.sum()
+    return np.average(np.array(recent_vecs), axis=0, weights=weights)
 
 
 # ─── Metrics ──────────────────────────────────────────────────────────────────
@@ -137,7 +151,8 @@ def main():
 
     recall    = defaultdict(list)
     lt_recall = defaultdict(list)
-    systems   = ["Random", "Popularity", "CF (ItemKNN)", "Content (Avg Emb)", "Essence (K=3)"]
+    systems   = ["Random", "Popularity", "CF (ItemKNN)", "Content (Avg Emb)",
+                "Last-Item", "Avg-Last-10", "Recency-Weighted", "Essence (K=3)"]
 
     rng_global = np.random.default_rng(42)
     per_user_rows = []
@@ -176,6 +191,22 @@ def main():
         else:
             recs_content = recs_pop
 
+        # ── Last-Item / Avg-Last-10 / Recency-Weighted ──────────────────────────
+        # train_items is already chronological (Phase-3 sort / timestamp fallback),
+        # so seen_vecs (filtered to items present in emb_meta) is chronological too.
+        if seen_vecs:
+            recs_last_item = top_k_unseen(normalized(seen_vecs[-1]), seen_mask, C, item_ids, M)
+
+            recent_vecs = seen_vecs[-RECENCY_N:]
+            recs_avg_last10 = top_k_unseen(
+                normalized(np.mean(recent_vecs, axis=0)), seen_mask, C, item_ids, M
+            )
+            recs_recency_weighted = top_k_unseen(
+                normalized(recency_weighted_query(recent_vecs)), seen_mask, C, item_ids, M
+            )
+        else:
+            recs_last_item = recs_avg_last10 = recs_recency_weighted = recs_pop
+
         # ── Essence (K=3) ─────────────────────────────────────────────────────
         if len(seen_vecs) >= K:
             km = KMeans(n_clusters=K, random_state=42, n_init=10)
@@ -194,7 +225,9 @@ def main():
 
         # ── Accumulate metrics ────────────────────────────────────────────────
         for name, recs in zip(systems, [recs_random, recs_pop, recs_knn,
-                                        recs_content, recs_essence]):
+                                        recs_content, recs_last_item,
+                                        recs_avg_last10, recs_recency_weighted,
+                                        recs_essence]):
             r10v = recall_at_k(recs, test_items)
             recall[name].append(r10v)
             ltr = lt_recall_at_k(recs, test_items, lt_set)

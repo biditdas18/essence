@@ -1,8 +1,8 @@
-sentence-transformers
-scikit-learn
-scipy
-pandas
-numpy
-faiss-cpu
-requests
-tqdm
+sentence-transformers==2.4.0
+scikit-learn==1.6.1
+scipy==1.15.3
+pandas==2.2.3
+numpy==1.26.4
+faiss-cpu==1.14.2
+requests==2.32.3
+tqdm==4.67.1

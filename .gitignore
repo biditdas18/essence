@@ -15,6 +15,7 @@ __pycache__/
 
 # Virtual environment
 .venv/
+.venv_recbole/
 
 # Raw source data (large; downloaded by step0_download.py / preprocess.py)
 data/raw/

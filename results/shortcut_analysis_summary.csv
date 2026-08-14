@@ -1,0 +1,6 @@
+metric,value
+pooled_shortcut_fraction,0.206061
+macro_shortcut_fraction,0.206061
+holdout_recall@10,0.001438
+holdout_lt_recall@10,0.000473
+n_users,99
