@@ -56,20 +56,28 @@ def load_peruser(path):
 def paired_bootstrap_diff(essence_vals, baseline_vals, rng, n_boot=N_BOOT):
     """
     essence_vals, baseline_vals: parallel arrays (same user order).
-    Returns (observed_diff, ci_lo, ci_hi, frac_gt_0).
+    Returns (observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d_paired).
+
+    cohens_d_paired: standardized effect size on the per-user paired
+    differences = mean(diff) / std(diff), i.e. Cohen's d for a paired
+    design (the per-user differences ARE the sample; no separate pooled
+    variance needed since it's a one-sample-on-differences design).
     """
     essence_vals = np.asarray(essence_vals, dtype=float)
     baseline_vals = np.asarray(baseline_vals, dtype=float)
     n = len(essence_vals)
 
-    observed_diff = essence_vals.mean() - baseline_vals.mean()
+    per_user_diff = essence_vals - baseline_vals
+    observed_diff = per_user_diff.mean()
+    diff_std = per_user_diff.std(ddof=1) if n > 1 else float("nan")
+    cohens_d_paired = observed_diff / diff_std if diff_std > 0 else float("nan")
 
     idx = rng.integers(0, n, size=(n_boot, n))
     diffs = essence_vals[idx].mean(axis=1) - baseline_vals[idx].mean(axis=1)
 
     ci_lo, ci_hi = np.percentile(diffs, [2.5, 97.5])
     frac_gt_0 = float(np.mean(diffs > 0))
-    return observed_diff, ci_lo, ci_hi, frac_gt_0
+    return observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d_paired
 
 
 def run(input_csv: Path, label: str, output_csv: Path = None):
@@ -91,7 +99,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
     for metric_key, metric_label in [("recall", "Recall@10"), ("lt", "LT-Recall@10")]:
         print(f"\n  --- {metric_label} ---")
         header = (f"  {'Baseline':<20} {'Essence mean':>13} {'Baseline mean':>14} "
-                  f"{'Diff':>9} {'95% CI on diff':>22} {'P(diff>0)':>10} {'n':>6}")
+                  f"{'Diff':>9} {'95% CI on diff':>22} {'P(diff>0)':>10} {'Cohen d':>8} {'n':>6}")
         print(header)
         print("  " + "-" * (len(header) - 2))
 
@@ -113,7 +121,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
             essence_vals = [essence_users[u][metric_key] for u in common_users]
             baseline_vals = [baseline_users[u][metric_key] for u in common_users]
 
-            observed_diff, ci_lo, ci_hi, frac_gt_0 = paired_bootstrap_diff(
+            observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d = paired_bootstrap_diff(
                 essence_vals, baseline_vals, rng
             )
             e_mean = float(np.mean(essence_vals))
@@ -121,7 +129,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
 
             ci_str = f"[{ci_lo:+.4f}, {ci_hi:+.4f}]"
             print(f"  {baseline_name:<20} {e_mean:>13.4f} {b_mean:>14.4f} "
-                  f"{observed_diff:>+9.4f} {ci_str:>22} {frac_gt_0:>10.3f} {len(common_users):>6}")
+                  f"{observed_diff:>+9.4f} {ci_str:>22} {frac_gt_0:>10.3f} {cohens_d:>8.3f} {len(common_users):>6}")
 
             rows_out.append({
                 "dataset": label,
@@ -134,6 +142,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
                 "ci_lo": f"{ci_lo:.6f}",
                 "ci_hi": f"{ci_hi:.6f}",
                 "frac_resamples_diff_gt_0": f"{frac_gt_0:.4f}",
+                "cohens_d_paired": f"{cohens_d:.4f}",
                 "n_paired_users": len(common_users),
             })
 

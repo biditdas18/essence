@@ -77,6 +77,17 @@ def recall_at_k(recommended: list, actual: list, k: int = 10) -> float:
     The min() variant inflates recall when |actual| >> k and was removed
     in Phase 4b after it was found to create a spurious metric artifact
     (Essence < Content on LT-Recall for Last.fm under the old formula).
+
+    AVERAGING CONVENTION (audited across every eval script in this repo,
+    including MIND/ComiRec which import this exact function rather than
+    reimplementing it): this returns a PER-USER ratio. Every caller then
+    takes the arithmetic mean of these per-user ratios across users
+    (macro-average) — none of them pool total hits / total opportunities
+    globally before dividing (micro-average). This is consistent across
+    evaluate.py, evaluate_amazon_peruser.py, evaluate_amazon_pass2_peruser.py,
+    sensitivity.py / sensitivity_amazon.py, shortcut_check.py /
+    shortcut_check_amazon.py, and experiments/mind_comirec/train.py.
+    See README's "Additional Analyses" section for the full audit.
     """
     if not actual:
         return 0.0

@@ -1,15 +1,15 @@
-dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,n_paired_users
-Last.fm-1K,Recall@10,Essence (K=3),Random,0.011919,0.000106,0.011813,0.003347,0.023820,1.0000,99
-Last.fm-1K,Recall@10,Essence (K=3),Popularity,0.011919,0.002309,0.009609,0.000989,0.021603,0.9917,99
-Last.fm-1K,Recall@10,Essence (K=3),CF (ItemKNN),0.011919,0.001756,0.010163,0.001464,0.022595,0.9966,99
-Last.fm-1K,Recall@10,Essence (K=3),Content (Avg Emb),0.011919,0.003754,0.008164,0.000719,0.017929,0.9880,99
-Last.fm-1K,Recall@10,Essence (K=3),Last-Item,0.011919,0.026458,-0.014539,-0.025621,-0.006265,0.0000,99
-Last.fm-1K,Recall@10,Essence (K=3),Avg-Last-10,0.011919,0.025169,-0.013250,-0.024104,-0.004740,0.0002,99
-Last.fm-1K,Recall@10,Essence (K=3),Recency-Weighted,0.011919,0.030369,-0.018450,-0.034255,-0.007400,0.0000,99
-Last.fm-1K,LT-Recall@10,Essence (K=3),Random,0.005907,0.000000,0.005907,0.000000,0.017250,0.8687,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),Popularity,0.005907,0.000000,0.005907,0.000000,0.017250,0.8631,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),CF (ItemKNN),0.005907,0.000000,0.005907,0.000000,0.017722,0.8684,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),Content (Avg Emb),0.005907,0.002942,0.002965,-0.005305,0.016304,0.6152,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),Last-Item,0.005907,0.006440,-0.000532,-0.012753,0.014285,0.4349,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),Avg-Last-10,0.005907,0.013382,-0.007475,-0.023142,0.000945,0.1267,92
-Last.fm-1K,LT-Recall@10,Essence (K=3),Recency-Weighted,0.005907,0.015147,-0.009240,-0.026048,0.000000,0.0196,92
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+Last.fm-1K,Recall@10,Essence (K=3),Random,0.011919,0.000106,0.011813,0.003347,0.023820,1.0000,0.2193,99
+Last.fm-1K,Recall@10,Essence (K=3),Popularity,0.011919,0.002309,0.009609,0.000989,0.021603,0.9917,0.1763,99
+Last.fm-1K,Recall@10,Essence (K=3),CF (ItemKNN),0.011919,0.001756,0.010163,0.001464,0.022595,0.9966,0.1868,99
+Last.fm-1K,Recall@10,Essence (K=3),Content (Avg Emb),0.011919,0.003754,0.008164,0.000719,0.017929,0.9880,0.1853,99
+Last.fm-1K,Recall@10,Essence (K=3),Last-Item,0.011919,0.026458,-0.014539,-0.025621,-0.006265,0.0000,-0.2946,99
+Last.fm-1K,Recall@10,Essence (K=3),Avg-Last-10,0.011919,0.025169,-0.013250,-0.024104,-0.004740,0.0002,-0.2655,99
+Last.fm-1K,Recall@10,Essence (K=3),Recency-Weighted,0.011919,0.030369,-0.018450,-0.034255,-0.007400,0.0000,-0.2648,99
+Last.fm-1K,LT-Recall@10,Essence (K=3),Random,0.005907,0.000000,0.005907,0.000000,0.017250,0.8687,0.1130,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Popularity,0.005907,0.000000,0.005907,0.000000,0.017250,0.8631,0.1130,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),CF (ItemKNN),0.005907,0.000000,0.005907,0.000000,0.017722,0.8684,0.1130,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Content (Avg Emb),0.005907,0.002942,0.002965,-0.005305,0.016304,0.6152,0.0539,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Last-Item,0.005907,0.006440,-0.000532,-0.012753,0.014285,0.4349,-0.0082,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Avg-Last-10,0.005907,0.013382,-0.007475,-0.023142,0.000945,0.1267,-0.1069,92
+Last.fm-1K,LT-Recall@10,Essence (K=3),Recency-Weighted,0.005907,0.015147,-0.009240,-0.026048,0.000000,0.0196,-0.1305,92

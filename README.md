@@ -255,6 +255,22 @@ LT-Recall@10 0.0197→0.0080). The same-artist minority of recommendations
 accounts for a disproportionate share of Essence's actual hits on both
 datasets. **Flagging this as a real finding, not editing the paper.**
 
+### Averaging convention audit
+
+Every eval/analysis script in this repo (`evaluate.py`, both Amazon
+per-user scripts, `sensitivity.py`/`sensitivity_amazon.py`,
+`shortcut_check.py`/`shortcut_check_amazon.py`, and
+`experiments/mind_comirec/train.py`) computes Recall@K / LT-Recall@K as
+a **per-user ratio, then arithmetic-means across users (macro-average)**
+— none of them pool total hits over total opportunities globally
+(micro-average) before dividing. This was verified by reading each
+script's metric function and its aggregation call directly, not assumed.
+MIND/ComiRec don't have their own copy of the metric logic at all — they
+import `recall_at_k`/`long_tail_recall_at_k` straight from
+`evaluation/evaluate.py`, so there's no way for them to have drifted from
+the convention used by every other baseline. See `recall_at_k`'s
+docstring in `evaluation/evaluate.py` for the full note.
+
 ### Repository Structure
 
 ```

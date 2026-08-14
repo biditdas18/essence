@@ -333,8 +333,11 @@ def main():
         "train_seconds": elapsed, "epochs_run": history[-1][0], "best_val_loss": best_val,
         "lr": args.lr, "seed": args.seed, "K": args.K, "embed_init": args.embed_init,
     })
+    # Union of fieldnames across all rows (old-schema rows saved before lr/seed/K/
+    # embed_init were added won't have those keys; DictWriter needs the full set).
+    all_fieldnames = list(dict.fromkeys(k for row in summary_rows for k in row.keys()))
     with open(summary_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(summary_rows[0].keys()))
+        w = csv.DictWriter(f, fieldnames=all_fieldnames)
         w.writeheader()
         w.writerows(summary_rows)
     print(f"[train] Summary saved to {summary_path}")

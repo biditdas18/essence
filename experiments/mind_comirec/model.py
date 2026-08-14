@@ -114,7 +114,15 @@ class MIND(MultiInterestBase):
 
         u_hat = torch.einsum("bld,de->ble", item_emb, self.S)  # (B, L, D)
 
-        b = torch.zeros(B, L, K, device=seq.device)
+        # Algorithm 1 (Li et al. 2019) initializes routing logits b ~ N(0, sigma^2),
+        # NOT zero. This matters here specifically because MIND shares a single S
+        # across all K output capsules (see class docstring) -- u_hat is therefore
+        # identical for every capsule before routing starts. With b=0 the first
+        # softmax is uniform across K, so every capsule receives an identical
+        # update at every iteration and can never symmetry-break (verified by
+        # test_mind_routing.py's capsule-specialization check, which failed until
+        # this was fixed). Small random b breaks that symmetry, as the paper intends.
+        b = torch.randn(B, L, K, device=seq.device) * 0.01
         neg_inf_mask = (mask == 0).unsqueeze(-1)  # (B, L, 1)
 
         v = None

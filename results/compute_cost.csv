@@ -1,0 +1,17 @@
+dataset,component,mean_ms,std_ms
+lastfm,Essence: K-means fit only,9.796308400473208,7.769778951588242
+lastfm,Random: full inference/user,6.863622849778039,0.5592623651233941
+lastfm,Popularity: full inference/user,8.766927050237427,0.71160550412048
+lastfm,CF (ItemKNN): full inference/user,1.241714549905737,0.40226678273891353
+lastfm,Content: full inference/user,55.90987499926996,1.2038070544770436
+lastfm,Essence (full): full inference/user,72.1435895004106,13.711449642043158
+lastfm,Last-Item: full inference/user,55.7010167001863,0.7743195258041896
+lastfm,Avg-Last-10: full inference/user,56.17448744997091,0.7445222452095879
+lastfm,Recency-Weighted: full inference/user,64.13927294997848,0.9406489935947324
+lastfm,MIND: full inference/user (untrained weights),19.250008250674,73.31690601410266
+lastfm,ComiRec (SA): full inference/user (untrained weights),3.474793849818525,5.131773780711414
+amazon,Essence: K-means fit only,10.782429150640382,4.852570318013147
+amazon,Essence (full): full inference/user,10.451202001058846,0.9024398713336934
+amazon,Content: full inference/user,6.175662450186792,0.10695765629454211
+amazon,MIND: full inference/user (untrained weights),3.899729250042583,1.980331659016035
+amazon,ComiRec (SA): full inference/user (untrained weights),2.715235348659917,0.5570650736389785
