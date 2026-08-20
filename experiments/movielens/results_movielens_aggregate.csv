@@ -1,0 +1,9 @@
+dataset,system,Recall@10,LT-Recall@10
+movielens,Random,0.0012,0.0000
+movielens,Popularity,0.0517,0.0000
+movielens,CF (ItemKNN),0.0850,0.0037
+movielens,Content (Avg Emb),0.0043,0.0020
+movielens,Last-Item,0.0091,0.0031
+movielens,Avg-Last-10,0.0064,0.0026
+movielens,Recency-Weighted,0.0076,0.0046
+movielens,Essence (K=3),0.0048,0.0020

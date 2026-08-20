@@ -1,0 +1,4 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+Amazon decile 1 (rarest 10%),Recall@10,Essence (K=3),Last-Item,0.017467,0.029826,-0.012358,-0.019139,-0.005549,0.0001,-0.0929,1482
+Amazon decile 1 (rarest 10%),Recall@10,Essence (K=3),Avg-Last-10,0.017467,0.018293,-0.000825,-0.004382,0.002749,0.3228,-0.0117,1482
+Amazon decile 1 (rarest 10%),Recall@10,Essence (K=3),Recency-Weighted,0.017467,0.021724,-0.004257,-0.008334,-0.000217,0.0206,-0.0527,1482

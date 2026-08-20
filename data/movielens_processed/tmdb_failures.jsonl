@@ -1,0 +1,60 @@
+{"tmdbId": 15867, "movieId": 3813, "reason": "URLError: <urlopen error _ssl.c:990: The handshake operation timed out>"}
+{"tmdbId": 11686, "movieId": 3814, "reason": "URLError: <urlopen error _ssl.c:990: The handshake operation timed out>"}
+{"tmdbId": 29263, "movieId": 3816, "reason": "URLError: <urlopen error _ssl.c:990: The handshake operation timed out>"}
+{"tmdbId": 46754, "movieId": 3817, "reason": "URLError: <urlopen error _ssl.c:990: The handshake operation timed out>"}
+{"tmdbId": 12773, "movieId": 4207, "reason": "HTTPError 404"}
+{"tmdbId": 17882, "movieId": 4568, "reason": "HTTPError 404"}
+{"tmdbId": 68149, "movieId": 5069, "reason": "HTTPError 404"}
+{"tmdbId": 164721, "movieId": 7669, "reason": "HTTPError 404"}
+{"tmdbId": 36763, "movieId": 27751, "reason": "HTTPError 404"}
+{"tmdbId": 69234, "movieId": 31026, "reason": "HTTPError 404"}
+{"tmdbId": 13716, "movieId": 31193, "reason": "HTTPError 404"}
+{"tmdbId": 11343, "movieId": 31502, "reason": "HTTPError 404"}
+{"tmdbId": 58923, "movieId": 49917, "reason": "HTTPError 404"}
+{"tmdbId": 1273, "movieId": 51939, "reason": "RemoteDisconnected: Remote end closed connection without response"}
+{"tmdbId": 253768, "movieId": 52281, "reason": "HTTPError 404"}
+{"tmdbId": 13905, "movieId": 63433, "reason": "HTTPError 404"}
+{"tmdbId": 18884, "movieId": 66544, "reason": "HTTPError 404"}
+{"tmdbId": 14301, "movieId": 66934, "reason": "HTTPError 404"}
+{"tmdbId": 62128, "movieId": 69524, "reason": "HTTPError 404"}
+{"tmdbId": 141714, "movieId": 77177, "reason": "HTTPError 404"}
+{"tmdbId": 61919, "movieId": 77330, "reason": "HTTPError 404"}
+{"tmdbId": 37106, "movieId": 77854, "reason": "HTTPError 404"}
+{"tmdbId": 202241, "movieId": 86487, "reason": "HTTPError 404"}
+{"tmdbId": 58423, "movieId": 90647, "reason": "HTTPError 404"}
+{"tmdbId": 26397, "movieId": 93040, "reason": "HTTPError 404"}
+{"tmdbId": 147269, "movieId": 93988, "reason": "HTTPError 404"}
+{"tmdbId": 69372, "movieId": 100044, "reason": "HTTPError 404"}
+{"tmdbId": 51452, "movieId": 105250, "reason": "HTTPError 404"}
+{"tmdbId": 110414, "movieId": 108727, "reason": "HTTPError 404"}
+{"tmdbId": 203766, "movieId": 116975, "reason": "HTTPError 404"}
+{"tmdbId": 2699, "movieId": 118916, "reason": "HTTPError 404"}
+{"tmdbId": 77172, "movieId": 122282, "reason": "HTTPError 404"}
+{"tmdbId": 202249, "movieId": 122926, "reason": "HTTPError 404"}
+{"tmdbId": 189197, "movieId": 126430, "reason": "HTTPError 404"}
+{"tmdbId": 315010, "movieId": 129032, "reason": "HTTPError 404"}
+{"tmdbId": 321640, "movieId": 131724, "reason": "HTTPError 404"}
+{"tmdbId": 134777, "movieId": 140737, "reason": "HTTPError 404"}
+{"tmdbId": 27934, "movieId": 141816, "reason": "HTTPError 404"}
+{"tmdbId": 200813, "movieId": 142115, "reason": "HTTPError 404"}
+{"tmdbId": 127605, "movieId": 147250, "reason": "HTTPError 404"}
+{"tmdbId": 72093, "movieId": 147328, "reason": "HTTPError 404"}
+{"tmdbId": 72095, "movieId": 147330, "reason": "HTTPError 404"}
+{"tmdbId": 333040, "movieId": 151763, "reason": "HTTPError 404"}
+{"tmdbId": 385965, "movieId": 155968, "reason": "HTTPError 404"}
+{"tmdbId": 30, "movieId": 158092, "reason": "HTTPError 404"}
+{"tmdbId": 192040, "movieId": 159817, "reason": "HTTPError 404"}
+{"tmdbId": 220903, "movieId": 159819, "reason": "HTTPError 404"}
+{"tmdbId": 409696, "movieId": 163809, "reason": "HTTPError 404"}
+{"tmdbId": 428074, "movieId": 168910, "reason": "HTTPError 404"}
+{"tmdbId": 414399, "movieId": 169906, "reason": "HTTPError 404"}
+{"tmdbId": 185789, "movieId": 170355, "reason": "HTTPError 404"}
+{"tmdbId": 331214, "movieId": 170705, "reason": "HTTPError 404"}
+{"tmdbId": 420714, "movieId": 171011, "reason": "HTTPError 404"}
+{"tmdbId": 409926, "movieId": 171495, "reason": "HTTPError 404"}
+{"tmdbId": 41581, "movieId": 171835, "reason": "HTTPError 404"}
+{"tmdbId": 444623, "movieId": 172905, "reason": "HTTPError 404"}
+{"tmdbId": 431490, "movieId": 174035, "reason": "HTTPError 404"}
+{"tmdbId": 463612, "movieId": 179135, "reason": "HTTPError 404"}
+{"tmdbId": 502892, "movieId": 184257, "reason": "HTTPError 404"}
+{"tmdbId": 510882, "movieId": 185927, "reason": "HTTPError 404"}

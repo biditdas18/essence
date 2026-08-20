@@ -1,0 +1,8 @@
+baseline,observed_diff,percentile_sig,bca_sig,conclusion_changes
+Random,0.0036324330371491917,True,True,False
+MIND,-0.037482075941489584,True,True,False
+Last-Item,-0.00425954075963951,True,True,False
+ComiRec (SA),-0.06580515462808334,True,True,False
+CF (ItemKNN),-0.08024086012652072,True,True,False
+Popularity,-0.0469218912571506,True,True,False
+Recency-Weighted,-0.002798262610552429,True,True,False

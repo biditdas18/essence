@@ -1,0 +1,19 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+MovieLens-25M,Recall@10,Essence (K=3),Random,0.004806,0.001174,0.003632,0.002371,0.004979,1.0000,0.1217,2000
+MovieLens-25M,Recall@10,Essence (K=3),Popularity,0.004806,0.051728,-0.046922,-0.051438,-0.042296,0.0000,-0.4470,2000
+MovieLens-25M,Recall@10,Essence (K=3),CF (ItemKNN),0.004806,0.085047,-0.080241,-0.086725,-0.074010,0.0000,-0.5578,2000
+MovieLens-25M,Recall@10,Essence (K=3),Content (Avg Emb),0.004806,0.004260,0.000546,-0.000744,0.001907,0.7901,0.0180,2000
+MovieLens-25M,Recall@10,Essence (K=3),Last-Item,0.004806,0.009066,-0.004260,-0.006364,-0.002290,0.0000,-0.0919,2000
+MovieLens-25M,Recall@10,Essence (K=3),Avg-Last-10,0.004806,0.006395,-0.001589,-0.003154,-0.000081,0.0200,-0.0455,2000
+MovieLens-25M,Recall@10,Essence (K=3),Recency-Weighted,0.004806,0.007604,-0.002798,-0.004372,-0.001308,0.0001,-0.0805,2000
+MovieLens-25M,Recall@10,Essence (K=3),MIND,0.004806,0.042288,-0.037482,-0.041699,-0.033255,0.0000,-0.3879,2000
+MovieLens-25M,Recall@10,Essence (K=3),ComiRec (SA),0.004806,0.070611,-0.065805,-0.071382,-0.060384,0.0000,-0.5219,2000
+MovieLens-25M,LT-Recall@10,Essence (K=3),Random,0.002041,0.000000,0.002041,0.000000,0.006122,0.6287,0.0452,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),Popularity,0.002041,0.000000,0.002041,0.000000,0.006122,0.6302,0.0452,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),CF (ItemKNN),0.002041,0.003741,-0.001701,-0.007823,0.004422,0.2581,-0.0245,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),Content (Avg Emb),0.002041,0.002041,0.000000,-0.006122,0.006122,0.3409,0.0000,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),Last-Item,0.002041,0.003061,-0.001020,-0.007143,0.005102,0.2902,-0.0150,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),Avg-Last-10,0.002041,0.002551,-0.000510,-0.006633,0.005612,0.3359,-0.0079,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),Recency-Weighted,0.002041,0.004592,-0.002551,-0.009184,0.003584,0.1787,-0.0353,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),MIND,0.002041,0.000000,0.002041,0.000000,0.006122,0.6347,0.0452,490
+MovieLens-25M,LT-Recall@10,Essence (K=3),ComiRec (SA),0.002041,0.001361,0.000680,-0.003061,0.005782,0.5264,0.0133,490

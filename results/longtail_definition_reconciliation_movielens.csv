@@ -1,0 +1,31 @@
+part,decile,n_singleton_items,pct_of_singletons,n_hits,pct_of_hits
+catalog_overlap,1,32.0,1.3692768506632436,,
+catalog_overlap,2,569.0,24.347454000855798,,
+catalog_overlap,3,765.0,32.73427471116816,,
+catalog_overlap,4,766.0,32.77706461275139,,
+catalog_overlap,5,205.0,8.771929824561404,,
+catalog_overlap,6,0.0,0.0,,
+catalog_overlap,7,0.0,0.0,,
+catalog_overlap,8,0.0,0.0,,
+catalog_overlap,9,0.0,0.0,,
+catalog_overlap,10,0.0,0.0,,
+Essence (K=3)_hit_decomposition,1,,,0.0,0.0
+Essence (K=3)_hit_decomposition,2,,,1.0,100.0
+Essence (K=3)_hit_decomposition,3,,,0.0,0.0
+Essence (K=3)_hit_decomposition,4,,,0.0,0.0
+Essence (K=3)_hit_decomposition,5,,,0.0,0.0
+Essence (K=3)_hit_decomposition,6,,,0.0,0.0
+Essence (K=3)_hit_decomposition,7,,,0.0,0.0
+Essence (K=3)_hit_decomposition,8,,,0.0,0.0
+Essence (K=3)_hit_decomposition,9,,,0.0,0.0
+Essence (K=3)_hit_decomposition,10,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,1,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,2,,,2.0,66.66666666666667
+CF (ItemKNN)_hit_decomposition,3,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,4,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,5,,,1.0,33.333333333333336
+CF (ItemKNN)_hit_decomposition,6,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,7,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,8,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,9,,,0.0,0.0
+CF (ItemKNN)_hit_decomposition,10,,,0.0,0.0

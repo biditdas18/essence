@@ -1,0 +1,2 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+MovieLens decile 1 (rarest 10%),Recall@10,Essence (K=3),CF (ItemKNN),0.005576,0.000000,0.005576,0.000301,0.012960,0.9792,0.0807,474

@@ -1,0 +1,7 @@
+family,decile,baseline,observed_diff,cohens_d_paired,frac_resamples_diff_gt_0,p_value_raw_two_sided,q_value_bh,significant_raw_p<0.05,significant_after_fdr
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),1,Last-Item,-0.012358,-0.0929,0.0001,0.0002,0.0012000000000000001,True,True
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),2,Recency-Weighted,-0.007171,-0.0752,0.0009,0.0018,0.0054,True,True
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),2,Last-Item,-0.007478,-0.0652,0.0044,0.0088,0.0176,True,True
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),1,Recency-Weighted,-0.004257,-0.0527,0.0206,0.0412,0.0618,True,False
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),2,Avg-Last-10,-0.00311,-0.0368,0.0694,0.1388,0.16655999999999999,False,False
+decile_1_2_targeted_followup (SEPARATE from original 36-comparison family),1,Avg-Last-10,-0.000825,-0.0117,0.3228,0.6456,0.6456,False,False
