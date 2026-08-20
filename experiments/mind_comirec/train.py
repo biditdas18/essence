@@ -201,7 +201,7 @@ def full_catalog_eval(model, dataset_name, train_sequences, test_items, long_tai
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=["lastfm", "amazon"], required=True)
+    parser.add_argument("--dataset", choices=["lastfm", "amazon", "movielens"], required=True)
     parser.add_argument("--model", choices=["mind", "comirec"], required=True)
     parser.add_argument("--epochs", type=int, default=MAX_EPOCHS)
     parser.add_argument("--embed-init", choices=["pretrained", "random"], default="pretrained",

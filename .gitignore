@@ -5,6 +5,10 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
+# Secrets
+.env
+.env.*
+
 # OS
 .DS_Store
 

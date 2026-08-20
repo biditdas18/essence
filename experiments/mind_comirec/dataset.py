@@ -70,7 +70,29 @@ def load_amazon():
     return item_embedding_map, train_sequences, test_items, long_tail_ids
 
 
-LOADERS = {"lastfm": load_lastfm, "amazon": load_amazon}
+def load_movielens():
+    proc_dir = BASE_DIR / "data" / "movielens_processed"
+
+    train_df = pd.read_csv(proc_dir / "train.csv")
+    test_df = pd.read_csv(proc_dir / "test.csv")
+
+    with open(proc_dir / "embeddings_metadata.pkl", "rb") as f:
+        item_embedding_map = pickle.load(f)
+    lt_df = pd.read_csv(proc_dir / "longtail_items.csv")
+    long_tail_ids = set(lt_df["item_id"])
+
+    train_sequences = {}
+    for uid, g in train_df.sort_values("timestamp").groupby("user_id", sort=False):
+        train_sequences[uid] = list(g["item_id"])
+
+    test_items = {}
+    for uid, g in test_df.groupby("user_id", sort=False):
+        test_items[uid] = list(g["item_id"])
+
+    return item_embedding_map, train_sequences, test_items, long_tail_ids
+
+
+LOADERS = {"lastfm": load_lastfm, "amazon": load_amazon, "movielens": load_movielens}
 
 
 def load_dataset(name: str):

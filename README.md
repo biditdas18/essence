@@ -271,6 +271,42 @@ import `recall_at_k`/`long_tail_recall_at_k` straight from
 the convention used by every other baseline. See `recall_at_k`'s
 docstring in `evaluation/evaluate.py` for the full note.
 
+### Cold-start vs. singleton long-tail: a scope boundary, not a contradiction
+
+A popularity-decile breakdown on Amazon Books (10 equal-item-count
+buckets by train-set interaction count, rarest to most popular; see
+`results/popularity_decile_recall.csv`) found Essence trailing
+Last-Item and Recency-Weighted at deciles 1 and 2 — statistically real
+per a dedicated paired-bootstrap + BH-FDR + BCa check
+(`results/decile_significance_check.csv`, `results/decile_bca_check.csv`):
+Essence loses to Last-Item at both deciles (survives FDR correction)
+and to Recency-Weighted at decile 2 (survives FDR; the decile-1 version
+of this comparison is significant at raw p but does not survive
+correction).
+
+This does **not** contradict the paper's headline LT-Recall@10 claim
+(Essence beats Content/CF/Popularity on singleton-item recall), because
+the two are measuring almost entirely different item populations
+(`results/longtail_definition_reconciliation.csv`):
+
+- **Decile 1 contains zero singleton items.** It's entirely items with
+  *zero* train interactions — true cold-start items, rarer than
+  singletons by construction (popularity 0 < 1). Decile 2 contains only
+  3.6% of the catalog's 42,878 singletons. The singleton population
+  (the paper's long-tail definition) is concentrated in **deciles 3–9**
+  (86% of all singletons).
+- **100% of Essence's actual LT-Recall@10 hits come from deciles 3–9**
+  (37% from decile 9 alone) — **zero** from deciles 1 or 2.
+
+So: Essence's headline long-tail win is real and comes from
+moderately-rare-but-observed items (deciles 3–9). Essence's weakness at
+true cold-start items (deciles 1–2, zero or near-zero training signal)
+is also real, and is a genuine scope boundary on the long-tail claim —
+the paper's "long-tail recovery" result should be read as covering
+observed-but-rare items, not unobserved cold-start items, where the
+simpler recency baselines currently do better. Neither finding
+invalidates the other; they're about different items.
+
 ### Repository Structure
 
 ```
