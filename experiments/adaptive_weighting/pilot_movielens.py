@@ -1,17 +1,17 @@
 """
-experiments/adaptive_weighting/pilot_amazon.py
---------------------------------------------------
-Step 3: quick pilot, 200-user Amazon sample. Compares
-AdaptiveWeightedRecommend (2-channel adaptive weighting, PROXY feedback
-signal, NOT audio features, NOT real user feedback -- see module
-docstring in adaptive_weighted_recommend.py) against Essence,
-Recency-Weighted, and CF-ItemKNN.
+experiments/adaptive_weighting/pilot_movielens.py
+------------------------------------------------------
+Step 2a: MovieLens adaptive-weighting pilot. Same AdaptiveWeightedRecommend
+implementation as the Amazon pilot -- channel A = genre-only embedding,
+channel B = plot-summary-only embedding (both pure item metadata, no
+per-user data, no leakage-equivalent risk -- verified directly against
+build_movielens_channels.py before running, not after).
 
-Raw numbers only -- no bootstrap. This is a fast go/no-go signal, not a
-final result.
+Same 200-user scale, same 4-system comparison, same learning rate (0.05),
+same proxy-feedback design as tonight's Amazon pilot. No mechanism changes.
 
 Run:
-    python experiments/adaptive_weighting/pilot_amazon.py
+    python experiments/adaptive_weighting/pilot_movielens.py --n-users 200
 """
 
 import pickle
@@ -28,9 +28,9 @@ sys.path.insert(0, str(BASE_DIR))
 sys.path.insert(0, str(Path(__file__).parent))
 
 from models.recommenders import build_itemknn_model, cf_itemknn_recommend
-from adaptive_weighted_recommend import adaptive_weighted_recommend, normalized, recency_weighted_vec, cosine_sim
+from adaptive_weighted_recommend import adaptive_weighted_recommend, normalized, recency_weighted_vec
 
-PROC_DIR = BASE_DIR / "data" / "amazon_processed"
+PROC_DIR = BASE_DIR / "data" / "movielens_processed"
 OUT_DIR = Path(__file__).parent
 
 N_PILOT_USERS = 200
@@ -63,36 +63,35 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--n-users", type=int, default=N_PILOT_USERS)
-    parser.add_argument("--disable-update", action="store_true",
-                        help="Sanity check: fix weights at (0.5, 0.5), no online adaptation.")
+    parser.add_argument("--disable-update", action="store_true")
     args = parser.parse_args()
-    n_pilot_users = args.n_users
 
     train_df = pd.read_csv(PROC_DIR / "train.csv")
     test_df = pd.read_csv(PROC_DIR / "test.csv")
     lt_df = pd.read_csv(PROC_DIR / "longtail_items.csv")
     lt_set = set(lt_df["item_id"])
-    if "timestamp" not in train_df.columns:
-        train_df["timestamp"] = train_df.index
 
-    with open(OUT_DIR / "amazon_channel_a.pkl", "rb") as f:
+    with open(OUT_DIR / "movielens_channel_a.pkl", "rb") as f:
         channel_a = pickle.load(f)
-    with open(OUT_DIR / "amazon_channel_b.pkl", "rb") as f:
+    with open(OUT_DIR / "movielens_channel_b.pkl", "rb") as f:
         channel_b = pickle.load(f)
     with open(PROC_DIR / "embeddings_metadata.pkl", "rb") as f:
-        emb_meta = pickle.load(f)  # for Essence (single-vector) comparison, unchanged
+        emb_meta = pickle.load(f)
 
     item_ids = sorted(set(channel_a.keys()) & set(channel_b.keys()))
     n_items = len(item_ids)
     item_index = {iid: idx for idx, iid in enumerate(item_ids)}
+    print(f"[pilot_movielens] candidate items: {n_items} (channel_a={len(channel_a)}, channel_b={len(channel_b)})")
 
     A_matrix = normalized(np.array([channel_a[i] for i in item_ids], dtype=np.float32))
     B_matrix = normalized(np.array([channel_b[i] for i in item_ids], dtype=np.float32))
-    C_meta = normalized(np.array([emb_meta[i] for i in item_ids], dtype=np.float32))
+    C_meta = normalized(np.array([emb_meta[i] for i in item_ids if i in emb_meta], dtype=np.float32))
+    meta_item_ids = [i for i in item_ids if i in emb_meta]
+    meta_item_index = {iid: idx for idx, iid in enumerate(meta_item_ids)}
 
     rng = np.random.default_rng(SEED)
     all_users = sorted(train_df["user_id"].unique())
-    pilot_users = rng.choice(all_users, size=min(n_pilot_users, len(all_users)), replace=False)
+    pilot_users = rng.choice(all_users, size=min(args.n_users, len(all_users)), replace=False)
 
     itemknn = build_itemknn_model(train_df, item_col="item_id")
 
@@ -111,16 +110,20 @@ def main():
         seen_set = set(train_items)
         actual = test_map[uid]
 
-        seen_mask = np.zeros(n_items, dtype=bool)
+        seen_mask_meta = np.zeros(len(meta_item_ids), dtype=bool)
+        for iid in seen_set:
+            idx = meta_item_index.get(iid)
+            if idx is not None:
+                seen_mask_meta[idx] = True
+
+        seen_mask_channels = np.zeros(n_items, dtype=bool)
         for iid in seen_set:
             idx = item_index.get(iid)
             if idx is not None:
-                seen_mask[idx] = True
+                seen_mask_channels[idx] = True
 
-        # CF (ItemKNN) -- unchanged baseline
         recs_cf = cf_itemknn_recommend(uid, train_df, itemknn, M)
 
-        # Essence (K=3) -- unchanged, single-vector metadata embedding
         seen_vecs = [emb_meta[i] for i in train_items if i in emb_meta]
         if len(seen_vecs) >= K:
             km = KMeans(n_clusters=K, random_state=SEED, n_init=10)
@@ -130,23 +133,21 @@ def main():
             dists = np.linalg.norm(km.cluster_centers_ - recent_mean, axis=1)
             centroid = normalized(km.cluster_centers_[np.argmin(dists)].astype(np.float32))
             scores_essence = C_meta @ centroid
-            recs_essence = top_k_unseen(scores_essence, seen_mask, item_ids, M)
+            recs_essence = top_k_unseen(scores_essence, seen_mask_meta, meta_item_ids, M)
         else:
             recs_essence = []
 
-        # Recency-Weighted -- unchanged, single-vector metadata embedding
         recent_vecs = [emb_meta[i] for i in train_items[-10:] if i in emb_meta]
         if recent_vecs:
             rw_vec = normalized(recency_weighted_vec(recent_vecs))
             scores_rw = C_meta @ rw_vec
-            recs_rw = top_k_unseen(scores_rw, seen_mask, item_ids, M)
+            recs_rw = top_k_unseen(scores_rw, seen_mask_meta, meta_item_ids, M)
         else:
             recs_rw = []
 
-        # AdaptiveWeighted -- new, 2-channel
         recs_adaptive, w = adaptive_weighted_recommend(
             uid, train_items, channel_a, channel_b, item_ids, A_matrix, B_matrix,
-            seen_mask, M=M, seed=SEED, disable_update=args.disable_update,
+            seen_mask_channels, M=M, seed=SEED, disable_update=args.disable_update,
         )
         learned_weights.append(w)
 
@@ -156,9 +157,9 @@ def main():
             if ltr is not None:
                 lt_recall[name].append(ltr)
 
-    mode_label = "SANITY CHECK: weights fixed at (0.5, 0.5), no online update" if args.disable_update else "learned weights"
+    mode_label = "SANITY CHECK: weights fixed at (0.5, 0.5)" if args.disable_update else "learned weights"
     print(f"\n{'='*70}")
-    print(f"PILOT RESULT -- Amazon, {len(pilot_users)} users, raw numbers (NO bootstrap) -- {mode_label}")
+    print(f"PILOT RESULT -- MovieLens, {len(pilot_users)} users, raw numbers (NO bootstrap) -- {mode_label}")
     print(f"{'='*70}")
     print(f"{'System':<20} {'Recall@10':>10} {'LT-Recall@10':>13}")
     for name in systems:
@@ -167,7 +168,7 @@ def main():
         print(f"{name:<20} {r:>10.4f} {lt:>13.4f}")
 
     w_arr = np.array(learned_weights)
-    print(f"\nLearned weights (w_A=metadata, w_B=review) across {len(w_arr)} users:")
+    print(f"\nLearned weights (w_A=genre, w_B=plot) across {len(w_arr)} users:")
     print(f"  mean: w_A={w_arr[:,0].mean():.3f}  w_B={w_arr[:,1].mean():.3f}")
     print(f"  std:  w_A={w_arr[:,0].std():.3f}  w_B={w_arr[:,1].std():.3f}")
 

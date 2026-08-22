@@ -74,8 +74,14 @@ def recency_weighted_vec(vecs, decay=RECENCY_DECAY):
 
 
 def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
-                         lr=LR_DEFAULT, recency_n=RECENCY_N, seed=42):
+                         lr=LR_DEFAULT, recency_n=RECENCY_N, seed=42, disable_update=False):
     """
+    disable_update: sanity-check mode (Step 1 of the follow-up session) --
+    skips the online proxy-feedback walk entirely and returns the fixed
+    (0.5, 0.5) prior. Used to confirm AdaptiveWeighted collapses to
+    Recency-Weighted-like behavior when weighting is inert, before trusting
+    any result from the learned-weight path.
+
     Walks train_seq (chronological list of item_ids) and returns the final
     (w_a, w_b) learned via the proxy-feedback online update described above.
 
@@ -83,6 +89,9 @@ def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
     """
     rng = np.random.default_rng(seed)
     w = np.array([0.5, 0.5])
+
+    if disable_update:
+        return w
 
     valid_seq = [i for i in train_seq if i in channel_a_map and i in channel_b_map]
     if len(valid_seq) < 2:
@@ -132,7 +141,8 @@ def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
 
 def adaptive_weighted_recommend(user_id, train_items, channel_a_map, channel_b_map,
                                 candidate_item_ids, candidate_a_matrix, candidate_b_matrix,
-                                seen_mask, M=10, lr=LR_DEFAULT, recency_n=RECENCY_N, seed=42):
+                                seen_mask, M=10, lr=LR_DEFAULT, recency_n=RECENCY_N, seed=42,
+                                disable_update=False):
     """
     Full pipeline for one user: learn (w_a, w_b) via the proxy-feedback walk
     over train_items, then score all unseen candidates and return top-M.
@@ -140,9 +150,12 @@ def adaptive_weighted_recommend(user_id, train_items, channel_a_map, channel_b_m
     candidate_a_matrix / candidate_b_matrix: (n_items, dim) L2-normalized,
     row order matching candidate_item_ids -- same convention as the
     vectorized top_k_unseen pattern used throughout this repo.
+
+    disable_update: sanity-check mode, see fit_adaptive_weights.
     """
     w = fit_adaptive_weights(train_items, channel_a_map, channel_b_map,
-                             candidate_item_ids, lr=lr, recency_n=recency_n, seed=seed)
+                             candidate_item_ids, lr=lr, recency_n=recency_n, seed=seed,
+                             disable_update=disable_update)
 
     recent = [i for i in train_items[-recency_n:] if i in channel_a_map and i in channel_b_map]
     if not recent:
