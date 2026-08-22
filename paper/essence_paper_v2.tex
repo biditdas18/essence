@@ -85,7 +85,7 @@ of recent interaction history, and standard Recall@K. On long-tail items
 (those with a single training-set interaction), the non-personalized popularity
 baseline achieves exactly zero recall on both datasets, by construction, since
 globally popular items are never singletons. Item-based collaborative filtering
-recovers long-tail items only on the denser Amazon Books dataset, where its long-tail recall is comparable to the content baseline (overlapping 95\% confidence intervals); on the sparser Last.fm-1K it recovers
+recovers long-tail items only on the denser Amazon Books dataset, where a paired bootstrap on the per-user difference from the content baseline ($10{,}000$ resamples) shows no significant difference (mean difference $+0.0013$, 95\% CI $[-0.0056, +0.0082]$); on the sparser Last.fm-1K it recovers
 none under deterministic ranking, matching the popularity baseline. On both,
 its overall recall falls well below the content baseline. Essence achieves the
 highest long-tail recall of all systems on both datasets: Long-Tail Recall@10
@@ -601,13 +601,14 @@ under non-deterministic ordering CF's long-tail recall fluctuates around
 $0.004$, but resolves to zero once ties are broken deterministically
 (Section~4.6), indicating a weak and unstable long-tail signal rather than a reliably present one.
 Both Content ($0.0029$) and Essence ($0.0059$) recover long-tail items that CF
-does not. Essence's LT-Recall is $2.01\times$ Content's, but on Last.fm-1K
-this comparison rests on long-tail hits for only 2 of 92 eligible users per
-method, and the bootstrap 95\% CIs both include zero and overlap substantially
-(Table~\ref{tab:cis}); we therefore treat the Last.fm-1K long-tail result as
-directional. The statistically substantive long-tail evidence is the
-2{,}000-user Amazon Books evaluation (Table~\ref{tab:amazon},
-Table~\ref{tab:cis}). On overall Recall@10, Essence
+does not. Essence's LT-Recall is $2.01\times$ Content's, but a paired
+bootstrap on the per-user difference (Essence $-$ Content, $10{,}000$
+resamples) gives a mean difference of $+0.0030$ with 95\% CI $[-0.0053,
++0.0163]$ --- not statistically significant, consistent with this comparison
+resting on long-tail hits for only 2 of 92 eligible users per method; we
+therefore treat the Last.fm-1K long-tail result as directional. The
+statistically substantive long-tail evidence is the 2{,}000-user Amazon
+Books evaluation (Table~\ref{tab:amazon}, Table~\ref{tab:cis}). On overall Recall@10, Essence
 ($0.0119$) leads all personalized methods, with CF ($0.0018$) falling below
 even Content ($0.0038$); Essence is the only method that leads on both metrics.
 
@@ -912,16 +913,19 @@ content-based average-embedding baseline, a non-personalized popularity baseline
 item-based KNN collaborative filtering baseline on long-tail item recovery, under a chronological evaluation split and
 standard Recall@K. The non-personalized popularity baseline achieves exactly zero long-tail recall
 on both datasets, by construction. The item-based CF baseline recovers some
-long-tail items only on the denser Amazon Books dataset (comparable to the
-content baseline; overlapping CIs); on the sparser Last.fm-1K it recovers none under
+long-tail items only on the denser Amazon Books dataset (a paired bootstrap
+on the per-user difference from the content baseline is not significant:
+mean difference $+0.0013$, 95\% CI $[-0.0056, +0.0082]$); on the sparser Last.fm-1K it recovers none under
 deterministic ranking, matching the popularity baseline, while on both it
 incurs a large cost to overall recall and
 remains below Essence. CF's long-tail recovery is thus density-dependent,
 whereas Essence leads on long-tail recall regardless of density.
-The long-tail comparison is statistically substantiated on Amazon Books
-(2{,}000 users; bootstrap 95\% CIs, Table~\ref{tab:cis}); on the 99-user
-Last.fm-1K it is directional, resting on long-tail hits for only 2 of 92
-eligible users per method.
+The Essence-vs-Content long-tail comparison is statistically substantiated
+on Amazon Books (2{,}000 users; paired bootstrap mean difference $+0.0073$,
+95\% CI $[0.0011, 0.0137]$, two-sided $p=0.021$); on the 99-user
+Last.fm-1K it is directional and not statistically significant (paired
+bootstrap mean difference $+0.0030$, 95\% CI $[-0.0053, +0.0163]$), resting
+on long-tail hits for only 2 of 92 eligible users per method.
 
 An ablation (Section~\ref{sec:ablation}) indicates that Essence's long-tail
 advantage depends on its recency-based active cluster selection mechanism

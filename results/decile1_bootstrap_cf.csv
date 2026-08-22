@@ -1,0 +1,2 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+Amazon decile 1 vs CF-ItemKNN,Recall@10,Essence (K=3),CF (ItemKNN),0.017467,0.000000,0.017467,0.013243,0.022158,1.0000,0.2012,1482

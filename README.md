@@ -17,9 +17,11 @@ centroid aligned with the user's recent context and
 retrieving semantically similar unseen items by cosine
 similarity.
 
-The peer-isolation property (no cross-user interaction
-graph consulted at any stage) is not merely a privacy
-consideration. It is a depth requirement. Crowd signals
+The peer-isolation property — no cross-user data pooling
+is required for inference — is not merely an architectural
+convenience. It is a depth requirement. (This is narrower
+than a privacy guarantee: no differential-privacy bound,
+threat model, or adversarial analysis is provided.) Crowd signals
 approximate preferences at the genre level. Peer-isolation
 enables modelling at the latent feature level: the specific
 combination of characteristics a user responds to,

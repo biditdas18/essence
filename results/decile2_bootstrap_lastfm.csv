@@ -1,0 +1,2 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+Last.fm decile 2 vs CF-ItemKNN,Recall@10,Essence (K=3),CF (ItemKNN),0.017156,0.000000,0.017156,0.004140,0.035061,1.0000,0.2150,99
