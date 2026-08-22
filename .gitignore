@@ -36,6 +36,8 @@ data/movielens_processed/embeddings_metadata.pkl
 embeddings/item_embeddings.pkl
 embeddings/*.index
 embeddings/*.npy
+experiments/adaptive_weighting/*_channel_a.pkl
+experiments/adaptive_weighting/*_channel_b.pkl
 
 # Scratch / debug
 debug/
