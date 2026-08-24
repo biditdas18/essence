@@ -92,13 +92,13 @@ carved from training data, not fixed in advance --- $K=10$ for Last.fm-1K
 and Amazon Books, $K=15$ for MovieLens-25M. On Amazon Books, where
 collaborative and popularity baselines are structurally weak (Recall@10 of
 $0.0031$ and $0.0021$ respectively), Essence ranks 3rd of 10 on Recall@10
-($0.0253$): it loses only to Last-Item ($0.0311$) and is statistically
-tied with, not significantly behind, Recency-Weighted ($0.0260$,
+($0.0253$): it loses only to Last-Item ($0.0311$) and is not
+significantly different from Recency-Weighted ($0.0260$,
 $d=-0.009$) and Avg-Last-10 ($0.0235$, which it now numerically beats). It
 significantly beats collaborative filtering, popularity, content-averaging,
 and both neural multi-interest baselines on Recall@10 ($d$ ranges
 $0.099$--$0.282$), and significantly beats Random, Popularity, and MIND on
-LT-Recall@10 specifically; it is statistically tied with CF-ItemKNN,
+LT-Recall@10 specifically; it is not significantly different from CF-ItemKNN,
 Content, ComiRec, Last-Item, Recency-Weighted, and Avg-Last-10 on
 LT-Recall@10. On Last.fm-1K, Essence ranks 2nd of 10 on both Recall@10
 ($0.0281$) and LT-Recall@10 ($0.0142$); it is not significantly different
@@ -142,7 +142,7 @@ Code: \url{https://github.com/biditdas18/essence}
 \section{Introduction}
 
 Recommendation systems built on collaborative filtering (CF) derive their
-signal from cross-user interaction patterns: a user's future preferences are
+signal from cross-user interaction patterns: a user's future interactions are
 predicted from the behavior of users who interacted similarly in the past.
 This approach performs well on standard benchmarks, particularly on metrics
 dominated by popular items, but it carries a structural property worth
@@ -164,11 +164,11 @@ architectural choice --- $K$-means interest clustering --- provides
 measurable benefit over a simpler recency-based alternative, tested under
 conditions designed to give that choice its best chance to matter. First, the original motivating question: can a recommendation
 signal be constructed using only a single user's own history, without any
-cross-user data, and if so, does it recover items that collaborative methods
+cross-user interaction data, and if so, does it recover items that collaborative methods
 structurally underrepresent? Second, a question that only becomes answerable
 once the same comparison is run across multiple, structurally different
 domains: under what domain conditions does this approach help versus hurt,
-and is the effect predictable from properties of the domain rather than
+and is that pattern associated with properties of the domain rather than
 discovered post hoc per dataset? A one- or two-dataset evaluation cannot
 distinguish a domain-general advantage from a domain-specific artifact; the
 three-dataset evaluation reported here (Section~\ref{sec:results}) is
@@ -184,7 +184,19 @@ an oversight: it is the mechanism under test. We describe the resulting objectiv
 
 The contributions of this work are:
 \begin{enumerate}[leftmargin=*, itemsep=2pt]
-  \item The \textbf{Essence architecture}: a personal recommendation
+  \item A \textbf{three-dataset evaluation} testing whether $K$-means
+        interest clustering provides measurable benefit over a simpler
+        recency-based alternative (Section~\ref{sec:results}), yielding a
+        \textbf{domain-dependence finding} across three datasets spanning
+        music, e-commerce, and film: Essence's relative standing among ten
+        evaluated systems is associated with the strength of
+        collaborative/popularity signal in the domain (establishing this as
+        predictive would require additional datasets and an
+        independently-defined domain property), evidenced by effect sizes
+        ranging from Essence's strongest win
+        (Last.fm-1K, beating Random with $d=+0.301$) to its strongest
+        loss (MovieLens-25M, losing to CF-ItemKNN with $d=-0.550$).
+  \item The \textbf{Essence architecture} itself: a personal recommendation
         framework requiring no collaborative signal and no supervised or cross-user
         recommender training, operating entirely on a single user's history.
   \item A \textbf{recency-based active-cluster-selection} mechanism,
@@ -194,15 +206,6 @@ The contributions of this work are:
         exponentially-weighted retrieval) --- the comparison against
         simpler, non-clustering alternatives that the original evaluation
         did not include.
-  \item A \textbf{domain-dependence finding} across three datasets spanning
-        music, e-commerce, and film (Section~\ref{sec:results}): Essence's
-        relative standing among ten evaluated systems is associated with
-        the strength of collaborative/popularity signal in the domain
-        (establishing this as predictive would require additional datasets
-        and an independently-defined domain property), evidenced by effect
-        sizes ranging from Essence's strongest win
-        (Last.fm-1K, beating Random with $d=+0.301$) to its strongest
-        loss (MovieLens-25M, losing to CF-ItemKNN with $d=-0.550$).
   \item \textbf{Two hand-implemented, from-scratch multi-interest baselines}
         (MIND, following Li et al.~\cite{li2019}; ComiRec, following Cen et
         al.~\cite{cen2020}) --- neither is available in standard
@@ -255,7 +258,7 @@ are derived entirely from one user's own history.
 
 \textbf{Representation level.} Because MIND's item embeddings are trained on
 co-occurrence patterns across users, what an item \emph{means} in that space
-is partly defined by who else liked it. An obscure track heard by very few
+is partly defined by who else interacted with it. An obscure track heard by very few
 users is underrepresented or invisible in that embedding space, as its
 co-occurrence signal is too sparse to be learned reliably. Essence uses a
 pre-trained sentence encoder on item metadata only. The embedding captures metadata-derived semantic information about the item,
@@ -313,7 +316,7 @@ without interaction logs but typically averages preferences into a single
 vector, losing intra-user diversity.
 
 Essence occupies a complementary position: it captures intra-user diversity
-(like multi-interest methods) without cross-user data (like content-based
+(like multi-interest methods) without cross-user interaction data (like content-based
 methods), using simple interpretable clustering rather than a trained
 sequential model. We acknowledge that BERT4Rec offers richer sequential
 modelling in high-interaction settings; Essence targets privacy-first,
@@ -485,7 +488,7 @@ history to final recommendations.
 
   \node[navybox]  (hist)   {USER HISTORY $H_u$\\
                              \normalfont\small All items the user has consumed
-                             (no cross-user data)};
+                             (no cross-user interaction data)};
 
   \node[bluebox,  below=of hist]  (emb)
         {STEP 1: EMBED EACH ITEM\\
@@ -536,7 +539,7 @@ history to final recommendations.
   \draw[arrow] (ann)    -- (out);
 
 \end{tikzpicture}
-\caption{Essence recommendation pipeline. No cross-user data is consulted at
+\caption{Essence recommendation pipeline. No cross-user interaction data is consulted at
 any stage (peer-isolation property).}
 \label{fig:pipeline}
 \end{figure}
@@ -892,8 +895,8 @@ ComiRec (SA)             & 0.0050 & 0.0121 & 0.0014 \\
 
 Essence's standing is not uniform across datasets. On Amazon Books it is
 3rd of 10 on Recall@10 and 2nd of 10 on LT-Recall@10 (behind only
-Last-Item on both metrics; statistically tied with, not significantly
-behind, Recency-Weighted on Recall@10 --- Section~\ref{sec:stats-methodology});
+Last-Item on both metrics; not significantly different from
+Recency-Weighted on Recall@10 --- Section~\ref{sec:stats-methodology});
 on Last.fm-1K it is 2nd of 10 on both Recall@10 and LT-Recall@10, not
 significantly different from any of the three recency-only baselines
 (numerically ahead of Last-Item and Avg-Last-10, behind Recency-Weighted);
@@ -934,13 +937,13 @@ Where collaborative and popularity signal is structurally weak, Essence
 sits in the upper half of the field on both datasets. On Amazon Books it
 significantly beats CF-ItemKNN, the non-personalized baselines, Content,
 and both neural multi-interest baselines on Recall@10 (Cohen's $d$
-$0.099$--$0.282$); it is statistically tied with Recency-Weighted (not a
-significant difference) and significantly behind only Last-Item. On
+$0.099$--$0.282$); it is not significantly different from Recency-Weighted
+and significantly behind only Last-Item. On
 Last.fm-1K, at its validation-selected $K=10$, Essence significantly beats
 CF-ItemKNN, the non-personalized baselines, Content, MIND, \emph{and}
 ComiRec on
 Recall@10 (Cohen's $d$ $0.220$--$0.301$) --- at $K=3$, Essence's Recall@10
-was statistically tied with ComiRec ($0.0119$ vs.\ $0.0137$); at the
+was not significantly different from ComiRec's ($0.0119$ vs.\ $0.0137$); at the
 validation-selected $K$, Essence's own Recall@10 rises to $0.0281$ and the
 tie resolves into a significant win. Essence is not significantly different from any of the three
 recency-only baselines on Last.fm-1K, including Recency-Weighted, despite
@@ -1290,8 +1293,8 @@ validation-selected $K$ compared to an earlier, fixed-$K=3$ version of
 this analysis. First, Essence's standing against Recency-Weighted on
 Recall@10 is no longer a clean loss on all three datasets: at $K=3$, it
 lost significantly on all three; at the validation-selected $K$, it loses
-significantly only on MovieLens-25M ($d=-0.058$), and is statistically
-tied with (not significantly behind) Recency-Weighted on both Last.fm-1K
+significantly only on MovieLens-25M ($d=-0.058$), and is not
+significantly different from Recency-Weighted on both Last.fm-1K
 ($d=-0.127$) and Amazon Books ($d=-0.009$) --- the Amazon Books loss was
 significant at $K=3$ ($d=-0.059$, $q=0.021$) and is not at $K=10$
 ($q=0.779$). Second, the same silhouette-stratification test as before ---
@@ -1317,8 +1320,8 @@ identifiable user groups is now substantially narrower than the $K=3$
 version of this analysis suggested: one significant loss, not five. If
 clustering were adding value specifically by separating genuinely distinct
 interests, the users most likely to show that value are still exactly the
-ones for whom it does not appear; the finding is that clustering does not
-help, more so than that it actively hurts. This does not mean clustering
+ones for whom it does not appear; we find no evidence that clustering
+helps, more so than evidence that it actively hurts. This does not mean clustering
 contributes nothing --- the active cluster selection ablation
 (Section~\ref{sec:ablation}) shows recency-aware selection matters --- but
 it does mean the clustering step itself, isolated from recency weighting,
@@ -1360,7 +1363,7 @@ this table.
 \midrule
 2.\ + recency baselines & Amazon: Last-Item $0.0311$ and Recency-Weighted $0.0260$ exceed Essence's $0.0253$; Avg-Last-10 ($0.0235$) does not & Essence's apparent edge over CF was partly just recency, not clustering --- plain recency retrieval beats Essence on 2 of 3 comparisons. \\
 \midrule
-3.\ + paired bootstrap / FDR & Essence loses \emph{significantly} to Last-Item ($d=-0.058$) on Amazon but is statistically tied with Recency-Weighted ($d=-0.009$, not significant); still significantly beats CF, Popularity, Content, and both neural baselines & Essence's real, statistically-supported value is beating collaborative/popularity/neural baselines, and it is not clearly behind simple recency-based retrieval either --- only Last-Item remains a significant loss. \\
+3.\ + paired bootstrap / FDR & Essence loses \emph{significantly} to Last-Item ($d=-0.058$) on Amazon but is not significantly different from Recency-Weighted ($d=-0.009$); still significantly beats CF, Popularity, Content, and both neural baselines & Essence's real, statistically-supported value is beating collaborative/popularity/neural baselines, and it is not clearly behind simple recency-based retrieval either --- only Last-Item remains a significant loss. \\
 \midrule
 4.\ + third dataset (MovieLens) & Essence ranks 8th/10 on MovieLens ($0.0053$), behind CF ($0.0850$), Popularity ($0.0517$), ComiRec ($0.0706$), and MIND ($0.0423$), by effect sizes down to $d=-0.550$ & Whether Essence's Amazon-style advantage holds is associated with how strong collaborative/popularity signal is in the domain, not shown to be predictive of it --- not a fixed property of the architecture either way (Section~\ref{sec:domain-dependence}). \\
 \midrule
@@ -1437,15 +1440,16 @@ MovieLens-25M is the counterexample: where collaborative and popularity
 signal is strong, Essence trails not only CF and Popularity but both
 neural multi-interest baselines as well, by the largest effect sizes
 observed in this study (Section~\ref{sec:domain-dependence}). A deployment
-decision should be conditioned on the domain's collaborative signal
-strength: whether Essence is a good candidate-generation method tracks
-with measurable properties of the domain, across the three domains
-evaluated here, rather than being a fixed property of peer-isolated,
-content-only personalization.
+decision may be informed by the domain's collaborative signal
+strength: whether Essence is a good candidate-generation method is
+associated with measurable properties of the domain, across the three
+domains evaluated here, rather than being a fixed property of
+peer-isolated, content-only personalization, although this study does
+not establish an independently measurable prospective predictor.
 
 \subsection{Privacy and Deployment Constraints}
 
-Because Essence consults no cross-user data at any stage, it is deployable
+Because Essence consults no cross-user interaction data at any stage, it is deployable
 in settings where collaborative filtering is not viable: privacy-regulated
 environments, on-device recommendation without server-side interaction logs,
 federated settings where data cannot leave the user's device, and cold-start
@@ -1545,7 +1549,7 @@ distinction discussed in Section~\ref{subsec:multi}.
 We presented Essence, a personal embedding cluster framework that generates
 recommendations by clustering a user's item history into $K$ semantic
 centroids and retrieving items by similarity to the centroid closest to the
-user's recent activity, without consulting any cross-user data. We
+user's recent activity, without consulting any cross-user interaction data. We
 evaluated Essence on three datasets spanning music, e-commerce, and film
 (Last.fm-1K, Amazon Books, MovieLens-25M) against nine baselines: a
 non-personalized popularity baseline, a real collaborative-filtering
@@ -1563,8 +1567,8 @@ property, not one measured post hoc via baseline performance. On Amazon Books an
 where that signal is structurally weak, Essence sits in the upper half of
 the field, significantly beating collaborative filtering, popularity,
 content-averaging, and both neural baselines on Recall@10 or LT-Recall@10
-in at least one dataset, and is statistically tied with (not significantly
-behind) most of the recency-based retrieval baselines that use the
+in at least one dataset, and is not significantly different from most
+of the recency-based retrieval baselines that use the
 identical embeddings without any clustering step --- all three on
 Last.fm-1K, two of three on Amazon Books, where only Last-Item remains a
 significant loss. On MovieLens-25M, where collaborative signal is strong, Essence ranks 8th of
