@@ -6,6 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+\hypersetup{hidelinks}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
@@ -49,7 +50,7 @@
 \footnotetext{Code and data: \url{https://anonymous.4open.science/r/essence-5B7B/README.md}}
 
 \begin{abstract}
-We present Essence, a personal embedding cluster framework for recommendation that operates exclusively within a single user's engagement history, without consulting cross-user interaction data. We evaluate Essence on three datasets spanning distinct domains --- Last.fm-1K (music), Amazon Books (e-commerce), and MovieLens-25M (film) --- against a real collaborative-filtering baseline, a non-personalized popularity baseline, a content-based average-embedding baseline, three recency-based baselines (last-item, uniform-average, and exponentially-weighted retrieval), and two hand-implemented multi-interest neural baselines (MIND, ComiRec). Essence's performance relative to these baselines is domain-dependent, and the dependence has a specific, testable shape: Essence's rank among the ten evaluated systems tracks inversely with the strength of collaborative/popularity signal available in the domain. On Amazon Books, where collaborative and popularity baselines are structurally weak (Recall@10 of $0.0031$ and $0.0021$ respectively), Essence does not lead on Recall@10 among personalized methods --- three recency-based baselines score higher (Last-Item $0.0311$, Recency-Weighted $0.0260$, Avg-Last-10 $0.0235$, vs.\ Essence's $0.0221$), and Essence loses significantly to Last-Item and Recency-Weighted after FDR correction ($d=-0.090$, $d=-0.059$). Essence's Amazon strength is narrower: it significantly beats collaborative filtering, popularity, content-averaging, and both neural multi-interest baselines on Recall@10 ($d$ ranges $0.069$--$0.259$), and significantly beats Popularity, Random, Content, and MIND on LT-Recall@10 specifically; it is statistically tied with CF-ItemKNN, ComiRec, Last-Item, Recency-Weighted, and Avg-Last-10 on LT-Recall@10. On MovieLens-25M, where collaborative signal is strong (item-based CF reaches $0.0850$ Recall@10, driven almost entirely by the platform's densely-rated popular titles), Essence ranks 8th of 10 systems, losing to collaborative filtering, popularity, and both neural baselines by the largest effect sizes observed in this study (Cohen's $d$ up to $-0.56$). On Last.fm-1K, simple recency-based retrieval (no clustering) outperforms Essence outright. We report every comparison with paired bootstrap significance testing ($10{,}000$ resamples), Benjamini--Hochberg correction for multiple comparisons, standardized effect sizes, and BCa robustness cross-checks --- replacing an earlier confidence-interval-overlap methodology that does not test the quantity of interest. A targeted stratification test finds that $K$-means clustering, isolated from recency-weighted retrieval, provides no measurable benefit even for the users it is theoretically best suited to help: those with the most well-separated, multi-modal interest histories. We frame Essence not as a universally superior candidate generator, but as a data point on when peer-isolated, content-only personalization is and isn't the right architectural choice, and as a case study in what a fair, statistically grounded, honestly-reported evaluation of a recommendation architecture looks like when the result is mixed.
+We present Essence, a personal embedding cluster framework for recommendation that operates exclusively within a single user's engagement history, without consulting cross-user interaction data. We evaluate Essence on three datasets spanning music, e-commerce, and film (Last.fm-1K, Amazon Books, MovieLens-25M) against nine baselines, including collaborative filtering, popularity, recency-based retrieval, and two hand-implemented multi-interest neural baselines (MIND, ComiRec), with $K$ selected per dataset on a validation split rather than fixed in advance ($K=10$ Last.fm-1K/Amazon Books, $K=15$ MovieLens-25M). Across these three datasets, Essence's relative standing is associated with observed collaborative-baseline strength; establishing this as predictive would require additional datasets and an independently-defined domain property. Where collaborative signal is weak, Essence ranks 2nd of 10 on Last.fm-1K and 3rd on Amazon Books, significantly beating collaborative filtering, popularity, and both neural baselines, and tied with most recency-only baselines; where collaborative signal is strong (MovieLens-25M), it ranks 8th of 10, losing to the same systems by the largest effect sizes in this study. All comparisons use paired bootstrap significance testing with FDR correction and BCa cross-checks. A targeted stratification test finds $K$-means clustering, isolated from recency-weighted retrieval, provides no measurable benefit even for the users it should help most: no stratum shows Essence significantly ahead of recency-weighted retrieval alone. Essence is a data point on when peer-isolated, content-only personalization is and isn't the right architectural choice.
 \end{abstract}
 
 \section{Introduction}
@@ -57,11 +58,11 @@ We present Essence, a personal embedding cluster framework for recommendation th
 
 Collaborative filtering (CF) predicts a user's future preferences from the behavior of similarly-behaving users. Items with sparse interaction histories are, by construction, underrepresented in any signal derived from cross-user co-occurrence: a user with a narrow, idiosyncratic taste profile receives recommendations shaped by aggregate similarity to other users, not by the specific combination of properties their own history reflects.
 
-This motivates two questions. First: can a recommendation signal be constructed using only a single user's own history, without any cross-user data, and if so, does it recover items that collaborative methods structurally underrepresent? Second, answerable only once the same comparison is run across multiple, structurally different domains: under what domain conditions does this approach help versus hurt, and is the effect predictable from properties of the domain rather than discovered post hoc per dataset? A one- or two-dataset evaluation cannot distinguish a domain-general advantage from a domain-specific artifact; the three-dataset evaluation reported here is designed specifically to make that distinction possible.
+This paper is structured as an evaluation study, not a method-introduction paper: we test whether a specific architectural choice --- $K$-means interest clustering --- provides measurable benefit over a simpler recency-based alternative, under conditions designed to give that choice its best chance to matter. This motivates two questions. First: can a recommendation signal be constructed using only a single user's own history, without any cross-user data, and if so, does it recover items that collaborative methods structurally underrepresent? Second, answerable only once the same comparison is run across multiple, structurally different domains: under what domain conditions does this approach help versus hurt, and is the effect predictable from properties of the domain rather than discovered post hoc per dataset? A one- or two-dataset evaluation cannot distinguish a domain-general advantage from a domain-specific artifact; the three-dataset evaluation reported here is designed specifically to make that distinction possible.
 
 We propose Essence, a framework that embeds a user's consumed items into a semantic space, clusters them into $K$ interest profiles via $K$-means, and generates recommendations by retrieving items similar to the centroid closest to the user's recent activity. No cross-user interaction graph is consulted at any stage (the \emph{peer-isolation property}) --- a deliberate architectural constraint, not an oversight.
 
-Contributions: (1) the Essence architecture, requiring no collaborative signal and no cross-user training; (2) a recency-based active-cluster-selection mechanism, evaluated via ablation against a static mean-embedding alternative and against three recency-only baselines that do not cluster at all; (3) a domain-dependence finding across three datasets spanning music, e-commerce, and film, with effect sizes ranging from Essence's strongest win ($d=+0.259$, Amazon Books vs.\ Random) to its strongest loss ($d=-0.558$, MovieLens-25M vs.\ CF-ItemKNN); (4) two hand-implemented multi-interest neural baselines (MIND, ComiRec), verified against their architectural specifications rather than against published benchmark numbers (Section~\ref{sec:setup}), including a symmetry-breaking bug caught in our own MIND implementation --- not the original architecture --- by a synthetic conformance test before any number reported here was generated; and (5) a statistical-methodology correction (paired bootstrap, Benjamini--Hochberg FDR, effect sizes, BCa cross-checks) applied uniformly across all three datasets, replacing an earlier confidence-interval-overlap methodology.
+Contributions: (1) the Essence architecture, requiring no collaborative signal and no cross-user training; (2) a recency-based active-cluster-selection mechanism, evaluated via ablation against a static mean-embedding alternative and against three recency-only baselines that do not cluster at all; (3) a domain-dependence finding across three datasets spanning music, e-commerce, and film, with effect sizes ranging from Essence's strongest win ($d=+0.301$, Last.fm-1K vs.\ Random) to its strongest loss ($d=-0.550$, MovieLens-25M vs.\ CF-ItemKNN); (4) two hand-implemented multi-interest neural baselines (MIND, ComiRec), verified against their architectural specifications rather than against published benchmark numbers (Section~\ref{sec:setup}); and (5) a statistical-methodology correction (paired bootstrap, Benjamini--Hochberg FDR, effect sizes, BCa cross-checks) applied uniformly across all three datasets, replacing an earlier confidence-interval-overlap methodology.
 
 \section{Related Work}
 \label{sec:related}
@@ -77,7 +78,7 @@ Contributions: (1) the Essence architecture, requiring no collaborative signal a
 \section{The Essence Framework}
 \label{sec:framework}
 
-Given a user's history $H_u$ (items consumed) and a shared embedding function $\phi: I \to \mathbb{R}^d$ (a pre-trained sentence encoder over item metadata text, 384 dimensions), Essence produces a ranked list $R_u \subseteq I \setminus H_u$ using only $H_u$ --- no cross-user data at any stage. Items in $H_u$ are embedded and clustered via $K$-means ($K=3$, not tuned) into centroids $\{c_1,\ldots,c_K\}$, each representing one facet of the user's taste. At inference time, the active centroid $c_k^*$ is the one closest to the mean embedding of the user's $r=10$ most recent training-set interactions:
+Given a user's history $H_u$ (items consumed) and a shared embedding function $\phi: I \to \mathbb{R}^d$ (a pre-trained sentence encoder over item metadata text, 384 dimensions), Essence produces a ranked list $R_u \subseteq I \setminus H_u$ using only $H_u$ --- no cross-user data at any stage. Items in $H_u$ are embedded and clustered via $K$-means into centroids $\{c_1,\ldots,c_K\}$, each representing one facet of the user's taste. $K$ is selected per dataset on a validation split carved from training data (last 20\% of each user's chronological training history; test is never touched during selection), swept over $\{2,3,4,5,8,10,15,20,30,50\}$ and stopped at the first $K$ where validation Recall@10 improves by $<2\%$ over the previous tested $K$ or mean items-per-cluster falls below 3, whichever fires first; the selected $K$ is the validation-Recall@10-maximizing point before the stopping rule triggers. This yields $K=10$ for Last.fm-1K and Amazon Books, $K=15$ for MovieLens-25M. One disclosed scope decision: the sweep proceeded forward from an already-established $K=8$ checkpoint rather than restarting from $K=2$; applied retroactively, the rule would have fired earlier for Amazon Books/MovieLens-25M, since validation Recall@10 dips slightly across some closely-spaced early $K$ values before climbing again. At inference time, the active centroid $c_k^*$ is the one closest to the mean embedding of the user's $r=10$ most recent training-set interactions:
 \begin{equation}
   c_k^* = \arg\min_k \, \bigl\| c_k - \mu(\phi(h_{n-r+1}), \ldots, \phi(h_n)) \bigr\|_2 .
   \label{eq:active}
@@ -92,9 +93,9 @@ An ablation (Appendix~\ref{app:ablation}) is the basis for retaining recency-bas
 \section{Experimental Setup}
 \label{sec:setup}
 
-\textbf{Datasets.} \emph{Last.fm-1K} (music): 99 users (filtered to 50--500 interactions), 22{,}767 catalog items, filtered from $\sim$19M listening events~\cite{celma2010}; item embeddings use track title + artist name. \emph{Amazon Books} (e-commerce): a 2{,}000-user subsample (seed 42, filtered to 20--200 interactions) of the Amazon Reviews 2023 Books 5-core dataset~\cite{hou2024}, 61{,}727 catalog items; item embeddings use title + author + description. \emph{MovieLens-25M} (film): a 2{,}000-user subsample (seed 42, same 20--200-interaction filter and subsample size as Amazon Books, applied identically rather than tuned per dataset), 7{,}654 catalog items with item text built from title + genres, plus TMDb overview text when available ($7{,}724$ candidates identified, $7{,}654$ had a TMDb record successfully fetched at all and form the final catalog, $99.1\%$; the remaining 70 items, where the TMDb lookup itself failed, are excluded entirely --- not merely missing overview text; within the $7{,}654$ fetched items, any lacking an overview fall back to title + genres only). All item text is metadata only --- no interaction signal enters any embedding. For each user on all three datasets, interactions are sorted chronologically and split 80/20 per user; this is required for internal consistency with the recency-based active-cluster mechanism, which defines ``recent'' in terms of training-set order.
+\textbf{Datasets.} \emph{Last.fm-1K} (music): 99 users (filtered to 50--500 interactions), the full filtered dataset following standard preprocessing~\cite{celma2010}, not a subsample; 22{,}767 catalog items, filtered from $\sim$19M listening events; item embeddings use track title + artist name. \emph{Amazon Books} (e-commerce): a 2{,}000-user subsample (seed 42, filtered to 20--200 interactions) of the Amazon Reviews 2023 Books 5-core dataset~\cite{hou2024}, 61{,}727 catalog items; item embeddings use title + author + description. \emph{MovieLens-25M} (film): a 2{,}000-user subsample (seed 42, same 20--200-interaction filter and subsample size as Amazon Books, applied identically rather than tuned per dataset), 7{,}654 catalog items with item text built from title + genres, plus TMDb overview text when available ($7{,}724$ candidates identified, $7{,}654$ had a TMDb record successfully fetched at all and form the final catalog, $99.1\%$; the remaining 70 items, where the TMDb lookup itself failed, are excluded entirely --- not merely missing overview text; within the $7{,}654$ fetched items, any lacking an overview fall back to title + genres only). All item text is metadata only --- no interaction signal enters any embedding. A positive interaction is any recorded play (Last.fm-1K), rating or review (Amazon Books), or rating (MovieLens-25M); no minimum count or rating-value threshold is applied beyond the per-user interaction-count filters above. For each user on all three datasets, interactions are sorted chronologically and split 80/20 per user, independently per user with no shared global time cutoff; this preserves within-user chronology but does not enforce a global temporal cutoff, so possible cross-user temporal leakage for population-based baselines (CF, Popularity) is a limitation of this evaluation protocol, not eliminated by it (Section~\ref{sec:limitations}). The per-user split is also required for internal consistency with the recency-based active-cluster mechanism, which defines ``recent'' in terms of training-set order.
 
-\textbf{Long-tail definition.} Items with a training-set interaction count of exactly 1 (singletons): $16{,}761$ of $18{,}679$ training-set items on Last.fm-1K ($89.7\%$), $42{,}878$ of $50{,}924$ on Amazon Books ($84.2\%$), $2{,}337$ of $6{,}745$ on MovieLens-25M ($34.6\%$). On Last.fm-1K and Amazon Books, singleton items concentrate at the rare-popularity end of the catalog (deciles 3--9); on MovieLens-25M they concentrate more centrally (deciles 2--5) --- a dataset-specific difference in decile geometry that Section~\ref{sec:coldstart} shows matters for interpreting long-tail results, not a methodological inconsistency. LT-Recall@10 is computed only over test items in the long-tail set, restricted to users with at least one such item.
+\textbf{Long-tail definition.} Items with a training-set interaction count of exactly 1 (singletons): $16{,}761$ of $18{,}679$ training-set items on Last.fm-1K ($89.7\%$), $42{,}878$ of $50{,}924$ on Amazon Books ($84.2\%$), $2{,}337$ of $6{,}745$ on MovieLens-25M ($34.6\%$). On Last.fm-1K and Amazon Books, singleton items concentrate at the rare-popularity end of the catalog (deciles 3--9); on MovieLens-25M they concentrate more centrally (deciles 2--5) --- a dataset-specific difference in decile geometry that Section~\ref{sec:coldstart} shows matters for interpreting long-tail results, not a methodological inconsistency. LT-Recall@10 is computed only over test items in the long-tail set, restricted to users with at least one such item: 92 of 99 users are eligible on Last.fm-1K, 1{,}292 of 2{,}000 on Amazon Books, 490 of 2{,}000 on MovieLens-25M.
 
 \textbf{Systems compared.} Table~\ref{tab:systems} summarises all ten systems; full per-system descriptions are in Appendix~\ref{app:systems}. Last-Item, Avg-Last-10, and Recency-Weighted use exactly the same item embeddings as Content and Essence --- the only difference is how the query vector is built from recent history. MIND and ComiRec are hand-implemented from scratch in PyTorch (neither is available in standard recommendation libraries), following Li et al.'s~\cite{li2019} and Cen et al.'s~\cite{cen2020} architectures respectively. Neither original paper's benchmark numbers are directly comparable here: both were evaluated under sampled-negative protocols on different datasets, and neither reports Last.fm-1K at all, while our full-catalog, no-negative-sampling, chronological-split protocol is harder by construction. We therefore verify correctness against each model's architectural specification rather than against a published number: a synthetic conformance test for MIND's routing mechanism, and a directional sanity check (Recall@10 convincingly above Random/Popularity, plausible order of magnitude given the protocol difference) for both. The conformance test caught a symmetry-breaking bug in \emph{our implementation} of MIND --- not the original architecture: an initial version zero-initialized the routing logits $b$, which, because MIND's bilinear routing matrix is shared across capsules, made every capsule's pre-routing representation identical, guaranteeing they updated identically and silently collapsing the model's effective interest count to 1. The test caught this before any number reported here was generated; catching a real, non-obvious bug is the evidence the verification method works. ComiRec's per-capsule projections are independently initialized (no shared matrix), so it has no equivalent failure mode; the sanity check found no comparable bug. Both are trained across 3--4 seeds per dataset to confirm the domain-dependence pattern is not seed-specific (Appendix~\ref{app:multiseed}).
 
@@ -111,7 +112,7 @@ Random & Uniform random over unseen items \\
 Popularity & Most globally-interacted-with unseen items (non-personalized) \\
 CF (ItemKNN) & Item-based $k$-NN over the user-item co-occurrence matrix \\
 Content (Avg Emb) & Cosine similarity to the mean of all history embeddings \\
-Essence ($K$=3) & Cosine similarity to the active $K$-means centroid (Eq.~\ref{eq:active}--\ref{eq:reco}) \\
+Essence (val.\ $K$) & Cosine similarity to the active $K$-means centroid (Eq.~\ref{eq:active}--\ref{eq:reco}) \\
 Last-Item & Cosine similarity to the single most recent item \\
 Avg-Last-10 & Cosine similarity to the uniform mean of the last 10 items \\
 Recency-Weighted & Cosine similarity to an exponentially-decayed mean (decay $=0.9$) of the last 10 \\
@@ -131,7 +132,7 @@ ComiRec (SA) & Self-attentive capsules ($K$=4), hand-implemented~\cite{cen2020} 
 \subsection{Headline Results, All Three Datasets}
 \label{sec:headline}
 
-Table~\ref{tab:headline-recall} and Table~\ref{tab:headline-lt} report Recall@10 and LT-Recall@10 for all ten systems on all three datasets. Essence's standing is not uniform: on Amazon Books it is 4th of 10 on Recall@10 and 2nd of 10 on LT-Recall@10 (behind only Last-Item); on Last.fm-1K it is 5th on Recall@10 and 4th on LT-Recall@10, behind all three recency-only baselines on both metrics; on MovieLens-25M it is 8th of 10 on Recall@10, ahead of only Content and Random, and tied for 5th on LT-Recall@10. Full significance testing is in Section~\ref{sec:stats-methodology}.
+Table~\ref{tab:headline-recall} and Table~\ref{tab:headline-lt} report Recall@10 and LT-Recall@10 for all ten systems on all three datasets, Essence at its validation-selected $K$ per dataset. Essence's standing is not uniform: on Amazon Books it is 3rd of 10 on Recall@10 and 2nd of 10 on LT-Recall@10 (behind only Last-Item on both, statistically tied with Recency-Weighted on Recall@10); on Last.fm-1K it is 2nd on both metrics, not significantly different from any of the three recency-only baselines (numerically ahead of two, behind Recency-Weighted); on MovieLens-25M it is 8th of 10 on Recall@10, ahead of only Content and Random, and 4th on LT-Recall@10. Full significance testing is in Section~\ref{sec:stats-methodology}.
 
 \begin{table}[t]
 \centering
@@ -151,7 +152,7 @@ Avg-Last-10 & 0.0252 & 0.0235 & 0.0064 \\
 Recency-Weighted & \textbf{0.0304} & 0.0260 & 0.0076 \\
 MIND & 0.0078 & 0.0052 & 0.0423 \\
 ComiRec (SA) & 0.0137 & 0.0056 & 0.0706 \\
-\textbf{Essence ($K=3$)} & 0.0119 (5th) & 0.0221 (4th) & 0.0048 (8th) \\
+\textbf{Essence (val.\ $K$)} & 0.0281 (2nd) & 0.0253 (3rd) & 0.0053 (8th) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -174,7 +175,7 @@ Avg-Last-10 & 0.0134 & 0.0196 & 0.0026 \\
 Recency-Weighted & \textbf{0.0151} & 0.0179 & \textbf{0.0046} \\
 MIND & 0.0021 & 0.0057 & 0.0000 \\
 ComiRec (SA) & 0.0050 & 0.0121 & 0.0014 \\
-\textbf{Essence ($K=3$)} & 0.0059 (4th) & 0.0197 (2nd) & 0.0020 (tied 5th) \\
+\textbf{Essence (val.\ $K$)} & 0.0142 (2nd) & 0.0207 (2nd) & 0.0030 (4th) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -182,7 +183,7 @@ ComiRec (SA) & 0.0050 & 0.0121 & 0.0014 \\
 \subsection{The Domain-Dependence Pattern}
 \label{sec:domain-dependence}
 
-Essence's rank is not randomly scattered: it tracks inversely with the strength of collaborative/popularity signal in each domain (Table~\ref{tab:domain-dependence}).
+Essence's rank is not randomly scattered: across the three datasets evaluated, it is associated with the strength of collaborative/popularity signal in each domain (Table~\ref{tab:domain-dependence}); establishing this as predictive would require additional datasets and an independently-defined domain property, not one measured post hoc via baseline performance.
 
 \begin{table}[t]
 \centering
@@ -193,26 +194,26 @@ Essence's rank is not randomly scattered: it tracks inversely with the strength 
 \toprule
 \textbf{Dataset} & \textbf{Essence rank} & \textbf{CF / Popularity signal} \\
 \midrule
-Amazon Books & 4th (beats 6, loses to all 3 recency baselines) & Weak (CF $0.0031$, Pop.\ $0.0021$) \\
-Last.fm-1K & 5th (beats 5, loses to 3 recency baselines + tied w/ ComiRec) & Weak (CF $0.0018$, Pop.\ $0.0023$) \\
+Amazon Books & 3rd (beats 7, ties Recency-Weighted, loses to Last-Item) & Weak (CF $0.0031$, Pop.\ $0.0021$) \\
+Last.fm-1K & 2nd (beats 8, ties Recency-Weighted) & Weak (CF $0.0018$, Pop.\ $0.0023$) \\
 MovieLens-25M & 8th (beats only Content, Random) & \textbf{Strong} (CF/Pop./ComiRec/MIND are top 4) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Where collaborative/popularity signal is weak, Essence sits in the upper half of the field but the picture differs by dataset: on Amazon Books it significantly beats the non-personalized baselines and both neural baselines; on Last.fm-1K it beats the non-personalized baselines and MIND but is statistically tied with ComiRec (numerically behind it, $0.0119$ vs.\ $0.0137$) --- and on both datasets it loses to simple recency-based retrieval. Where collaborative signal is strong (MovieLens-25M, item-based CF reaching $0.0850$ Recall@10, the highest value in this study, driven almost entirely by densely-rated popular titles), Essence falls to 8th of 10, losing to CF, Popularity, and both neural baselines by the four largest-magnitude effect sizes observed anywhere in this evaluation ($d$ from $-0.388$ to $-0.558$; every other significant effect size across Last.fm-1K/Amazon Books stays under $|d|=0.3$). Yet even on MovieLens-25M, CF's LT-Recall@10 ($0.0037$) is far below its own overall Recall@10 --- strong aggregate performance from co-occurrence signal does not translate into long-tail recovery; it is domain conditions, not a fixed property of CF, that determine how strong this loop runs.
+Where collaborative/popularity signal is weak, Essence sits in the upper half of the field on both datasets. On Amazon Books it significantly beats CF-ItemKNN, the non-personalized baselines, Content, and both neural baselines on Recall@10 ($d$ $0.099$--$0.282$); it is tied with Recency-Weighted (not significant) and significantly behind only Last-Item. On Last.fm-1K it significantly beats CF-ItemKNN, the non-personalized baselines, Content, MIND, \emph{and} ComiRec ($d$ $0.220$--$0.301$; ComiRec was a statistical tie in an earlier fixed-$K=3$ version of this analysis) and is not significantly different from any of the three recency-only baselines, including Recency-Weighted, despite trailing it numerically. Where collaborative signal is strong (MovieLens-25M, item-based CF reaching $0.0850$ Recall@10, the highest value in this study, driven almost entirely by densely-rated popular titles), Essence falls to 8th of 10, losing to CF, Popularity, and both neural baselines by the four largest-magnitude effect sizes observed anywhere in this evaluation ($d$ from $-0.378$ to $-0.550$; every other significant effect size across Last.fm-1K/Amazon Books stays at or under $|d|\approx0.30$). Yet even on MovieLens-25M, CF's LT-Recall@10 ($0.0037$) is far below its own overall Recall@10 --- strong aggregate performance from co-occurrence signal does not translate into long-tail recovery; it is domain conditions, not a fixed property of CF, that determine how strong this feedback dynamic runs.
 
 This pattern is consistent across all three datasets. We treat it as a domain-dependence finding, not an architectural strength: it is Essence's \emph{relative standing} that tracks domain conditions, not necessarily anything specific to $K$-means clustering as opposed to the underlying content embeddings more generally (Section~\ref{sec:limitations-findings}).
 
 \subsection{Statistical Validation Methodology}
 \label{sec:stats-methodology}
 
-Every comparison uses a paired bootstrap significance test on the per-user difference between two systems ($10{,}000$ resamples, seed 42; mean difference, 95\% percentile CI, paired Cohen's $d$), rather than the independent per-system CIs used in an earlier version of this work, which do not test the quantity of interest. Related comparisons are corrected together via Benjamini--Hochberg (BH) FDR at $q<0.05$, cross-checked under BCa bootstrap resampling. The Last.fm-1K/Amazon Books baseline comparison (36 comparisons) and a multimodality-stratification test (18 comparisons, Section~\ref{sec:limitations-findings}) are corrected together as a single 54-comparison family: pooling changes no comparison's verdict relative to correcting them separately, so we report the simpler pooled version. The MovieLens-25M baseline comparison (18 comparisons, added later) and the decile-level cold-start analysis (Section~\ref{sec:coldstart}) are each corrected as their own family, since the cold-start analysis asks a narrower, mechanistically distinct question (full reasoning in Appendix~\ref{app:fdr}).
+Every comparison uses a paired bootstrap significance test on the per-user difference between two systems ($10{,}000$ resamples, seed 42; mean difference, 95\% percentile CI, paired Cohen's $d$); independent per-system confidence intervals do not test this quantity directly and are not used. Related comparisons are corrected together via Benjamini--Hochberg (BH) FDR at $q<0.05$, cross-checked under BCa bootstrap resampling. The Last.fm-1K/Amazon Books baseline comparison (36 comparisons) and a multimodality-stratification test (up to 18 comparisons, Section~\ref{sec:limitations-findings}) are corrected together as a single family, nominally 54 comparisons but 52--53 in practice: one or two stratification cells are occasionally degenerate (every user scores exactly 0 on both systems being compared, giving zero variance and an undefined/spurious $p$-value under the standard formula) and are excluded rather than counted as evidence (full mechanics in Appendix~\ref{app:fdr}). The MovieLens-25M baseline comparison (18 comparisons, added later) and the decile-level cold-start analysis (Section~\ref{sec:coldstart}) are each corrected as their own family, since the cold-start analysis asks a narrower, mechanistically distinct question (full reasoning in Appendix~\ref{app:fdr}).
 
 \subsection{Cold-Start vs.\ Singleton Long-Tail: A Scope Boundary}
 \label{sec:coldstart}
 
-LT-Recall@10 treats every training-set singleton as long-tail without distinguishing how singleton an item is. A finer decile breakdown (Table~\ref{tab:coldstart}) reveals two different regimes. At true cold-start (decile 1: zero training interactions), Essence significantly beats CF-ItemKNN on all three datasets --- but this is not evidence for Essence's architecture specifically: re-running the identical test with Recency-Weighted, Last-Item, or Avg-Last-10 in Essence's place, 15 of 18 comparisons are also significant. CF-ItemKNN's co-occurrence score is exactly $0.0000$ for any zero-interaction item by construction, so any content-embedding method clears that bar trivially. The defensible claim is narrower than ``Essence solves cold-start'': Essence, like every content-embedding method tested, beats CF at true cold-start. Separately, on Amazon Books, Essence \emph{loses} to Last-Item at both rare deciles ($d=-0.093$, $-0.065$) and to Recency-Weighted at decile 2 ($d=-0.075$); and 100\% of Essence's actual LT-Recall@10 hits on Amazon Books come from deciles 3--9, zero from deciles 1--2 --- the cold-start weakness and the singleton-recall win are about almost entirely disjoint item populations, a scope boundary, not a contradiction.
+LT-Recall@10 treats every training-set singleton as long-tail without distinguishing how singleton an item is. A finer decile breakdown (Table~\ref{tab:coldstart}, at Essence's validation-selected $K$ per dataset) reveals two different regimes. At true cold-start (decile 1: zero training interactions), Essence significantly beats CF-ItemKNN on all three datasets --- unchanged from an earlier fixed-$K=3$ version of this analysis, and now unambiguous rather than marginal on MovieLens-25M ($q=0.002$) --- but this is not evidence for Essence's architecture specifically: re-running the identical test with Recency-Weighted, Last-Item, or Avg-Last-10 in Essence's place, 15 of 18 comparisons are also significant (this check does not depend on Essence's $K$). CF-ItemKNN's co-occurrence score is exactly $0.0000$ for any zero-interaction item by construction, so any content-embedding method clears that bar trivially. The defensible claim is narrower than ``Essence solves cold-start'': Essence, like every content-embedding method tested, beats CF at true cold-start. Separately, on Amazon Books, an earlier fixed-$K=3$ version of this analysis found Essence losing to Last-Item at both rare deciles ($d=-0.093$, $-0.065$) and to Recency-Weighted at decile 2 ($d=-0.075$); at the validation-selected $K=10$, none of these losses remain significant ($d=-0.064/-0.022$ vs.\ Last-Item, $d=-0.003/-0.023$ vs.\ Recency-Weighted). The decile-1/2 cold-start weakness and the singleton-recall win remain about largely disjoint item populations, a scope boundary, not a contradiction.
 
 \begin{table}[t]
 \centering
@@ -223,12 +224,12 @@ LT-Recall@10 treats every training-set singleton as long-tail without distinguis
 \toprule
 \textbf{Dataset} & \textbf{Decile} & \textbf{Essence} & \textbf{CF} & \textbf{Diff} & $d$ & \textbf{Sig.} \\
 \midrule
-Last.fm-1K & 1 & 0.0086 & 0.0000 & $+0.0086$ & 0.222 & Yes \\
-Last.fm-1K & 2 & 0.0172 & 0.0000 & $+0.0172$ & 0.215 & Yes \\
-Amazon Books & 1 & 0.0175 & 0.0000 & $+0.0175$ & 0.201 & Yes \\
-Amazon Books & 2 & 0.0176 & 0.0004 & $+0.0172$ & 0.185 & Yes \\
-MovieLens-25M & 1 & 0.0056 & 0.0000 & $+0.0056$ & 0.081 & Yes (marg.) \\
-MovieLens-25M & 2 & 0.0063 & 0.0047 & $+0.0016$ & 0.017 & No \\
+Last.fm-1K ($K{=}10$) & 1 & 0.0221 & 0.0000 & $+0.0221$ & 0.246 & Yes \\
+Last.fm-1K ($K{=}10$) & 2 & 0.0352 & 0.0000 & $+0.0352$ & 0.351 & Yes \\
+Amazon Books ($K{=}10$) & 1 & 0.0215 & 0.0000 & $+0.0215$ & 0.228 & Yes \\
+Amazon Books ($K{=}10$) & 2 & 0.0224 & 0.0004 & $+0.0220$ & 0.193 & Yes \\
+MovieLens-25M ($K{=}15$) & 1 & 0.0092 & 0.0000 & $+0.0092$ & 0.108 & Yes \\
+MovieLens-25M ($K{=}15$) & 2 & 0.0029 & 0.0047 & $-0.0019$ & $-0.026$ & No \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -236,24 +237,24 @@ MovieLens-25M & 2 & 0.0063 & 0.0047 & $+0.0016$ & 0.017 & No \\
 \subsection{Limitations, Stated as Findings}
 \label{sec:limitations-findings}
 
-\textbf{Clustering does not help even the users it should help most.} The abstract raises how much of Essence's advantage, where it exists, comes from $K$-means clustering specifically versus recency-weighted retrieval alone. Two results bear on this. First, Essence never significantly beats Recency-Weighted on Recall@10 on any of the three datasets --- it loses significantly on all three. Second, and more diagnostic: a targeted test stratifies users by how well-separated their own $K=3$ clustering is (per-user silhouette score, tertiles, computed per dataset) and compares Essence against Recency-Weighted \emph{within each stratum}, on the hypothesis that clustering should help most for users whose taste history is genuinely multi-modal (high silhouette, well-separated clusters) and least for users with a single dominant interest (low silhouette). This tests a specific mechanistic hypothesis directly, rather than an outcome alone: if $K$-means clustering is doing real work, its benefit should be concentrated in exactly the stratum where the clusters it finds are real and well-separated. That hypothesis is falsified consistently, and in the wrong direction: in every stratum with a significant difference (within the pooled 54-comparison family, Section~\ref{sec:stats-methodology}), Essence \emph{loses} to Recency-Weighted --- including the high-silhouette, most multi-modal stratum on Last.fm-1K ($d=-0.315$, Recall@10) and MovieLens-25M ($d=-0.096$, Recall@10). No stratum, on any dataset or metric, shows Essence significantly ahead. The users for whom clustering should matter most, by the theory's own logic, are exactly the users for whom it does not appear to matter at all --- and where a significant difference exists, clustering leaves them worse off than the non-clustering baseline, rather than neutral. This does not mean clustering contributes nothing: the active cluster selection ablation (Appendix~\ref{app:ablation}) shows recency-aware \emph{selection} matters. But it does mean the clustering step itself, isolated from recency weighting, is not empirically supported as the source of Essence's advantage where an advantage exists --- the mechanism that was supposed to explain \emph{why} Essence works does not survive being tested directly against the population it predicts should benefit most.
+\textbf{Clustering does not help even the users it should help most.} The abstract raises how much of Essence's advantage, where it exists, comes from $K$-means clustering specifically versus recency-weighted retrieval alone. A targeted test stratifies users by how well-separated their own clustering is (per-user silhouette score, tertiles, computed per dataset at each dataset's validation-selected $K$) and compares Essence against Recency-Weighted \emph{within each stratum}, on the hypothesis that clustering should help most for users whose taste history is genuinely multi-modal (high silhouette) and least for users with a single dominant interest (low silhouette). \textbf{No stratum, on any dataset or metric, shows Essence significantly ahead of Recency-Weighted} --- the headline result: if clustering were adding value specifically by separating genuinely distinct interests, the users most likely to show that value are exactly the ones for whom it does not appear. As a secondary, supporting detail, at $K=3$ six of seventeen clean stratum/metric comparisons pooled with the baseline family (Section~\ref{sec:stats-methodology}) were significant \emph{losses} for Essence, including the high-silhouette stratum on Last.fm-1K ($d=-0.315$) and MovieLens-25M ($d=-0.096$, Recall@10); at the validation-selected $K$, only one of sixteen clean comparisons remains significant (MovieLens-25M's high-silhouette stratum, LT-Recall@10, $d=-0.092$). The null result --- clustering does not help --- holds robustly; the narrower evidence that clustering \emph{actively hurts} specific identifiable groups is thin (one comparison, not six). This does not mean clustering contributes nothing: the active cluster selection ablation (Appendix~\ref{app:ablation}) shows recency-aware \emph{selection} matters. But it does mean the clustering step itself, isolated from recency weighting, is not empirically supported as the source of Essence's advantage where an advantage exists.
 
-\textbf{Other findings.} On both datasets tested, roughly a fifth of Essence's recommendations share an artist (Last.fm-1K, $20.6\%$) or author (Amazon Books, $19.8\%$) with an item in the active cluster; excluding these collapses Recall@10 from $0.0119\to0.0014$ (Last.fm-1K) and $0.0221\to0.0073$ (Amazon Books) --- a disproportionate share of hits are closer to identity-based retrieval than genuinely novel content matches. Last.fm-1K's long-tail comparisons rest on very few eligible hits (as few as 2 of 92 users per method) and $K=3$ is clearly suboptimal there (Recall@10: $K{=}3$: $0.0119$, $K{=}4$: $0.0239$, $K{=}5$: $0.0251$) while close to optimal on Amazon Books; seed variance alone ($0.0122\pm0.0011$) does not explain this gap. A separate, small-scale pilot (200 users, MovieLens-25M) testing adaptive per-channel embedding weighting found no directional win and remains unvalidated exploratory work, not reported here as a result.
+\textbf{Other findings.} On both datasets tested, at $K=3$ (not yet re-verified at the validation-selected $K$), roughly a fifth of Essence's recommendations shared an artist (Last.fm-1K, $20.6\%$) or author (Amazon Books, $19.8\%$) with an item in the active cluster; excluding these collapsed Recall@10 from $0.0119\to0.0014$ (Last.fm-1K) and $0.0221\to0.0073$ (Amazon Books) --- a disproportionate share of hits closer to identity-based retrieval than genuinely novel content matches. Last.fm-1K's long-tail comparisons rest on very few eligible hits (as few as 2 of 92 users per method) regardless of $K$; an earlier, small manual sweep on this dataset specifically motivated moving to the validation-selection procedure (Section~\ref{sec:framework}) rather than a single fixed $K$ across all three datasets. A separate, small-scale pilot (200 users, MovieLens-25M) testing adaptive per-channel embedding weighting found no directional win and remains unvalidated exploratory work, not reported here as a result.
 
 \section{Discussion}
 \label{sec:discussion}
 
-CF's reliance on cross-user co-occurrence creates a self-reinforcing loop: items with more interactions generate more training signal, improving their representation and recommendation likelihood, generating further interactions --- a loop that items with few interactions cannot benefit from regardless of taste fit. This is clearest for Popularity, which records exactly zero long-tail recall on all three datasets. Essence's retrieval sidesteps this loop entirely, since representations come from content rather than interaction frequency. Deployment implications follow directly from the domain-dependence finding rather than from a fixed property of the architecture: on Amazon Books and Last.fm-1K, Essence is best understood as a candidate-generation method for a dedicated discovery surface rather than a primary CF-driven feed; but this positioning does not extend to MovieLens-25M, where Essence trails CF, Popularity, and both neural baselines by the largest effect sizes in this study. A deployment decision should be conditioned on the domain's collaborative signal strength, which is measurable in advance (Table~\ref{tab:domain-dependence}), not assumed. Because Essence consults no cross-user data, it remains deployable in settings where CF is not viable regardless of this domain-dependence --- privacy-regulated environments, on-device recommendation, and federated settings --- as a direct architectural consequence, independent of whether it wins on a given domain's aggregate metrics. Appendix~\ref{app:claimreversal} traces how this paper's own headline conclusion narrowed as recency baselines, significance testing, the third dataset, and the clustering-mechanism stratification were added in turn, using only the numbers already reported above. Extended discussion is in Appendix~\ref{app:discussion}.
+CF's reliance on cross-user co-occurrence is consistent with a well-documented feedback dynamic in the literature (not directly measured by this static evaluation): items with more interactions can generate more training signal, potentially improving their representation and recommendation likelihood, generating further interactions --- a loop items with few interactions would not benefit from regardless of taste fit. Popularity, which ranks purely by interaction count, records exactly zero long-tail recall on all three datasets by construction --- consistent with this dynamic, though a structural fact about the baseline's definition rather than direct evidence of the loop itself. Essence's retrieval sidesteps this loop entirely, since representations come from content rather than interaction frequency. Deployment implications follow directly from the domain-dependence finding rather than from a fixed property of the architecture: on Amazon Books and Last.fm-1K, Essence is best understood as a candidate-generation method for a dedicated discovery surface rather than a primary CF-driven feed; but this positioning does not extend to MovieLens-25M, where Essence trails CF, Popularity, and both neural baselines by the largest effect sizes in this study. A deployment decision should be conditioned on the domain's collaborative signal strength, which is measurable in advance (Table~\ref{tab:domain-dependence}), not assumed. Because Essence consults no cross-user data, it remains deployable in settings where CF is not viable regardless of this domain-dependence --- privacy-regulated environments, on-device recommendation, and federated settings --- as a direct architectural consequence, independent of whether it wins on a given domain's aggregate metrics. Appendix~\ref{app:claimreversal} traces how this paper's own headline conclusion narrowed as recency baselines, significance testing, the third dataset, and the clustering-mechanism stratification were added in turn, using only the numbers already reported above. Extended discussion is in Appendix~\ref{app:discussion}.
 
 \section{Limitations and Future Work}
 \label{sec:limitations}
 
-\textbf{Scale.} Last.fm-1K uses 99 users; its long-tail comparisons are directional (as few as 2 of 92 eligible users per method), while Amazon Books and MovieLens-25M (2{,}000 users each) carry the statistical weight. \textbf{$K$ sensitivity.} $K{=}3$ is suboptimal on Last.fm-1K but near-optimal on Amazon Books (Section~\ref{sec:limitations-findings}); this sweep has not been run on MovieLens-25M, so whether $K{=}3$'s weak MovieLens performance is partly a $K$-choice artifact remains untested. \textbf{Hand-implemented, not pre-trained, baselines.} MIND/ComiRec are trained from scratch per dataset rather than via production-tuned checkpoints; a well-tuned, larger-scale deployment could plausibly outperform the versions evaluated here, particularly on MovieLens-25M, where both already outrank Essence substantially. \textbf{The domain-dependence mechanism is not fully explained.} ``Collaborative/popularity signal strength'' is measured post hoc via the baselines' own performance, not from an independent domain property decided in advance; a more principled characterization is left to future work. Further limitations (embedding input curation, audio-based embeddings, filter-bubble risk, cross-space alignment) are discussed in Appendix~\ref{app:limitations}.
+\textbf{Scale.} Last.fm-1K uses 99 users; its long-tail comparisons are directional (as few as 2 of 92 eligible users per method), while Amazon Books and MovieLens-25M (2{,}000 users each) carry the statistical weight. \textbf{Cross-user temporal leakage.} The chronological split is computed independently per user, with no shared global time cutoff; this preserves within-user chronology but does not enforce a global temporal cutoff, so possible cross-user temporal leakage for population-based baselines (CF, Popularity) is a limitation of this evaluation protocol, not eliminated by it. \textbf{$K$-selection anchoring.} $K$ is validation-selected per dataset (Section~\ref{sec:framework}), replacing an earlier fixed $K=3$. The one real caveat on the procedure itself: the stopping rule was applied moving forward from an already-established $K=8$ checkpoint, not from $K=2$; applied retroactively to $K\in\{2,\ldots,5\}$, it would have fired earlier for Amazon Books/MovieLens-25M. \textbf{Hand-implemented, not pre-trained, baselines.} MIND/ComiRec are trained from scratch per dataset rather than via production-tuned checkpoints; a well-tuned, larger-scale deployment could plausibly outperform the versions evaluated here, particularly on MovieLens-25M, where both already outrank Essence substantially. \textbf{Rating threshold.} All Amazon and MovieLens ratings/reviews are treated as positive interactions regardless of rating value; this evaluates engagement/consumption prediction rather than preference prediction specifically. A sensitivity analysis using a positive-rating threshold (e.g., rating $\geq 4$) was not performed due to time constraints and is left to future work. \textbf{The domain-dependence mechanism is not fully explained.} ``Collaborative/popularity signal strength'' is measured post hoc via the baselines' own performance, not from an independent domain property decided in advance; a more principled characterization is left to future work. Further limitations (embedding input curation, audio-based embeddings, filter-bubble risk, cross-space alignment) are discussed in Appendix~\ref{app:limitations}.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-Whether peer-isolated, content-only personalization helps tracks with how strong collaborative and popularity signal already is in a given domain, across the three domains evaluated here. Where that signal is structurally weak, on Amazon Books and Last.fm-1K, Essence sits in the upper half of the field, significantly beating collaborative filtering, popularity, content-averaging, and both neural baselines on at least one metric, though it loses to simple recency-based retrieval using the identical embeddings without clustering; where collaborative signal is strong instead, on MovieLens-25M, Essence ranks 8th of 10, losing to CF, popularity, and both neural baselines by the largest effect sizes observed anywhere in this study. A targeted stratification test finds no evidence that the $K$-means clustering step, isolated from recency-weighted retrieval, is itself the source of Essence's advantage where an advantage exists: the users clustering should help most show no benefit from it, and where a significant difference exists, they are worse off. Essence is a data point on when peer-isolated, content-only personalization is and isn't the right architectural choice, not a universally superior candidate generator --- and this paper's own practice, reporting the MovieLens-25M loss and the clustering-mechanism null result alongside the Amazon Books win, is offered as one example of what evaluating a method honestly, rather than selectively, looks like in practice.
+Whether peer-isolated, content-only personalization helps is associated with how strong collaborative and popularity signal already is in a given domain, across the three domains evaluated here (not established as predictive across domains generally). Where that signal is structurally weak, on Amazon Books and Last.fm-1K, Essence sits in the upper half of the field at its validation-selected $K$, significantly beating collaborative filtering, popularity, content-averaging, and both neural baselines on at least one metric, and is statistically tied with (not significantly behind) most of the recency-only baselines --- all three on Last.fm-1K, two of three on Amazon Books, where only Last-Item remains a significant loss; where collaborative signal is strong instead, on MovieLens-25M, Essence ranks 8th of 10, losing to CF, popularity, and both neural baselines by the largest effect sizes observed anywhere in this study. A targeted stratification test finds no evidence that the $K$-means clustering step, isolated from recency-weighted retrieval, is itself the source of Essence's advantage where an advantage exists: no stratum, on any dataset or metric, shows Essence significantly ahead of Recency-Weighted. Essence is a data point on when peer-isolated, content-only personalization is and isn't the right architectural choice, not a universally superior candidate generator --- and this paper's own practice, reporting the MovieLens-25M loss and the clustering-mechanism null result alongside the Amazon Books/Last.fm-1K wins, is offered as one example of what evaluating a method honestly, rather than selectively, looks like in practice.
 
 \bibliographystyle{plain}
 \begin{thebibliography}{9}
@@ -330,8 +331,8 @@ $H_u$ & All items user $u$ has consumed (full history) \\
 $i_1, i_2, \ldots$ & Individual items in the user's history, in order \\
 $\phi(i)$ & Embedding of item $i$, a 384-dim vector describing its content \\
 $E_u$ & All embeddings stacked into a matrix, one row per item \\
-$K$ & Number of interest clusters (we use $K=3$) \\
-$c_1, c_2, c_3$ & The $K$ cluster centres, one per interest profile \\
+$K$ & Number of interest clusters (validation-selected per dataset: $K=10$ Last.fm-1K/Amazon Books, $K=15$ MovieLens-25M) \\
+$c_1, \ldots, c_K$ & The $K$ cluster centres, one per interest profile \\
 $c_k^*$ & Active cluster centre, closest to the user's recent activity \\
 $\mu(\cdot)$ & Mean (average) of a set of vectors \\
 $\cos(\mathbf{a},\mathbf{b})$ & Cosine similarity: how alike two vectors are \\
@@ -353,7 +354,7 @@ $M$ & Number of recommendations to return (we use $M=10$) \\
   \node[lightbox, below=of emb]   (mat)
         {ITEM EMBEDDING MATRIX $E_u \in \mathbb{R}^{n \times 384}$\\ \normalfont\small One row per item};
   \node[greenbox, below=of mat]   (km)
-        {STEP 2: K-MEANS CLUSTERING $(K=3)$\\ \normalfont\small Groups items into 3 distinct interest profiles};
+        {STEP 2: K-MEANS CLUSTERING $(K$, val.-selected$)$\\ \normalfont\small Groups items into $K$ profiles; $K=3$ shown for illustration};
   \node[clusterbox, below=of km, xshift=-3.0cm] (c1) {$c_1$\\Profile 1};
   \node[clusterbox, below=of km]                (c2) {$c_2$\\Profile 2};
   \node[clusterbox, below=of km, xshift=+3.0cm] (c3) {$c_3$\\Profile 3};
@@ -366,7 +367,7 @@ $M$ & Number of recommendations to return (we use $M=10$) \\
         {STEP 4: COSINE SIMILARITY SEARCH\\ \normalfont\small Score all $i \in I \setminus H_u$ by $\cos(\phi(i), c_k^*)$};
   \node[navybox,  below=of ann]   (out)
         {TOP-$M$ RECOMMENDATIONS $R_u$\\
-         \normalfont\small Depth-optimised $\cdot$ Privacy-preserving $\cdot$ Long-tail aware};
+         \normalfont\small Depth-optimised $\cdot$ Peer-isolated $\cdot$ Long-tail aware};
   \draw[arrow] (hist)   -- (emb);
   \draw[arrow] (emb)    -- (mat);
   \draw[arrow] (mat)    -- (km);
@@ -389,7 +390,7 @@ $M$ & Number of recommendations to return (we use $M=10$) \\
 
 \begin{table}[H]
 \centering
-\caption{Architectural comparison: Essence vs.\ prior systems. The primary distinction is not the clustering mechanism, it is the data requirement and what each system is optimised to find. All four systems are empirically evaluated in this work (Section~\ref{sec:results}), which reports the domain-dependent long-tail recovery result in full.}
+\caption{Architectural comparison: Essence vs.\ prior systems. The primary distinction is not the clustering mechanism, it is the data requirement and what each system is structurally able to score. All four systems are empirically evaluated in this work (Section~\ref{sec:results}), which reports the domain-dependent long-tail recovery result in full.}
 \label{tab:comparison}
 \small
 \begin{tabular}{lcccc}
@@ -398,8 +399,8 @@ $M$ & Number of recommendations to return (we use $M=10$) \\
 \midrule
 Cross-user data required & Yes & Yes & Yes & \textbf{No} \\
 Multiple interest profiles & No & Yes & Yes & \textbf{Yes} \\
-Model training required & Yes & Yes & Yes & \textbf{No} \\
-Explicit long-tail objective & No & No & No & \textbf{Yes} \\
+Gradient-based training required & No & Yes & Yes & \textbf{No} \\
+Can score zero-interaction items & No & No & No & \textbf{Yes} \\
 Embedding source & Co-occurrence & Co-occurrence & Co-occurrence & \textbf{Item metadata} \\
 \bottomrule
 \end{tabular}
@@ -416,7 +417,7 @@ Embedding source & Co-occurrence & Co-occurrence & Co-occurrence & \textbf{Item 
 
 \textbf{Content (Average Embedding).} Mean of all the user's item embeddings, retrieving the $M$ most similar unseen items. Standard content-based filtering without interest decomposition.
 
-\textbf{Essence ($K=3$).} Clusters user history into $K=3$ centroids, selects the active centroid by Eq.~\ref{eq:active}, retrieves top-$M$ unseen items by Eq.~\ref{eq:reco}.
+\textbf{Essence (validation-selected $K$).} Clusters user history into $K$ centroids ($K=10$ Last.fm-1K/Amazon Books, $K=15$ MovieLens-25M; Section~\ref{sec:framework}), selects the active centroid by Eq.~\ref{eq:active}, retrieves top-$M$ unseen items by Eq.~\ref{eq:reco}.
 
 \textbf{Last-Item.} Recommends the $M$ unseen items most similar, by cosine similarity, to the single most recent item in the user's training history. The simplest possible recency-based retrieval: no averaging, no decay, no clustering.
 
@@ -444,19 +445,19 @@ Table~\ref{tab:multiseed} reports MIND and ComiRec Recall@10 across independent 
 \toprule
 \textbf{Dataset (Essence Recall@10)} & \textbf{System} & \textbf{Mean $\pm$ Std} & $n$ & \textbf{Beats Essence} \\
 \midrule
-\multirow{2}{*}{Last.fm-1K (0.0119)} & MIND & $0.0067 \pm 0.0014$ & 4 & 0/4 \\
- & ComiRec (SA) & $0.0116 \pm 0.0020$ & 4 & 2/4 \\
+\multirow{2}{*}{Last.fm-1K (0.0281)} & MIND & $0.0067 \pm 0.0014$ & 4 & 0/4 \\
+ & ComiRec (SA) & $0.0116 \pm 0.0020$ & 4 & 0/4 \\
 \midrule
-\multirow{2}{*}{Amazon Books (0.0221)} & MIND & $0.0053 \pm 0.0004$ & 4 & 0/4 \\
+\multirow{2}{*}{Amazon Books (0.0253)} & MIND & $0.0053 \pm 0.0004$ & 4 & 0/4 \\
  & ComiRec (SA) & $0.0064 \pm 0.0007$ & 4 & 0/4 \\
 \midrule
-\multirow{2}{*}{MovieLens-25M (0.0048)} & MIND & $0.0464 \pm 0.0036$ & 3 & 3/3 \\
+\multirow{2}{*}{MovieLens-25M (0.0053)} & MIND & $0.0464 \pm 0.0036$ & 3 & 3/3 \\
  & ComiRec (SA) & $0.0607 \pm 0.0086$ & 3 & 3/3 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The domain-dependence pattern is not an artifact of a single seed: MIND never outranks Essence on Last.fm-1K or Amazon Books and always outranks Essence on MovieLens-25M, across every seed tested. ComiRec (SA) shows the same pattern on Amazon Books (never) and MovieLens-25M (always), but is seed-dependent on Last.fm-1K (2 of 4 seeds) --- consistent with, and a direct robustness check on, this paper's characterization of that specific comparison as a statistical tie (Section~\ref{sec:domain-dependence}) rather than a clear win for either system.
+Essence's Recall@10 here uses its validation-selected $K$ per dataset, not the $K=3$ value used in an earlier revision of this analysis; at $K=3$, ComiRec (SA) beat Essence on 2 of 4 Last.fm-1K seeds, characterized then as a statistical tie. At $K=10$, Essence's own Recall@10 rises enough ($0.0119\to0.0281$) that ComiRec no longer beats it on any seed. The domain-dependence pattern itself is not an artifact of a single seed: MIND never outranks Essence on Last.fm-1K or Amazon Books and always outranks Essence on MovieLens-25M, across every seed tested; ComiRec (SA) now shows the same clean pattern on all three datasets rather than being seed-dependent anywhere.
 
 \section{Claim-Reversal: How the Apparent Conclusion Shifted}
 \label{app:claimreversal}
@@ -472,43 +473,56 @@ Table~\ref{tab:claimreversal} reconstructs how the headline conclusion this pape
 \toprule
 \textbf{Stage} & \textbf{Evidence at this stage} & \textbf{Apparent conclusion} \\
 \midrule
-1.\ Naive baselines & Amazon: Essence $0.0221$ vs.\ CF $0.0031$, Popularity $0.0021$ & Essence clearly beats CF and popularity. \\
+1.\ Naive baselines & Amazon: Essence $0.0253$ vs.\ CF $0.0031$, Popularity $0.0021$ & Essence clearly beats CF and popularity. \\
 \midrule
-2.\ + recency baselines & Amazon: Last-Item $0.0311$, Recency-Weighted $0.0260$ both exceed Essence's $0.0221$ & Essence's edge over CF was actually just recency, not clustering. \\
+2.\ + recency baselines & Amazon: Last-Item $0.0311$, Recency-Weighted $0.0260$ exceed Essence's $0.0253$; Avg-Last-10 ($0.0235$) does not & Essence's edge over CF was partly just recency, not clustering. \\
 \midrule
-3.\ + bootstrap/FDR & Essence loses \emph{significantly} to Last-Item ($d=-0.090$) and Recency-Weighted ($d=-0.059$) on Amazon, but still beats CF/Popularity/both neural baselines significantly & Essence's supported value is beating CF/popularity/neural baselines --- not simple recency retrieval. \\
+3.\ + bootstrap/FDR & Essence loses \emph{significantly} to Last-Item ($d=-0.058$) on Amazon but is tied with Recency-Weighted ($d=-0.009$, not sig.); still beats CF/Popularity/both neural baselines significantly & Essence's supported value is beating CF/popularity/neural baselines; only Last-Item remains a significant loss. \\
 \midrule
-4.\ + third dataset & Essence ranks 8th/10 on MovieLens ($0.0048$ vs.\ CF's $0.0850$), $d$ up to $-0.558$ & Whether Essence's advantage holds tracks with domain CF/popularity strength (Section~\ref{sec:domain-dependence}). \\
+4.\ + third dataset & Essence ranks 8th/10 on MovieLens ($0.0053$ vs.\ CF's $0.0850$), $d$ down to $-0.550$ & Whether Essence's advantage holds is associated with domain CF/popularity strength, not shown to be predictive of it (Section~\ref{sec:domain-dependence}). \\
 \midrule
-5.\ + clustering-mechanism test & Essence never significantly beats Recency-Weighted in any silhouette stratum, incl.\ the highest (Last.fm $d=-0.315$, MovieLens $d=-0.096$) & Clustering itself, isolated from recency weighting, is not empirically supported as the source of Essence's advantage. \\
+5.\ + clustering-mechanism test & Essence never significantly beats Recency-Weighted in any silhouette stratum; of 16 clean comparisons, only 1 is a significant loss (MovieLens high stratum, LT-Recall@10, $d=-0.092$) & Clustering itself, isolated from recency weighting, is not empirically supported as the source of Essence's advantage; the case that it actively hurts is narrow, not broad. \\
+\midrule
+6.\ + validation-selected $K$ (replacing fixed $K{=}3$) & Essence's own numbers rise on Last.fm-1K/Amazon Books at the new $K$ ($0.0119\to0.0281$; $0.0221\to0.0253$), moving it from 5th/4th to 2nd/3rd; stratification's significant-loss count drops from 6 of 17 (at $K{=}3$) to 1 of 16 & Fixing $K=3$ without validating it understated Essence's standing on two of three datasets and overstated how often clustering actively hurts specific users; MovieLens-25M is essentially unchanged. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Each stage narrows the claim rather than overturning the last: from ``clustering beats collaborative filtering'' to ``recency-aware retrieval beats collaborative filtering, and clustering's own contribution on top of that is domain-dependent and, where isolated from recency weighting, not empirically supported.''
+Each stage narrows the claim rather than overturning the last: from ``clustering beats collaborative filtering'' to ``recency-aware retrieval mostly matches or beats collaborative filtering, clustering's own contribution is domain-dependent, and neither the case for clustering nor the case against it survives an untuned $K$ without narrowing further.''
 
 \section{Active Cluster Selection Ablation}
 \label{app:ablation}
 
-We test the recency-based active-cluster-selection mechanism (Section~\ref{sec:framework}) against an alternative: selecting the active centroid using the mean embedding of the user's entire training history rather than the most recent $r=10$ interactions.
+We test the recency-based active-cluster-selection mechanism (Section~\ref{sec:framework}) against an alternative: selecting the active centroid using the mean embedding of the user's entire training history rather than the most recent $r=10$ interactions, now on all three datasets at their validation-selected $K$.
 
 \begin{table}[H]
 \centering
-\caption{Active cluster selection ablation, Last.fm-1K (chronological split, $M=10$).}
+\caption{Active cluster selection ablation, all three datasets at their validation-selected $K$ (chronological split, $M=10$).}
 \label{tab:ablation}
 \small
-\begin{tabular}{lccc}
+\begin{tabular}{llccc}
 \toprule
-\textbf{Variant} & \textbf{Recall@10} & \textbf{LT-Recall@10} & \textbf{LT / Content} \\
+\textbf{Dataset} & \textbf{Variant} & \textbf{Recall@10} & \textbf{LT-Recall@10} & \textbf{LT / Content} \\
 \midrule
-Essence (recency, $r=10$) & 0.0119 & 0.0059 & $2.01\times$ \\
-Essence (mean-select, full history) & 0.0035 & 0.0005 & $0.16\times$ \\
-Content (Avg Embedding, reference) & 0.0038 & 0.0029 & $1.0\times$ \\
+\multirow{3}{*}{Last.fm-1K ($K{=}10$)}
+ & Essence (recency, $r{=}10$) & 0.0281 & 0.0142 & $4.84\times$ \\
+ & Essence (mean-select) & 0.0016 & 0.0005 & $0.16\times$ \\
+ & Content (reference) & 0.0038 & 0.0029 & $1.0\times$ \\
+\midrule
+\multirow{3}{*}{Amazon Books ($K{=}10$)}
+ & Essence (recency, $r{=}10$) & 0.0253 & 0.0207 & $1.67\times$ \\
+ & Essence (mean-select) & 0.0195 & 0.0118 & $0.95\times$ \\
+ & Content (reference) & 0.0173 & 0.0124 & $1.0\times$ \\
+\midrule
+\multirow{3}{*}{MovieLens-25M ($K{=}15$)}
+ & Essence (recency, $r{=}10$) & 0.0053 & 0.0030 & $1.46\times$ \\
+ & Essence (mean-select) & 0.0044 & 0.0037 & $1.83\times$ \\
+ & Content (reference) & 0.0043 & 0.0020 & $1.0\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Mean-select performs below even the Content baseline on long-tail recall, consistent with the mechanism collapsing toward Content: selecting the centroid nearest a user's global mean embedding is functionally similar to querying with that mean directly, while incurring the additional cost of clustering without a corresponding benefit. This result is on Last.fm-1K only; we have not verified whether it generalizes to Amazon Books or MovieLens-25M.
+On Last.fm-1K, mean-select performs below even the Content baseline on long-tail recall (LT/Content, $4.84\times$ in recency-select's favor), consistent with the mechanism collapsing toward Content. On Amazon Books, the same pattern holds but less extremely: mean-select stays above Content rather than collapsing below it. On MovieLens-25M the result is mixed: recency-select leads on Recall@10 but mean-select leads on LT-Recall@10. No significance testing has been run on these differences. Recency-based selection is retained as Essence's default on the strength of the Last.fm-1K/Amazon Books results; MovieLens-25M's mixed result is reported rather than smoothed over.
 
 \section{Effect of User-Authored Review Embeddings (Amazon Books)}
 \label{app:pass2}
@@ -517,7 +531,7 @@ As a secondary experiment, we tested whether building user taste profiles from r
 
 \begin{table}[H]
 \centering
-\caption{Amazon Books: metadata embeddings (Pass 1) vs.\ user-review embeddings (Pass 2). Pass 2 builds taste profiles from the user's own review text; candidates are scored using metadata embeddings.}
+\caption{Amazon Books: metadata embeddings (Pass 1) vs.\ user-review embeddings (Pass 2). Pass 2 builds taste profiles from the user's own review text; candidates are scored using metadata embeddings. This secondary experiment uses $K=3$ throughout and has not been re-run at Essence's validation-selected $K=10$; reported as a fixed-$K$ diagnostic, not a headline result.}
 \label{tab:amazon_pass2}
 \small
 \begin{tabular}{llccc}
@@ -542,12 +556,12 @@ Absolute recall degrades substantially in Pass 2. Two factors likely contribute:
 \section{Full Statistical-Family Reasoning}
 \label{app:fdr}
 
-The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine other systems, per dataset, per metric; 36 comparisons) and the multimodality-stratification test (Essence vs.\ Recency-Weighted, stratified by each user's own per-history silhouette score into low/medium/high clustering-quality tertiles, per dataset, per metric; 18 comparisons) are corrected together as a single 54-comparison Benjamini--Hochberg family, since pooling them changes no comparison's significance verdict relative to correcting them separately (verified directly: recomputing a single pooled BH-FDR correction across all 54 raw $p$-values and comparing every resulting verdict against the two-family version yields zero changes). The MovieLens-25M baseline comparison (18 comparisons) is corrected separately: it was added to this evaluation after the 36 above, but tests the same underlying question, and pooling it was not separately tested. The decile-level cold-start analysis (Essence, and separately each recency-only baseline, vs.\ CF-ItemKNN, restricted to the rarest-item deciles) is corrected as its own family: it asks a narrower, mechanistically distinct question, isolating a single structural property of CF (zero co-occurrence signal for zero-training-interaction items) rather than asking about aggregate performance, and was decided as a separate question before being run --- not a post-hoc re-slicing of the primary comparison chosen because a pooled result was inconvenient.
+The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine other systems, per dataset, per metric; 36 comparisons) and the multimodality-stratification test (Essence vs.\ Recency-Weighted, stratified by each user's own per-history silhouette score into low/medium/high clustering-quality tertiles, per dataset, per metric; up to 18 comparisons) are corrected together as a single Benjamini--Hochberg family, nominally 54 comparisons, since pooling changes no comparison's significance verdict relative to correcting them separately (verified directly). In practice the family is 52 comparisons at the validation-selected $K$ and 53 at an earlier $K=3$ version of this analysis, not 54: one or two stratification cells are \emph{degenerate} --- every user in that stratum/metric cell scores exactly $0$ on \emph{both} Essence and Recency-Weighted (most often a low- or medium-silhouette stratum on the smaller LT-Recall@10 subsets), giving zero variance in the paired bootstrap difference. The standard two-sided $p$-value formula, $p = 2\min(\hat{P}(\text{diff}{>}0), 1-\hat{P}(\text{diff}{>}0))$, is undefined when every resample gives diff${}={}0$ exactly: naively applying it returns $\hat{P}(\text{diff}{>}0)=0$ and hence $p=0$, reading as maximally significant when in fact there is no difference to detect (Cohen's $d$ is also undefined here, $0/0$). We exclude these cells from the pooled family rather than count them as evidence; this correction applies retroactively to an earlier $K=3$ version of this analysis, which counted one such cell (Last.fm-1K, low-silhouette stratum, LT-Recall@10, $n=32$, all values $0$) as significant. The MovieLens-25M baseline comparison (18 comparisons) is corrected separately: it was added to this evaluation after the 36 above, but tests the same underlying question, and pooling it was not separately tested. The decile-level cold-start analysis (Essence, and separately each recency-only baseline, vs.\ CF-ItemKNN, restricted to the rarest-item deciles) is corrected as its own family: it asks a narrower, mechanistically distinct question, isolating a single structural property of CF (zero co-occurrence signal for zero-training-interaction items) rather than asking about aggregate performance, and was decided as a separate question before being run --- not a post-hoc re-slicing of the primary comparison chosen because a pooled result was inconvenient.
 
 \section{Extended Discussion}
 \label{app:discussion}
 
-\textbf{Mechanism.} Item-based CF records zero long-tail recall on the sparsest dataset, Last.fm-1K, under deterministic ranking; on the denser Amazon Books it surfaces some low-interaction items but pays a large cost to overall recall ($0.0031$, near the bottom of the field). MovieLens-25M is the case where the self-reinforcing popularity loop runs at full strength in the other direction: CF's Recall@10 ($0.0850$) is the highest value recorded anywhere in this study, and Popularity itself ranks 3rd of 10 overall ($0.0517$), yet CF's LT-Recall@10 ($0.0037$) remains far below its own overall Recall@10.
+\textbf{Mechanism.} Item-based CF records zero long-tail recall on the sparsest dataset, Last.fm-1K, under deterministic ranking; on the denser Amazon Books it surfaces some low-interaction items but pays a large cost to overall recall ($0.0031$, near the bottom of the field). MovieLens-25M is the case where this popularity-feedback dynamic would run at full strength in the other direction, consistent with though not directly measured by this evaluation: CF's Recall@10 ($0.0850$) is the highest value recorded anywhere in this study, and Popularity itself ranks 3rd of 10 overall ($0.0517$), yet CF's LT-Recall@10 ($0.0037$) remains far below its own overall Recall@10.
 
 \textbf{Deployment and privacy.} The absolute recall values reported here (roughly $0.005$--$0.03$ under full-catalog evaluation) should be read in light of deployment context: Essence is not proposed as a replacement for a primary, CF-driven feed. On Amazon Books and Last.fm-1K it is better understood as a specialized retrieval path for a dedicated discovery surface (e.g.\ a ``more like this'' interface) where the goal is surfacing items dissimilar from what population-level signals would recommend; this framing does not hold on MovieLens-25M. Separately, because Essence consults no cross-user data at any stage, it remains deployable in settings where CF is not viable at all --- privacy-regulated environments, on-device recommendation without server-side interaction logs, federated settings, and cold-start contexts where no population-level interaction graph exists yet --- a direct architectural consequence, independent of whether Essence wins on a given domain's aggregate metrics.
 
@@ -564,12 +578,12 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 \item {\bf Claims}
     \item[] Question: Do the main claims made in the abstract and introduction accurately reflect the paper's contributions and scope?
     \item[] Answer: \answerYes{}
-    \item[] Justification: The abstract and introduction state the domain-dependent, mixed result directly (the Amazon Books win, the Last.fm-1K loss to simple recency retrieval, the MovieLens-25M loss, and the clustering-mechanism null result from the stratification test) rather than only the favorable case; the body (Sections~\ref{sec:results}--\ref{sec:limitations}) matches this framing throughout.
+    \item[] Justification: The abstract and introduction state the domain-dependent, mixed result directly (the Amazon Books/Last.fm-1K wins and ties, the MovieLens-25M loss, and the clustering-mechanism null result from the stratification test) rather than only the favorable case; the body (Sections~\ref{sec:results}--\ref{sec:limitations}) matches this framing throughout.
 
 \item {\bf Limitations}
     \item[] Question: Does the paper discuss the limitations of the work performed by the authors?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~\ref{sec:limitations-findings} and Section~\ref{sec:limitations} discuss scale, $K$-sensitivity, the untested generalization of the ablation and $K$-sensitivity results to MovieLens-25M, the hand-implemented (not pre-trained) status of MIND/ComiRec, and the post-hoc nature of the domain-dependence characterization; Appendix~\ref{app:limitations} extends this further.
+    \item[] Justification: Section~\ref{sec:limitations-findings} and Section~\ref{sec:limitations} discuss scale, the $K$-selection procedure's own anchoring caveat, the hand-implemented (not pre-trained) status of MIND/ComiRec, and the post-hoc nature of the domain-dependence characterization; Appendix~\ref{app:limitations} extends this further.
 
 \item {\bf Theory assumptions and proofs}
     \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
@@ -579,7 +593,7 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 \item {\bf Experimental result reproducibility}
     \item[] Question: Does the paper fully disclose all the information needed to reproduce the main experimental results?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Section~\ref{sec:setup} and Appendix~\ref{app:systems} specify all datasets, splits (chronological, 80/20 per user, seed 42), hyperparameters ($K=3$, $r=10$, decay $=0.9$, $M=10$), the embedding model, and every baseline's exact query construction; Appendix~\ref{app:fdr} specifies the significance-testing methodology in full.
+    \item[] Justification: Section~\ref{sec:setup} and Appendix~\ref{app:systems} specify all datasets, splits (chronological, 80/20 per user, seed 42), hyperparameters ($K$ validation-selected per dataset via the procedure in Section~\ref{sec:framework}: $K=10$/$10$/$15$; $r=10$, decay $=0.9$, $M=10$), the embedding model, and every baseline's exact query construction; Appendix~\ref{app:fdr} specifies the significance-testing methodology in full.
 
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results?
@@ -598,8 +612,8 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 
 \item {\bf Experiments compute resources}
     \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources needed to reproduce the experiments?
-    \item[] Answer: \answerNo{}
-    \item[] Justification: Compute resource details (hardware type, memory, training/inference wall-clock time) are not reported in this paper. This is a gap; the underlying methods (K-means clustering, cosine similarity retrieval, and two small from-scratch neural baselines) are lightweight and do not require specialized hardware, but exact figures are not included.
+    \item[] Answer: \answerYes{}
+    \item[] Justification: All experiments ran on a single consumer laptop (Apple M4 Pro, macOS, no CUDA GPU); MIND/ComiRec use Apple's MPS backend when available, CPU otherwise. Essence's per-user cost is dominated by the $K$-means fit (mean $\approx$10ms/user, both Last.fm-1K and Amazon Books), not candidate scoring ($<2$ms/user regardless of catalog size, a single matrix-vector product); full per-user inference ranges from $\approx$1ms (CF-ItemKNN) to $\approx$70ms (Essence, Last.fm-1K). The full downstream chain (evaluation, paired bootstrap, FDR, decile analysis, silhouette stratification, active-cluster ablation) at each dataset's validation-selected $K$ took 168.6s (Last.fm-1K), 1{,}057.1s (Amazon Books), and 473.6s (MovieLens-25M) wall-clock, single-threaded, no parallelization across datasets. No GPU cluster or specialized hardware is required to reproduce any result in this paper.
 
 \item {\bf Code of ethics}
     \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics?
@@ -609,7 +623,7 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 \item {\bf Broader impacts}
     \item[] Question: Does the paper discuss both potential positive societal impacts and negative societal impacts of the work performed?
     \item[] Answer: \answerNo{}
-    \item[] Justification: The paper discusses privacy-preserving deployment properties (Section~\ref{sec:discussion}, Appendix~\ref{app:discussion}) but does not include a dedicated broader-impacts analysis of positive and negative societal effects; this is a gap given the page-limited format.
+    \item[] Justification: The paper discusses deployment settings where Essence remains viable because it consults no cross-user data (Section~\ref{sec:discussion}, Appendix~\ref{app:discussion}) but does not include a dedicated broader-impacts analysis of positive and negative societal effects; this is a gap given the page-limited format.
 
 \item {\bf Safeguards}
     \item[] Question: Does the paper describe safeguards for responsible release of data or models with high misuse risk?
@@ -623,8 +637,8 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 
 \item {\bf New assets}
     \item[] Question: Are new assets introduced in the paper well documented and is the documentation provided alongside the assets?
-    \item[] Answer: \answerNo{}
-    \item[] Justification: The from-scratch MIND/ComiRec implementations and processed dataset subsets are new assets, but no code/data release accompanies this anonymized submission (see the Open Access item above); documentation will accompany the code release upon deanonymization.
+    \item[] Answer: \answerYes{}
+    \item[] Justification: The from-scratch MIND/ComiRec implementations and processed dataset subsets are new assets; the anonymized repository accompanying this submission (see the Open Access item above) includes both, along with reproduction instructions for every analysis reported in this paper.
 
 \item {\bf Crowdsourcing and research with human subjects}
     \item[] Question: For crowdsourcing experiments and research with human subjects, does the paper include the full text of instructions given to participants and details about compensation?
