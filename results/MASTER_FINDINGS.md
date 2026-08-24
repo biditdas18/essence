@@ -1,5 +1,15 @@
 # Master Findings — Essence Robustness & Generalization Engagement
 
+> **STALE — reflects $K{=}3$ baseline results only.** $K$-validation work
+> (completed 2026-08-24) selected $K{=}10$ (Last.fm-1K), $K{=}10$ (Amazon
+> Books), and $K{=}15$ (MovieLens-25M) per dataset, and found the headline
+> findings — domain-dependence, the clustering-mechanism null result, the
+> cold-start/singleton scope boundary — replicate at the validated $K$'s.
+> Several *numbers* below changed materially (ranks, effect sizes,
+> significance counts): see `paper/essence_paper_v2.tex` Sections 3-5 for
+> current, authoritative results. **This file has not been updated to
+> match and should not be cited for current figures.**
+
 Reference document for the paper-writing pass. Not paper text. Every number
 below is pulled fresh from the cited CSV, not recalled from conversation —
 re-run the cited script if you want to reproduce it. Compiled after Step 11
