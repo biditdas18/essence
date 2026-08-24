@@ -34,7 +34,7 @@
   arrow/.style={-Stealth, thick, blue!40!black}
 }
 
-\title{Peer-Isolated Recommendation: When Content-Only Personalization Beats Collaborative Signal, and When It Doesn't}
+\title{Peer-Isolated Recommendation: When Content-Only Personalization Beats Collaborative Signal, and When It Doesn't\footnotemark}
 
 \author{%
   Anonymous Author(s) \\
@@ -46,6 +46,7 @@
 \begin{document}
 
 \maketitle
+\footnotetext{Code and data: \url{https://anonymous.4open.science/r/essence-5B7B/README.md}}
 
 \begin{abstract}
 We present Essence, a personal embedding cluster framework for recommendation that operates exclusively within a single user's engagement history, without consulting cross-user interaction data. We evaluate Essence on three datasets spanning distinct domains --- Last.fm-1K (music), Amazon Books (e-commerce), and MovieLens-25M (film) --- against a real collaborative-filtering baseline, a non-personalized popularity baseline, a content-based average-embedding baseline, three recency-based baselines (last-item, uniform-average, and exponentially-weighted retrieval), and two hand-implemented multi-interest neural baselines (MIND, ComiRec). Essence's performance relative to these baselines is domain-dependent, and the dependence has a specific, testable shape: Essence's rank among the ten evaluated systems tracks inversely with the strength of collaborative/popularity signal available in the domain. On Amazon Books, where collaborative and popularity baselines are structurally weak (Recall@10 of $0.0031$ and $0.0021$ respectively), Essence does not lead on Recall@10 among personalized methods --- three recency-based baselines score higher (Last-Item $0.0311$, Recency-Weighted $0.0260$, Avg-Last-10 $0.0235$, vs.\ Essence's $0.0221$), and Essence loses significantly to Last-Item and Recency-Weighted after FDR correction ($d=-0.090$, $d=-0.059$). Essence's Amazon strength is narrower: it significantly beats collaborative filtering, popularity, content-averaging, and both neural multi-interest baselines on Recall@10 ($d$ ranges $0.069$--$0.259$), and significantly beats Popularity, Random, Content, and MIND on LT-Recall@10 specifically; it is statistically tied with CF-ItemKNN, ComiRec, Last-Item, Recency-Weighted, and Avg-Last-10 on LT-Recall@10. On MovieLens-25M, where collaborative signal is strong (item-based CF reaches $0.0850$ Recall@10, driven almost entirely by the platform's densely-rated popular titles), Essence ranks 8th of 10 systems, losing to collaborative filtering, popularity, and both neural baselines by the largest effect sizes observed in this study (Cohen's $d$ up to $-0.56$). On Last.fm-1K, simple recency-based retrieval (no clustering) outperforms Essence outright. We report every comparison with paired bootstrap significance testing ($10{,}000$ resamples), Benjamini--Hochberg correction for multiple comparisons, standardized effect sizes, and BCa robustness cross-checks --- replacing an earlier confidence-interval-overlap methodology that does not test the quantity of interest. A targeted stratification test finds that $K$-means clustering, isolated from recency-weighted retrieval, provides no measurable benefit even for the users it is theoretically best suited to help: those with the most well-separated, multi-modal interest histories. We frame Essence not as a universally superior candidate generator, but as a data point on when peer-isolated, content-only personalization is and isn't the right architectural choice, and as a case study in what a fair, statistically grounded, honestly-reported evaluation of a recommendation architecture looks like when the result is mixed.
@@ -122,7 +123,7 @@ ComiRec (SA) & Self-attentive capsules ($K$=4), hand-implemented~\cite{cen2020} 
 
 \textbf{Metrics.} All systems rank the full item catalog with no negative sampling~\cite{krichene2020}; absolute recall is low by construction, and relative comparison under identical conditions is the meaningful signal. Recall@10 is the fraction of a user's test items appearing in their top-10 recommendations; LT-Recall@10 restricts this to long-tail test items. Significance testing methodology is described once, in Section~\ref{sec:stats-methodology}, and applied identically across all three datasets.
 
-\textbf{Implementation.} Embeddings via \texttt{sentence-transformers} (\texttt{all-MiniLM-L6-v2})~\cite{reimers2019,wang2020}, 384 dimensions. $K$-means via scikit-learn. All ranking ties are broken deterministically. MIND/ComiRec are trained per dataset.
+\textbf{Implementation.} Embeddings via \texttt{sentence-transformers} (\texttt{all-MiniLM-L6-v2})~\cite{reimers2019,wang2020}, 384 dimensions. $K$-means via scikit-learn. All ranking ties are broken deterministically. MIND/ComiRec are trained per dataset. Code and full reproduction instructions for every analysis in this paper are at the anonymized link on page 1.
 
 \section{Results}
 \label{sec:results}
@@ -523,8 +524,8 @@ The Last.fm-1K/Amazon Books baseline comparison (Essence vs.\ each of the nine o
 
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results?
-    \item[] Answer: \answerNo{}
-    \item[] Justification: No code or data link is included in this anonymized submission to avoid deanonymization (the repository URL directly identifies the author). Datasets used are the public Last.fm-1K~\citep{celma2010}, Amazon Reviews 2023 Books 5-core~\citep{hou2024}, and MovieLens-25M sets; code will be released upon deanonymization.
+    \item[] Answer: \answerYes{}
+    \item[] Justification: Anonymized code and data are available at \url{https://anonymous.4open.science/r/essence-5B7B/README.md}, including full reproduction instructions for every analysis reported in this paper. The repository will be de-anonymized and linked to its permanent location upon deanonymization.
 
 \item {\bf Experimental setting/details}
     \item[] Question: Does the paper specify all the training and test details necessary to understand the results?
