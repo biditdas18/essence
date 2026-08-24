@@ -408,7 +408,7 @@ cluster centre closest to the mean embedding of the user's $r$ most recent
 training-set interactions, ordered chronologically (default $r=10$):
 
 \begin{equation}
-  c_k^* \;=\; \arg\min_k \;\bigl\| c_k - \mu\!\left(\phi(h_{n-r}), \ldots, \phi(h_n)\right) \bigr\|_2
+  c_k^* \;=\; \arg\min_k \;\bigl\| c_k - \mu\!\left(\phi(h_{n-r+1}), \ldots, \phi(h_n)\right) \bigr\|_2
   \label{eq:active}
 \end{equation}
 
@@ -512,21 +512,33 @@ any stage (peer-isolation property).}
 across approximately 19 million events~\cite{celma2010}. After filtering to
 users with 50--500 unique track interactions and removing duplicate
 (user, track) pairs, our evaluation subset contains 99~users and 22{,}767
-unique tracks.
+unique tracks. Item embeddings are built from track title + artist name
+(metadata only; no interaction signal enters the embedding).
 
 \textbf{Amazon Books (e-commerce).} The Amazon Reviews 2023 Books 5-core
 dataset~\cite{hou2024}, which guarantees every user and item has at least
 5 global interactions. After filtering to users with 20--200 unique item
 interactions and subsampling to 2{,}000 users (seed~42), our evaluation
 subset contains 2{,}000 users and 61{,}727 unique items. Item embeddings use
-title and author name, following the same metadata-only approach as Last.fm-1K.
+title + author name + description, following the same metadata-only
+approach as Last.fm-1K. The 20--200-interaction filter and the 2{,}000-user
+subsample size are applied identically, with the same seed, to MovieLens-25M
+below --- fixed a priori and held constant across both datasets rather than
+tuned per dataset, to keep the evaluation (including MIND/ComiRec training
+and the full bootstrap/FDR suite) computationally tractable at the same
+scale on both.
 
 \textbf{MovieLens-25M (film).} A 2{,}000-user subsample (seed~42, same
-sampling convention as Amazon Books) drawn from the MovieLens-25M ratings
-dataset. Item overview text is fetched from The Movie Database (TMDb) for
-each candidate item; of $7{,}724$ candidate items identified from the
-sampled users' interactions, $7{,}654$ were successfully fetched
-($99.1\%$), with the remainder excluded from the candidate pool. Our
+20--200-interaction filter and sampling convention as Amazon Books) drawn
+from the MovieLens-25M ratings dataset. Item text is built from title +
+genres, plus overview text from The Movie Database (TMDb) when available;
+of $7{,}724$ candidate items identified from the sampled users'
+interactions, $7{,}654$ had a TMDb record successfully fetched at all
+($99.1\%$), and these form the final catalog --- the remaining $70$ items,
+for which the TMDb API lookup itself failed, are excluded from the
+candidate pool entirely (not merely missing overview text). Within the
+$7{,}654$ fetched items, any with an empty overview field fall back to
+title + genres only rather than being dropped. Our
 evaluation subset contains 2{,}000 users and $7{,}654$ catalog items.
 
 \textbf{Data attribution.} This product uses the TMDb API but is not
@@ -601,11 +613,14 @@ Users with no long-tail test items are excluded from this metric.
   \item \textbf{Popularity.} Recommends the $M$ globally most-interacted-with
         items the user has not consumed. A non-personalized baseline;
         included for comparison but not treated as collaborative filtering.
-  \item \textbf{CF (ItemKNN).} An item-based $k$-nearest-neighbors
-        collaborative filtering baseline, computed via cosine similarity over
+  \item \textbf{CF (ItemKNN).} An item-based collaborative filtering
+        baseline, computed via cosine similarity over
         the sparse user-item interaction matrix. Recommends items most
         similar, by co-occurrence pattern, to items the user has already
-        consumed.
+        consumed. No neighbor-count cutoff or shrinkage term is applied: a
+        candidate's score is the cosine-weighted sum over all training items
+        with any co-occurring user, i.e.\ full-neighborhood ($k=\infty$)
+        ItemKNN rather than a truncated top-$k$ variant.
   \item \textbf{Content (Average Embedding).} Computes the mean of all the
         user's item embeddings and retrieves the $M$ most similar unseen
         items by cosine similarity. Standard content-based filtering without
@@ -672,7 +687,23 @@ Users with no long-tail test items are excluded from this metric.
         symmetry-breaking failure mode and was checked with the directional
         sanity check described above rather than a dedicated conformance
         test; no comparable bug was found.
+  \item \textbf{MIND/ComiRec training.} Both models share the same fixed,
+        untuned training procedure, taken from the original papers'
+        recommended ranges rather than grid-searched: Adam optimizer,
+        learning rate $10^{-3}$, batch size 64, max sequence length 50, up
+        to 50 epochs with early stopping (patience 5) on validation loss
+        over each user's held-out last training interaction. The training
+        objective is a sampled-softmax loss: the positive item's score plus
+        100 uniform-random negative items' scores (drawn item-uniformly,
+        excluding the padding index) are passed through a cross-entropy
+        loss against the positive. Item and interest-capsule embeddings are
+        384-dimensional, matching the shared \texttt{all-MiniLM-L6-v2}
+        embedding space used by every other system.
 \end{itemize}
+
+Both MIND and ComiRec are trained across 3--4 seeds per dataset to confirm
+the domain-dependence pattern (Section~\ref{sec:domain-dependence}) is not
+seed-specific (Section~\ref{sec:multiseed}).
 
 \subsection{Metrics}
 
@@ -851,6 +882,46 @@ tracks domain conditions, not necessarily anything specific to the
 $K$-means clustering mechanism as opposed to the underlying content
 embeddings more generally (Section~\ref{sec:limitations-findings}
 addresses this directly).
+
+\subsection{MIND/ComiRec Multi-Seed Robustness}
+\label{sec:multiseed}
+
+Table~\ref{tab:multiseed} reports MIND and ComiRec Recall@10 across
+independent training seeds per dataset (the canonical seed 42 plus 2--3
+additional seeds), to check whether the domain-dependence pattern above
+depends on a single training run.
+
+\begin{table}[H]
+\centering
+\caption{MIND/ComiRec Recall@10 across training seeds. ``Beats Essence''
+         counts seeds where the baseline's Recall@10 exceeds Essence's own
+         Recall@10 for that dataset (Table~\ref{tab:headline-recall}).}
+\label{tab:multiseed}
+\small
+\begin{tabular}{llccc}
+\toprule
+\textbf{Dataset (Essence Recall@10)} & \textbf{System} & \textbf{Mean $\pm$ Std} & $n$ & \textbf{Beats Essence} \\
+\midrule
+\multirow{2}{*}{Last.fm-1K (0.0119)} & MIND & $0.0067 \pm 0.0014$ & 4 & 0/4 \\
+ & ComiRec (SA) & $0.0116 \pm 0.0020$ & 4 & 2/4 \\
+\midrule
+\multirow{2}{*}{Amazon Books (0.0221)} & MIND & $0.0053 \pm 0.0004$ & 4 & 0/4 \\
+ & ComiRec (SA) & $0.0064 \pm 0.0007$ & 4 & 0/4 \\
+\midrule
+\multirow{2}{*}{MovieLens-25M (0.0048)} & MIND & $0.0464 \pm 0.0036$ & 3 & 3/3 \\
+ & ComiRec (SA) & $0.0607 \pm 0.0086$ & 3 & 3/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The domain-dependence pattern is not an artifact of a single seed: MIND
+never outranks Essence on Last.fm-1K or Amazon Books and always outranks
+Essence on MovieLens-25M, across every seed tested. ComiRec (SA) shows the
+same pattern on Amazon Books (never) and MovieLens-25M (always), but is
+seed-dependent on Last.fm-1K (2 of 4 seeds) --- consistent with, and a
+direct robustness check on, this paper's characterization of that specific
+comparison as a statistical tie (Section~\ref{sec:domain-dependence})
+rather than a clear win for either system.
 
 \subsection{Statistical Validation Methodology}
 \label{sec:stats-methodology}
@@ -1100,6 +1171,51 @@ unvalidated exploratory work, not reported here as a result.
 % ── 6. Discussion ────────────────────────────────────────────────────────────
 \section{Discussion}
 
+\subsection{How the Apparent Conclusion Shifted Across the Evaluation}
+\label{sec:claim-reversal}
+
+The headline conclusion this paper would have supported changed at every
+stage additional rigor or scope was added. Table~\ref{tab:claim-reversal}
+reconstructs this using only numbers already reported above (headline
+Recall@10, Table~\ref{tab:headline-recall}; significance results,
+Section~\ref{sec:domain-dependence}; stratification results,
+Section~\ref{sec:limitations-findings}) --- no new comparisons are run for
+this table.
+
+\begin{table}[H]
+\centering
+\caption{How the apparent headline conclusion shifts as evaluation stages
+         are added, using only already-reported numbers. Each row's
+         evidence is a subset of the final evaluation, not a separate
+         experiment.}
+\label{tab:claim-reversal}
+\small
+\begin{tabular}{p{2.5cm}p{4.7cm}p{6.3cm}}
+\toprule
+\textbf{Stage} & \textbf{Evidence at this stage} & \textbf{Apparent conclusion at this stage} \\
+\midrule
+1.\ Naive baselines only & Amazon: Essence $0.0221$ vs.\ CF $0.0031$, Popularity $0.0021$, Content $0.0173$, Random $0.0001$ & Essence clearly beats collaborative filtering and popularity. \\
+\midrule
+2.\ + recency baselines & Amazon: Last-Item $0.0311$, Recency-Weighted $0.0260$, Avg-Last-10 $0.0235$ all exceed Essence's $0.0221$ & Essence's apparent edge over CF was actually just recency, not clustering --- plain recency retrieval beats Essence too. \\
+\midrule
+3.\ + paired bootstrap / FDR & Essence loses \emph{significantly} to Last-Item ($d=-0.090$) and Recency-Weighted ($d=-0.059$) on Amazon, but still significantly beats CF, Popularity, Content, and both neural baselines & Essence's real, statistically-supported value is beating collaborative/popularity/neural baselines --- but not simple recency-based retrieval. \\
+\midrule
+4.\ + third dataset (MovieLens) & Essence ranks 8th/10 on MovieLens ($0.0048$), behind CF ($0.0850$), Popularity ($0.0517$), ComiRec ($0.0706$), and MIND ($0.0423$), by effect sizes up to $d=-0.558$ & Whether Essence's Amazon-style advantage holds tracks with how strong collaborative/popularity signal is in the domain --- not a fixed property of the architecture (Section~\ref{sec:domain-dependence}). \\
+\midrule
+5.\ + clustering-mechanism stratification & Essence never significantly beats Recency-Weighted in \emph{any} silhouette stratum on any dataset, including the highest-silhouette (most-clusterable) users, where it loses on Last.fm-1K ($d=-0.315$) and MovieLens-25M ($d=-0.096$) & Even where Essence's relative standing is favorable, the $K$-means clustering step itself --- isolated from recency-weighted retrieval --- is not empirically supported as the source of that advantage. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each stage did not overturn the previous one so much as narrow what was
+actually being claimed: from ``clustering beats collaborative filtering''
+to ``recency-aware retrieval beats collaborative filtering, and clustering's
+own contribution on top of that is domain-dependent and, where isolated
+from recency weighting, not empirically supported.'' This progression is
+the argument, developed in this section and Section~\ref{sec:limitations-findings},
+for reporting a mixed, domain-dependent result rather than the Stage-1
+comparison alone.
+
 \subsection{Mechanism: Why Popularity-Driven Discovery Self-Reinforces}
 
 Collaborative filtering's reliance on cross-user co-occurrence creates a
@@ -1152,9 +1268,10 @@ signal is strong, Essence trails not only CF and Popularity but both
 neural multi-interest baselines as well, by the largest effect sizes
 observed in this study (Section~\ref{sec:domain-dependence}). A deployment
 decision should be conditioned on the domain's collaborative signal
-strength: whether Essence is a good candidate-generation method is
-predictable from measurable properties of the domain, rather than a fixed
-property of peer-isolated, content-only personalization.
+strength: whether Essence is a good candidate-generation method tracks
+with measurable properties of the domain, across the three domains
+evaluated here, rather than being a fixed property of peer-isolated,
+content-only personalization.
 
 \subsection{Privacy and Deployment Constraints}
 
@@ -1259,9 +1376,9 @@ MovieLens-25M, where collaborative signal is strong, Essence ranks 8th of
 10 systems, losing to collaborative filtering, popularity, and both neural
 baselines by the largest effect sizes observed anywhere in this study.
 
-Whether peer-isolated, content-only personalization helps is predictable
-in advance from how strong collaborative and popularity signal already is
-in a given domain. A targeted stratification test
+Whether peer-isolated, content-only personalization helps tracks with how
+strong collaborative and popularity signal already is in a given domain,
+across the three domains evaluated here. A targeted stratification test
 (Section~\ref{sec:limitations-findings}) finds no evidence that the
 $K$-means clustering step, isolated from recency-weighted retrieval, is
 itself the source of Essence's advantage where an advantage exists.

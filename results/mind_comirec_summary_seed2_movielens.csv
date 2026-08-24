@@ -1,0 +1,3 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (seed2),movielens,0.0474729445518154,0.0,2000,490,351.78749108314514,43,1.8732115726470948,0.001,2,4,pretrained
+ComiRec (SA) (seed2),movielens,0.0561668928566814,0.0,2000,490,57.682114124298096,9,2.0933384037017824,0.001,2,4,pretrained
