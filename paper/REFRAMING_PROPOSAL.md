@@ -87,10 +87,19 @@ instead of something a reader discovers three datasets in.)
 > ten evaluated systems tracks inversely with the strength of
 > collaborative/popularity signal available in the domain. On Amazon Books,
 > where collaborative and popularity baselines are structurally weak
-> (Recall@10 of 0.0031 and 0.0021 respectively), Essence achieves the highest
-> Recall@10 among personalized methods (0.0221) and beats collaborative
-> filtering, popularity, content-averaging, and both neural multi-interest
-> baselines with paired-bootstrap-validated, FDR-corrected significance. On
+> (Recall@10 of 0.0031 and 0.0021 respectively), Essence does **not** lead on
+> Recall@10 among personalized methods — three recency-based baselines score
+> higher (Last-Item 0.0311, Recency-Weighted 0.0260, Avg-Last-10 0.0235, vs.
+> Essence's 0.0221), and Essence loses significantly to Last-Item and
+> Recency-Weighted after FDR correction (d=−0.090, d=−0.059;
+> `results/fdr_corrected_significance.csv`). Essence's Amazon strength is
+> narrower: it significantly beats collaborative filtering, popularity,
+> content-averaging, and both neural multi-interest baselines (MIND,
+> ComiRec) on Recall@10 (d ranges 0.069–0.259), and significantly beats
+> Popularity, Random, Content, and MIND on LT-Recall@10 specifically
+> (`results/fdr_corrected_significance.csv`); it is statistically tied with
+> CF-ItemKNN, ComiRec, Last-Item, Recency-Weighted, and Avg-Last-10 on
+> LT-Recall@10. On
 > MovieLens-25M, where collaborative signal is strong (item-based CF reaches
 > 0.0850 Recall@10, driven almost entirely by the platform's densely-rated
 > popular titles), Essence ranks 8th of 10 systems, losing to collaborative

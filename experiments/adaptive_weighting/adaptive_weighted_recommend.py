@@ -73,6 +73,9 @@ def recency_weighted_vec(vecs, decay=RECENCY_DECAY):
     return np.average(np.array(vecs), axis=0, weights=weights)
 
 
+N_REF_SAMPLE = 50  # reference batch size for per-user, per-step z-scoring
+
+
 def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
                          lr=LR_DEFAULT, recency_n=RECENCY_N, seed=42, disable_update=False):
     """
@@ -81,6 +84,25 @@ def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
     (0.5, 0.5) prior. Used to confirm AdaptiveWeighted collapses to
     Recency-Weighted-like behavior when weighting is inert, before trusting
     any result from the learned-weight path.
+
+    SCALE-IMBALANCE FIX (second session): channels have different natural
+    cosine-similarity scales (confirmed on MovieLens: genre-channel pairwise
+    similarity mean=0.547 vs plot-channel mean=0.153). Comparing raw
+    similarities to decide "which channel contributed more" was therefore
+    deciding the comparison by scale, not signal -- it drove every single
+    user to the same degenerate (0.99, 0.01) weight regardless of their
+    actual history (zero cross-user variance, confirmed empirically).
+    Fixed by z-scoring each channel's similarity against a per-user,
+    per-step reference sample (N_REF_SAMPLE random unseen items scored
+    against that step's own profile) before comparing -- this corrects
+    for both channels' means and variances at the point in the walk where
+    the comparison happens, rather than using a fixed global constant.
+    Chosen over rank-normalization because the pathology is a first/second-
+    moment mismatch (different means AND variances), which z-scoring
+    corrects for directly from one reference sample; rank-normalization
+    would need a full reference ranking at every step for ordinal
+    information only, discarding the magnitude signal the update should
+    weigh on.
 
     Walks train_seq (chronological list of item_ids) and returns the final
     (w_a, w_b) learned via the proxy-feedback online update described above.
@@ -99,6 +121,18 @@ def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
 
     all_item_ids_arr = np.array(all_item_ids)
 
+    def ref_stats(ref_items, profile_a, profile_b):
+        """This step's reference channel-A/channel-B similarity distributions
+        (mean, std), computed once and reused for both the positive and
+        negative z-score comparisons in this step."""
+        ref_a = np.array([cosine_sim(channel_a_map[i], profile_a) for i in ref_items])
+        ref_b = np.array([cosine_sim(channel_b_map[i], profile_b) for i in ref_items])
+        return (ref_a.mean(), ref_a.std() + 1e-8), (ref_b.mean(), ref_b.std() + 1e-8)
+
+    def zscore(value, mean_std):
+        mean, std = mean_std
+        return (value - mean) / std
+
     for t in range(1, len(valid_seq)):
         history = valid_seq[max(0, t - recency_n):t]
         target = valid_seq[t]
@@ -110,28 +144,37 @@ def fit_adaptive_weights(train_seq, channel_a_map, channel_b_map, all_item_ids,
         if profile_a is None or profile_b is None:
             continue
 
-        # Positive (proxy) signal: the actual next train item
-        pos_a = w[0] * cosine_sim(channel_a_map[target], profile_a)
-        pos_b = w[1] * cosine_sim(channel_b_map[target], profile_b)
-        if pos_a > pos_b:
+        seen_so_far = set(valid_seq[:t + 1])
+        unseen_pool = all_item_ids_arr[~np.isin(all_item_ids_arr, list(seen_so_far))]
+        if len(unseen_pool) < N_REF_SAMPLE:
+            continue  # not enough unseen items to build a reference sample this step
+        ref_items = rng.choice(unseen_pool, size=N_REF_SAMPLE, replace=False)
+        ref_items = [i for i in ref_items if i in channel_a_map and i in channel_b_map]
+        if len(ref_items) < 5:
+            continue
+
+        stats_a, stats_b = ref_stats(ref_items, profile_a, profile_b)
+
+        # Positive (proxy) signal: the actual next train item, z-scored against
+        # this step's reference distribution (fixes the scale-imbalance bug)
+        z_pos_a = zscore(cosine_sim(channel_a_map[target], profile_a), stats_a)
+        z_pos_b = zscore(cosine_sim(channel_b_map[target], profile_b), stats_b)
+        if z_pos_a > z_pos_b:
             w[0] += lr
             w[1] -= lr
-        elif pos_b > pos_a:
+        elif z_pos_b > z_pos_a:
             w[1] += lr
             w[0] -= lr
 
-        # Negative (proxy, disclosed) signal: one random non-interacted item
-        seen_so_far = set(valid_seq[:t + 1])
-        neg_candidates = all_item_ids_arr[~np.isin(all_item_ids_arr, list(seen_so_far))]
-        if len(neg_candidates) > 0:
-            neg_item = rng.choice(neg_candidates)
-            if neg_item in channel_a_map and neg_item in channel_b_map:
-                neg_a = cosine_sim(channel_a_map[neg_item], profile_a)
-                neg_b = cosine_sim(channel_b_map[neg_item], profile_b)
-                if neg_a > neg_b:
-                    w[0] -= lr * 0.5  # smaller nudge for the negative signal (proxy, noisier than the positive)
-                elif neg_b > neg_a:
-                    w[1] -= lr * 0.5
+        # Negative (proxy, disclosed) signal: one random non-interacted item,
+        # also z-scored against the same reference distribution
+        neg_item = rng.choice(ref_items)
+        z_neg_a = zscore(cosine_sim(channel_a_map[neg_item], profile_a), stats_a)
+        z_neg_b = zscore(cosine_sim(channel_b_map[neg_item], profile_b), stats_b)
+        if z_neg_a > z_neg_b:
+            w[0] -= lr * 0.5  # smaller nudge for the negative signal (proxy, noisier than the positive)
+        elif z_neg_b > z_neg_a:
+            w[1] -= lr * 0.5
 
         w = np.clip(w, 0.01, 0.99)
         w = w / w.sum()

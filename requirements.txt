@@ -6,3 +6,17 @@ numpy==1.26.4
 faiss-cpu==1.14.2
 requests==2.32.3
 tqdm==4.67.1
+
+# MIND/ComiRec training only (experiments/mind_comirec/) -- not needed for
+# anything else in the pipeline (baselines, bootstrap/FDR/BCa, decile
+# analysis, shortcut checks). Installed separately, not pinned above,
+# because this project's MIND/ComiRec environment (.venv_recbole) also runs
+# newer numpy/pandas/scikit-learn/sentence-transformers than pinned above --
+# use a separate virtualenv for this rather than upgrading in place.
+# torch==2.13.0
+
+# NOTE: faiss-cpu is listed above but is not currently imported by any
+# script in this repo -- verified via `grep -rl faiss --include="*.py" .`
+# returning nothing. Left in place in case it's needed for a future
+# approximate-nearest-neighbor variant; flag for removal if that never
+# materializes.

@@ -37,7 +37,7 @@ Significant after BH-FDR correction (q<0.05):
 - Essence vs Recency-Weighted on **LT-Recall@10**: significant at raw p (0.0486) but **flips to non-significant after FDR correction** (q=0.0875) — the single comparison in the whole 36-item family that flips.
 
 ### K-sensitivity (`results/sensitivity_results.csv`)
-K=2: 0.0080 / K=3: 0.0119 / K=4: 0.0239 / K=5: 0.0251 (Recall@10). K=3 (the paper's default) is **not** near-optimal — K=4/5 clearly outperform it. Seed variance at K=3 (10 seeds): 0.0122±0.0011 recall, 0.0059±0.0038 LT — much smaller than the K=3→K=4 jump, so this isn't noise.
+K=2: 0.0080 / K=3: 0.0119 / K=4: 0.0239 / K=5: 0.0251 (Recall@10). K=3 (the paper's default) is **not** near-optimal — K=4/5 clearly outperform it. Seed variance at K=3 (10 seeds): 0.0122±0.0011 recall, 0.0103±0.0038 LT — much smaller than the K=3→K=4 jump, so this isn't noise.
 
 ### Multi-cutoff (`results/multi_cutoff_lastfm.csv`)
 Recency baselines beat Essence at k=5, 10, **and** 20, on both metrics, consistently — not a k=10 artifact.
@@ -134,7 +134,7 @@ Essence K-means: 10.8ms/user. Essence full inference (vectorized): 10.5ms/user �
 ### Popularity-decile breakdown (`results/popularity_decile_recall_movielens.csv`, `results/decile1_bootstrap_movielens.csv`, `results/decile2_bootstrap_movielens.csv`, `results/longtail_definition_reconciliation_movielens.csv`)
 Tested: Essence vs. **CF-ItemKNN only** (the dominant baseline here; MIND/ComiRec excluded — no persisted model checkpoint, would need retraining).
 
-- CF's overall dominance is **not uniform** — it comes almost entirely from decile 10 (CF: 0.1177, the single highest number in any decile analysis in this engagement), while CF is weak-to-zero at every other decile. Essence stays flat (0.003–0.006) across all deciles including decile 10.
+- CF's overall dominance is **not uniform** — it comes almost entirely from decile 10 (CF: 0.1177, the single highest number in any decile analysis in this engagement), while CF is weak-to-zero at every other decile. Essence stays low and roughly flat (0.0000–0.0063, exactly zero at deciles 3 and 4) across all deciles including decile 10 (0.0050) — no comparable spike anywhere.
 - **At decile 1 (true cold-start), the pattern reverses: CF scores exactly 0.0000 (no co-occurrence signal for zero-train-interaction items) while Essence scores 0.0056** — Essence numerically and marginally-significantly beats CF here (P(diff>0)=0.979, one-sided; observed diff +0.0056, 95% CI [+0.0003,+0.0130]). At decile 2, no significant difference (diff +0.0016, P=0.560).
 - Singleton items here concentrate in deciles 2–5 (32,32.8% in deciles 3–4 alone), not 3–9 like Amazon — dataset-specific decile geometry, reported factually.
 
@@ -142,7 +142,7 @@ Tested: Essence vs. **CF-ItemKNN only** (the dominant baseline here; MIND/ComiRe
 99.85% of Essence's recs share a genre with the active cluster (vs. ~20% for artist/author on Last.fm/Amazon). This number is **not comparable** to the artist/author checks — genre is a coarse ~20-value categorical tag, so near-universal overlap is the expected base rate by chance, not evidence of a content shortcut. The holdout variant (Recall@10 collapses to 0.0006) mostly reflects the candidate pool being starved to near-nothing, not a meaningful ablation. Do not cite this number as comparable to the Last.fm/Amazon shortcut findings.
 
 ### TMDb data acquisition (`experiments/movielens/`)
-7,724 candidate items (from 2,000 sampled users, seed=42, same convention as Amazon's `preprocess_amazon.py`), 7,654 fetched (99.1% success), 70 failed (55×404 likely-stale TMDb IDs, 5 transient network errors). All 10 sanity-checked sample texts were legitimate.
+7,724 candidate items (from 2,000 sampled users, seed=42, same convention as Amazon's `preprocess_amazon.py`), 7,654 fetched (99.1% success), 70 failed. (A prior draft attributed the 70 failures to "55×404, 5 transient network errors" — those two numbers sum to 60, not 70, and no persisted fetch log exists to reconcile or verify the split; the cause breakdown is untraceable and has been dropped rather than restated.) All 10 sanity-checked sample texts were legitimate.
 
 ---
 
@@ -169,7 +169,7 @@ Tested: Essence vs. **CF-ItemKNN only** (the dominant baseline here; MIND/ComiRe
 
 | Dataset | Essence rank (of 10 systems, Recall@10) | Strength of collaborative/popularity signal in this domain |
 |---|---|---|
-| Amazon Books | 4th (beats 6, loses to 2 recency baselines) | Weak — CF/Popularity are near-bottom (CF=0.0031, Popularity=0.0021) |
+| Amazon Books | 4th (beats 6, loses to all 3 recency baselines) | Weak — CF/Popularity are near-bottom (CF=0.0031, Popularity=0.0021) |
 | Last.fm-1K | 5th (beats 5, loses to 3 recency baselines + tied w/ ComiRec) | Weak — CF/Popularity near-bottom (CF=0.0018, Popularity=0.0023) |
 | MovieLens-25M | 8th (beats only Content, Random) | **Strong** — CF/Popularity/ComiRec/MIND are the top 4 systems |
 
