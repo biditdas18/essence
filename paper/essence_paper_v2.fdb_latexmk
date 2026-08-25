@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1787678993.00725 "essence_paper_v2.tex" "essence_paper_v2.pdf" "essence_paper_v2" 1787678993.70487 0
+["pdflatex"] 1787693019.88495 "essence_paper_v2.tex" "essence_paper_v2.pdf" "essence_paper_v2" 1787693020.61387 0
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc" 1202520719 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -212,9 +212,9 @@
   "/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1782028220 5573038 b99aad5e4898a9034e953632f940512b ""
   "/usr/local/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1774209607 3636776 dc5fa9b6b1453b9d196cd42edf876004 ""
   "/usr/local/texlive/2026/texmf.cnf" 1774209515 577 648cd9f92f9c0eac486f4c71c85cfbbe ""
-  "essence_paper_v2.aux" 1787678993.62139 16697 a10cd9141f1a81b79a83e299d99a582a "pdflatex"
-  "essence_paper_v2.out" 1787678993.62235 8216 b943c2c403376df5ffedbb47187ebc20 "pdflatex"
-  "essence_paper_v2.tex" 1787678966.5817 110720 4944d9ee1b4631e706212161f5599675 ""
+  "essence_paper_v2.aux" 1787693020.52805 17597 1bb118ce09e3cd620de9b531c355e96e "pdflatex"
+  "essence_paper_v2.out" 1787693020.52884 8451 13de13e6f3243d08d432c098e35cfc8a "pdflatex"
+  "essence_paper_v2.tex" 1787692949.82822 113248 de7af93b7430abc033a2dfc8bd245113 ""
   (generated)
   "essence_paper_v2.aux"
   "essence_paper_v2.log"
