@@ -1,0 +1,53 @@
+dataset,baseline_system,metric,cohens_d,p_two_sided,family,comparison,q_bh,sig
+Last.fm-1K,Random,Recall@10,0.3007,0.0,A,baseline_vs_9_systems,0.0,True
+Last.fm-1K,Popularity,Recall@10,0.2746,0.0,A,baseline_vs_9_systems,0.0,True
+Last.fm-1K,CF (ItemKNN),Recall@10,0.2812,0.0,A,baseline_vs_9_systems,0.0,True
+Last.fm-1K,Content (Avg Emb),Recall@10,0.2751,0.0,A,baseline_vs_9_systems,0.0,True
+Last.fm-1K,Last-Item,Recall@10,0.0461,0.6641999999999999,A,baseline_vs_9_systems,0.7675199999999999,False
+Last.fm-1K,Avg-Last-10,Recall@10,0.1093,0.2522,A,baseline_vs_9_systems,0.3974060606060606,False
+Last.fm-1K,Recency-Weighted,Recall@10,-0.1269,0.1894,A,baseline_vs_9_systems,0.3517428571428572,False
+Last.fm-1K,ComiRec (SA),Recall@10,0.2197,0.0058,A,baseline_vs_9_systems,0.01885,True
+Last.fm-1K,MIND,Recall@10,0.2453,0.0,A,baseline_vs_9_systems,0.0,True
+Last.fm-1K,Random,LT-Recall@10,0.1639,0.0294,A,baseline_vs_9_systems,0.08007999999999973,False
+Last.fm-1K,Popularity,LT-Recall@10,0.1639,0.0307999999999999,A,baseline_vs_9_systems,0.08007999999999973,False
+Last.fm-1K,CF (ItemKNN),LT-Recall@10,0.1639,0.0374000000000001,A,baseline_vs_9_systems,0.08840000000000024,False
+Last.fm-1K,Content (Avg Emb),LT-Recall@10,0.1259,0.2092,A,baseline_vs_9_systems,0.3751172413793103,False
+Last.fm-1K,Last-Item,LT-Recall@10,0.1193,0.2456,A,baseline_vs_9_systems,0.3974060606060606,False
+Last.fm-1K,Avg-Last-10,LT-Recall@10,0.0666,0.577,A,baseline_vs_9_systems,0.7081674418604651,False
+Last.fm-1K,Recency-Weighted,LT-Recall@10,-0.0512,0.6072,A,baseline_vs_9_systems,0.7175999999999999,False
+Last.fm-1K,ComiRec (SA),LT-Recall@10,0.0977,0.3484,A,baseline_vs_9_systems,0.5032444444444444,False
+Last.fm-1K,MIND,LT-Recall@10,0.1356,0.1654,A,baseline_vs_9_systems,0.3308,False
+Amazon Books,Random,Recall@10,0.2823,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Popularity,Recall@10,0.2521,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,CF (ItemKNN),Recall@10,0.2432,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Content (Avg Emb),Recall@10,0.0988,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Last-Item,Recall@10,-0.0577,0.0094,A,baseline_vs_9_systems,0.02875294117647059,True
+Amazon Books,Avg-Last-10,Recall@10,0.026,0.2445999999999999,A,baseline_vs_9_systems,0.3974060606060606,False
+Amazon Books,Recency-Weighted,Recall@10,-0.0093,0.6888,A,baseline_vs_9_systems,0.7786434782608695,False
+Amazon Books,ComiRec (SA),Recall@10,0.2202,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,MIND,Recall@10,0.2234,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Random,LT-Recall@10,0.1686,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Popularity,LT-Recall@10,0.1686,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,CF (ItemKNN),LT-Recall@10,0.0449,0.0991999999999999,A,baseline_vs_9_systems,0.2063359999999998,False
+Amazon Books,Content (Avg Emb),LT-Recall@10,0.0608,0.0271999999999998,A,baseline_vs_9_systems,0.0785777777777772,False
+Amazon Books,Last-Item,LT-Recall@10,-0.0055,0.8594,A,baseline_vs_9_systems,0.8829803921568629,False
+Amazon Books,Avg-Last-10,LT-Recall@10,0.0087,0.7482,A,baseline_vs_9_systems,0.7940081632653061,False
+Amazon Books,Recency-Weighted,LT-Recall@10,0.0243,0.3713999999999999,A,baseline_vs_9_systems,0.5082315789473683,False
+Amazon Books,ComiRec (SA),LT-Recall@10,0.0591,0.0323999999999999,A,baseline_vs_9_systems,0.08022857142857118,False
+Amazon Books,MIND,LT-Recall@10,0.119,0.0,A,baseline_vs_9_systems,0.0,True
+Amazon Books,Recency-Weighted (stratified: high),LT-Recall@10,0.0374484222128754,0.4892000000000001,A,silhouette_stratification,0.6359600000000001,False
+Amazon Books,Recency-Weighted (stratified: low),LT-Recall@10,0.0153609703125916,0.8660000000000001,A,silhouette_stratification,0.8829803921568629,False
+Amazon Books,Recency-Weighted (stratified: medium),LT-Recall@10,0.0155013142821741,0.726,A,silhouette_stratification,0.7864999999999999,False
+Amazon Books,Recency-Weighted (stratified: high),Recall@10,-0.0427736293360018,0.2666,A,silhouette_stratification,0.40203428571428573,False
+Amazon Books,Recency-Weighted (stratified: low),Recall@10,0.0450026617482463,0.2416,A,silhouette_stratification,0.3974060606060606,False
+Amazon Books,Recency-Weighted (stratified: medium),Recall@10,0.0220383704429667,0.5609999999999999,A,silhouette_stratification,0.7081674418604651,False
+Last.fm-1K,Recency-Weighted (stratified: high),LT-Recall@10,-0.1591335293726699,0.371,A,silhouette_stratification,0.5082315789473683,False
+Last.fm-1K,Recency-Weighted (stratified: medium),LT-Recall@10,0.1767766952966368,0.7242,A,silhouette_stratification,0.7864999999999999,False
+Last.fm-1K,Recency-Weighted (stratified: high),Recall@10,-0.2275431377889011,0.1882,A,silhouette_stratification,0.3517428571428572,False
+Last.fm-1K,Recency-Weighted (stratified: low),Recall@10,-0.1788847574371712,0.2706,A,silhouette_stratification,0.40203428571428573,False
+Last.fm-1K,Recency-Weighted (stratified: medium),Recall@10,0.0151740625817102,0.9312,A,silhouette_stratification,0.9312,False
+MovieLens-25M,Recency-Weighted (stratified: high),LT-Recall@10,-0.0920574617898323,0.0,A,silhouette_stratification,0.0,True
+MovieLens-25M,Recency-Weighted (stratified: low),LT-Recall@10,-0.0320535633660115,0.5856,A,silhouette_stratification,0.7081674418604651,False
+MovieLens-25M,Recency-Weighted (stratified: high),Recall@10,-0.0787885248719222,0.042,A,silhouette_stratification,0.09495652173913044,False
+MovieLens-25M,Recency-Weighted (stratified: low),Recall@10,-0.0670513386683738,0.0812,A,silhouette_stratification,0.1759333333333333,False
+MovieLens-25M,Recency-Weighted (stratified: medium),Recall@10,-0.0299100159339554,0.4166,A,silhouette_stratification,0.5554666666666667,False

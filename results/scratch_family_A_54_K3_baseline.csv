@@ -1,0 +1,54 @@
+dataset,baseline_system,metric,cohens_d,p_two_sided,q_bh,sig
+Last.fm-1K,Random,Recall@10,0.2193,0.0,0.0,True
+Last.fm-1K,Popularity,Recall@10,0.1763,0.016599999999999948,0.03825217391304336,True
+Last.fm-1K,CF (ItemKNN),Recall@10,0.1868,0.006799999999999917,0.01802,True
+Last.fm-1K,Content (Avg Emb),Recall@10,0.1853,0.02400000000000002,0.05088000000000004,False
+Last.fm-1K,Last-Item,Recall@10,-0.2946,0.0,0.0,True
+Last.fm-1K,Avg-Last-10,Recall@10,-0.2655,0.0004,0.0012470588235294119,True
+Last.fm-1K,Recency-Weighted,Recall@10,-0.2648,0.0,0.0,True
+Last.fm-1K,ComiRec (SA),Recall@10,-0.0262,0.775,0.8592624999999999,False
+Last.fm-1K,MIND,Recall@10,0.1299,0.16999999999999993,0.2649999999999999,False
+Last.fm-1K,Random,LT-Recall@10,0.113,0.2627999999999999,0.35713846153846146,False
+Last.fm-1K,Popularity,LT-Recall@10,0.113,0.2589999999999999,0.35713846153846146,False
+Last.fm-1K,CF (ItemKNN),LT-Recall@10,0.113,0.2587999999999999,0.35713846153846146,False
+Last.fm-1K,Content (Avg Emb),LT-Recall@10,0.0539,0.7782,0.8592624999999999,False
+Last.fm-1K,Last-Item,LT-Recall@10,-0.0082,0.8664,0.9371265306122448,False
+Last.fm-1K,Avg-Last-10,LT-Recall@10,-0.1069,0.2578,0.35713846153846146,False
+Last.fm-1K,Recency-Weighted,LT-Recall@10,-0.1305,0.0486,0.09199285714285713,False
+Last.fm-1K,ComiRec (SA),LT-Recall@10,0.0137,0.9406000000000001,0.977486274509804,False
+Last.fm-1K,MIND,LT-Recall@10,0.0676,0.6226,0.7337555555555555,False
+Amazon Books,Random,Recall@10,0.2591,0.0,0.0,True
+Amazon Books,Popularity,Recall@10,0.2279,0.0,0.0,True
+Amazon Books,CF (ItemKNN),Recall@10,0.2192,0.0,0.0,True
+Amazon Books,Content (Avg Emb),Recall@10,0.069,0.0016000000000000458,0.004711111111111246,True
+Amazon Books,Last-Item,Recall@10,-0.09,0.0,0.0,True
+Amazon Books,Avg-Last-10,Recall@10,-0.0228,0.3068,0.40651000000000004,False
+Amazon Books,Recency-Weighted,Recall@10,-0.0587,0.0084,0.0212,True
+Amazon Books,ComiRec (SA),Recall@10,0.1972,0.0,0.0,True
+Amazon Books,MIND,Recall@10,0.1976,0.0,0.0,True
+Amazon Books,Random,LT-Recall@10,0.1625,0.0,0.0,True
+Amazon Books,Popularity,LT-Recall@10,0.1625,0.0,0.0,True
+Amazon Books,CF (ItemKNN),LT-Recall@10,0.0389,0.1501999999999999,0.24123030303030285,False
+Amazon Books,Content (Avg Emb),LT-Recall@10,0.0627,0.020000000000000018,0.04416666666666671,True
+Amazon Books,Last-Item,LT-Recall@10,-0.0113,0.6956,0.8014521739130435,False
+Amazon Books,Avg-Last-10,LT-Recall@10,0.0006,0.9827999999999999,0.9827999999999999,False
+Amazon Books,Recency-Weighted,LT-Recall@10,0.017,0.5382,0.6633627906976745,False
+Amazon Books,ComiRec (SA),LT-Recall@10,0.0532,0.05259999999999998,0.09613103448275859,False
+Amazon Books,MIND,LT-Recall@10,0.114,0.0,0.0,True
+Last.fm-1K,Recency-Weighted (stratified: high),LT-Recall@10,-0.173,0.4746,0.5989,False
+Last.fm-1K,Recency-Weighted (stratified: medium),LT-Recall@10,-0.318,0.0,0.0,True
+Last.fm-1K,Recency-Weighted (stratified: high),Recall@10,-0.315,0.0002,0.0006625,True
+Last.fm-1K,Recency-Weighted (stratified: low),Recall@10,-0.241,0.1106,0.18318125000000002,False
+Last.fm-1K,Recency-Weighted (stratified: medium),Recall@10,-0.402,0.0068,0.01802,True
+Amazon Books,Recency-Weighted (stratified: high),LT-Recall@10,-0.001,0.9822,0.9827999999999999,False
+Amazon Books,Recency-Weighted (stratified: low),LT-Recall@10,0.03,0.623,0.7337555555555555,False
+Amazon Books,Recency-Weighted (stratified: medium),LT-Recall@10,0.037,0.4436,0.5734341463414634,False
+Amazon Books,Recency-Weighted (stratified: high),Recall@10,-0.08,0.0368,0.07223703703703703,False
+Amazon Books,Recency-Weighted (stratified: low),Recall@10,-0.066,0.0706,0.12472666666666665,False
+Amazon Books,Recency-Weighted (stratified: medium),Recall@10,-0.044,0.249,0.35713846153846146,False
+MovieLens-25M,Recency-Weighted (stratified: high),LT-Recall@10,-0.097,0.0,0.0,True
+MovieLens-25M,Recency-Weighted (stratified: low),LT-Recall@10,-0.088,0.0,0.0,True
+MovieLens-25M,Recency-Weighted (stratified: medium),LT-Recall@10,0.032,0.913,0.9677800000000001,False
+MovieLens-25M,Recency-Weighted (stratified: high),Recall@10,-0.096,0.0094,0.02264545454545455,True
+MovieLens-25M,Recency-Weighted (stratified: low),Recall@10,-0.064,0.0936,0.1600258064516129,False
+MovieLens-25M,Recency-Weighted (stratified: medium),Recall@10,-0.083,0.026,0.053,False

@@ -1,0 +1,8 @@
+dataset,K,val_recall@10,n_users,mean_items_per_cluster,frac_users_clustered
+lastfm,2,0.0153203092601425,99,,
+lastfm,3,0.0190637388186418,99,,
+lastfm,4,0.0199097134251743,99,,
+lastfm,5,0.0218408207057408,99,,
+lastfm,8,0.0291623850685595,99,,
+lastfm,10,0.0306,99,17.23,1.0
+lastfm,15,0.0296,99,11.49,1.0

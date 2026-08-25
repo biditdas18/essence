@@ -1,0 +1,496 @@
+user_id,system,recall@10
+user_000008,Essence (K=10),0.0
+user_000008,CF (ItemKNN),0.0
+user_000008,Last-Item,0.13636363636363635
+user_000008,Avg-Last-10,0.045454545454545456
+user_000008,Recency-Weighted,0.09090909090909091
+user_000014,Essence (K=10),0.0
+user_000014,CF (ItemKNN),0.0
+user_000014,Last-Item,0.0
+user_000014,Avg-Last-10,0.0
+user_000014,Recency-Weighted,0.0
+user_000045,Essence (K=10),0.0
+user_000045,CF (ItemKNN),0.0
+user_000045,Last-Item,0.0
+user_000045,Avg-Last-10,0.0
+user_000045,Recency-Weighted,0.0
+user_000048,Essence (K=10),0.0
+user_000048,CF (ItemKNN),0.0
+user_000048,Last-Item,0.0
+user_000048,Avg-Last-10,0.0
+user_000048,Recency-Weighted,0.0
+user_000049,Essence (K=10),0.0
+user_000049,CF (ItemKNN),0.0
+user_000049,Last-Item,0.0
+user_000049,Avg-Last-10,0.0
+user_000049,Recency-Weighted,0.0
+user_000057,Essence (K=10),0.0
+user_000057,CF (ItemKNN),0.0
+user_000057,Last-Item,0.0
+user_000057,Avg-Last-10,0.0
+user_000057,Recency-Weighted,0.043478260869565216
+user_000077,Essence (K=10),0.0
+user_000077,CF (ItemKNN),0.0
+user_000077,Last-Item,0.0
+user_000077,Avg-Last-10,0.0
+user_000077,Recency-Weighted,0.0
+user_000080,Essence (K=10),0.0
+user_000080,CF (ItemKNN),0.0
+user_000080,Last-Item,0.0
+user_000080,Avg-Last-10,0.0
+user_000080,Recency-Weighted,0.0
+user_000088,Essence (K=10),0.07692307692307693
+user_000088,CF (ItemKNN),0.0
+user_000088,Last-Item,0.07692307692307693
+user_000088,Avg-Last-10,0.0
+user_000088,Recency-Weighted,0.0
+user_000098,Essence (K=10),0.0
+user_000098,CF (ItemKNN),0.0
+user_000098,Last-Item,0.0
+user_000098,Avg-Last-10,0.0
+user_000098,Recency-Weighted,0.0
+user_000099,Essence (K=10),0.20833333333333334
+user_000099,CF (ItemKNN),0.0
+user_000099,Last-Item,0.20833333333333334
+user_000099,Avg-Last-10,0.25
+user_000099,Recency-Weighted,0.25
+user_000101,Essence (K=10),0.16666666666666666
+user_000101,CF (ItemKNN),0.0
+user_000101,Last-Item,0.16666666666666666
+user_000101,Avg-Last-10,0.16666666666666666
+user_000101,Recency-Weighted,0.16666666666666666
+user_000106,Essence (K=10),0.0
+user_000106,CF (ItemKNN),0.0
+user_000106,Last-Item,0.0
+user_000106,Avg-Last-10,0.0
+user_000106,Recency-Weighted,0.0
+user_000140,Essence (K=10),0.0
+user_000140,CF (ItemKNN),0.0
+user_000140,Last-Item,0.0
+user_000140,Avg-Last-10,0.0
+user_000140,Recency-Weighted,0.0
+user_000143,Essence (K=10),0.05263157894736842
+user_000143,CF (ItemKNN),0.0
+user_000143,Last-Item,0.0
+user_000143,Avg-Last-10,0.05263157894736842
+user_000143,Recency-Weighted,0.05263157894736842
+user_000146,Essence (K=10),0.0
+user_000146,CF (ItemKNN),0.0
+user_000146,Last-Item,0.0
+user_000146,Avg-Last-10,0.0
+user_000146,Recency-Weighted,0.0
+user_000157,Essence (K=10),0.17647058823529413
+user_000157,CF (ItemKNN),0.0
+user_000157,Last-Item,0.17647058823529413
+user_000157,Avg-Last-10,0.17647058823529413
+user_000157,Recency-Weighted,0.17647058823529413
+user_000171,Essence (K=10),0.0
+user_000171,CF (ItemKNN),0.0
+user_000171,Last-Item,0.0
+user_000171,Avg-Last-10,0.0
+user_000171,Recency-Weighted,0.0
+user_000176,Essence (K=10),0.0
+user_000176,CF (ItemKNN),0.0
+user_000176,Last-Item,0.0
+user_000176,Avg-Last-10,0.0
+user_000176,Recency-Weighted,0.0
+user_000183,Essence (K=10),0.0
+user_000183,CF (ItemKNN),0.0
+user_000183,Last-Item,0.0
+user_000183,Avg-Last-10,0.0
+user_000183,Recency-Weighted,0.0
+user_000184,Essence (K=10),0.0
+user_000184,CF (ItemKNN),0.0
+user_000184,Last-Item,0.0
+user_000184,Avg-Last-10,0.0
+user_000184,Recency-Weighted,0.0
+user_000192,Essence (K=10),0.0
+user_000192,CF (ItemKNN),0.0
+user_000192,Last-Item,0.0
+user_000192,Avg-Last-10,0.0
+user_000192,Recency-Weighted,0.0
+user_000204,Essence (K=10),0.0
+user_000204,CF (ItemKNN),0.0
+user_000204,Last-Item,0.0
+user_000204,Avg-Last-10,0.0
+user_000204,Recency-Weighted,0.0
+user_000225,Essence (K=10),0.0
+user_000225,CF (ItemKNN),0.0
+user_000225,Last-Item,0.0
+user_000225,Avg-Last-10,0.0
+user_000225,Recency-Weighted,0.0
+user_000228,Essence (K=10),0.0
+user_000228,CF (ItemKNN),0.0
+user_000228,Last-Item,0.0
+user_000228,Avg-Last-10,0.0
+user_000228,Recency-Weighted,0.0
+user_000232,Essence (K=10),0.0
+user_000232,CF (ItemKNN),0.0
+user_000232,Last-Item,0.0
+user_000232,Avg-Last-10,0.0
+user_000232,Recency-Weighted,0.0
+user_000247,Essence (K=10),0.23529411764705882
+user_000247,CF (ItemKNN),0.0
+user_000247,Last-Item,0.23529411764705882
+user_000247,Avg-Last-10,0.23529411764705882
+user_000247,Recency-Weighted,0.23529411764705882
+user_000272,Essence (K=10),0.0
+user_000272,CF (ItemKNN),0.0
+user_000272,Last-Item,0.0
+user_000272,Avg-Last-10,0.0
+user_000272,Recency-Weighted,0.0
+user_000282,Essence (K=10),0.0
+user_000282,CF (ItemKNN),0.0
+user_000282,Last-Item,0.0
+user_000282,Avg-Last-10,0.0
+user_000282,Recency-Weighted,0.0
+user_000286,Essence (K=10),0.0
+user_000286,CF (ItemKNN),0.0
+user_000286,Last-Item,0.0
+user_000286,Avg-Last-10,0.0
+user_000286,Recency-Weighted,0.0
+user_000301,Essence (K=10),0.0
+user_000301,CF (ItemKNN),0.0
+user_000301,Last-Item,0.0
+user_000301,Avg-Last-10,0.0
+user_000301,Recency-Weighted,0.0
+user_000308,Essence (K=10),0.5
+user_000308,CF (ItemKNN),0.0
+user_000308,Last-Item,0.25
+user_000308,Avg-Last-10,0.0
+user_000308,Recency-Weighted,0.75
+user_000321,Essence (K=10),0.0
+user_000321,CF (ItemKNN),0.0
+user_000321,Last-Item,0.0
+user_000321,Avg-Last-10,0.0
+user_000321,Recency-Weighted,0.0
+user_000328,Essence (K=10),0.0
+user_000328,CF (ItemKNN),0.0
+user_000328,Last-Item,0.0
+user_000328,Avg-Last-10,0.045454545454545456
+user_000328,Recency-Weighted,0.045454545454545456
+user_000333,Essence (K=10),0.0
+user_000333,CF (ItemKNN),0.0
+user_000333,Last-Item,0.0
+user_000333,Avg-Last-10,0.0
+user_000333,Recency-Weighted,0.0
+user_000335,Essence (K=10),0.0
+user_000335,CF (ItemKNN),0.0
+user_000335,Last-Item,0.08333333333333333
+user_000335,Avg-Last-10,0.0
+user_000335,Recency-Weighted,0.08333333333333333
+user_000336,Essence (K=10),0.0
+user_000336,CF (ItemKNN),0.0
+user_000336,Last-Item,0.0
+user_000336,Avg-Last-10,0.0
+user_000336,Recency-Weighted,0.0
+user_000352,Essence (K=10),0.0
+user_000352,CF (ItemKNN),0.0
+user_000352,Last-Item,0.0
+user_000352,Avg-Last-10,0.0
+user_000352,Recency-Weighted,0.0
+user_000364,Essence (K=10),0.0
+user_000364,CF (ItemKNN),0.0
+user_000364,Last-Item,0.0
+user_000364,Avg-Last-10,0.0
+user_000364,Recency-Weighted,0.0
+user_000368,Essence (K=10),0.0
+user_000368,CF (ItemKNN),0.0
+user_000368,Last-Item,0.0
+user_000368,Avg-Last-10,0.0
+user_000368,Recency-Weighted,0.0
+user_000375,Essence (K=10),0.0
+user_000375,CF (ItemKNN),0.0
+user_000375,Last-Item,0.0
+user_000375,Avg-Last-10,0.0
+user_000375,Recency-Weighted,0.0
+user_000386,Essence (K=10),0.0
+user_000386,CF (ItemKNN),0.0
+user_000386,Last-Item,0.0
+user_000386,Avg-Last-10,0.0
+user_000386,Recency-Weighted,0.0
+user_000399,Essence (K=10),0.0
+user_000399,CF (ItemKNN),0.0
+user_000399,Last-Item,0.0
+user_000399,Avg-Last-10,0.0
+user_000399,Recency-Weighted,0.0
+user_000402,Essence (K=10),0.0
+user_000402,CF (ItemKNN),0.0
+user_000402,Last-Item,0.0
+user_000402,Avg-Last-10,0.0
+user_000402,Recency-Weighted,0.0
+user_000406,Essence (K=10),0.0
+user_000406,CF (ItemKNN),0.0
+user_000406,Last-Item,0.030303030303030304
+user_000406,Avg-Last-10,0.0
+user_000406,Recency-Weighted,0.0
+user_000408,Essence (K=10),0.0
+user_000408,CF (ItemKNN),0.0
+user_000408,Last-Item,0.0
+user_000408,Avg-Last-10,0.0
+user_000408,Recency-Weighted,0.0
+user_000410,Essence (K=10),0.0
+user_000410,CF (ItemKNN),0.0
+user_000410,Last-Item,0.0
+user_000410,Avg-Last-10,0.0
+user_000410,Recency-Weighted,0.0
+user_000416,Essence (K=10),0.0
+user_000416,CF (ItemKNN),0.0
+user_000416,Last-Item,0.0
+user_000416,Avg-Last-10,0.0
+user_000416,Recency-Weighted,0.0
+user_000419,Essence (K=10),0.0
+user_000419,CF (ItemKNN),0.0
+user_000419,Last-Item,0.0
+user_000419,Avg-Last-10,0.0
+user_000419,Recency-Weighted,0.0
+user_000435,Essence (K=10),0.17857142857142858
+user_000435,CF (ItemKNN),0.0
+user_000435,Last-Item,0.14285714285714285
+user_000435,Avg-Last-10,0.17857142857142858
+user_000435,Recency-Weighted,0.17857142857142858
+user_000448,Essence (K=10),0.0
+user_000448,CF (ItemKNN),0.0
+user_000448,Last-Item,0.0
+user_000448,Avg-Last-10,0.0
+user_000448,Recency-Weighted,0.0
+user_000455,Essence (K=10),0.0
+user_000455,CF (ItemKNN),0.0
+user_000455,Last-Item,0.0
+user_000455,Avg-Last-10,0.0
+user_000455,Recency-Weighted,0.0
+user_000473,Essence (K=10),0.027777777777777776
+user_000473,CF (ItemKNN),0.0
+user_000473,Last-Item,0.027777777777777776
+user_000473,Avg-Last-10,0.027777777777777776
+user_000473,Recency-Weighted,0.027777777777777776
+user_000487,Essence (K=10),0.0
+user_000487,CF (ItemKNN),0.0
+user_000487,Last-Item,0.0
+user_000487,Avg-Last-10,0.0
+user_000487,Recency-Weighted,0.0
+user_000519,Essence (K=10),0.1111111111111111
+user_000519,CF (ItemKNN),0.0
+user_000519,Last-Item,0.0
+user_000519,Avg-Last-10,0.0
+user_000519,Recency-Weighted,0.0
+user_000526,Essence (K=10),0.04
+user_000526,CF (ItemKNN),0.0
+user_000526,Last-Item,0.08
+user_000526,Avg-Last-10,0.08
+user_000526,Recency-Weighted,0.12
+user_000541,Essence (K=10),0.0
+user_000541,CF (ItemKNN),0.0
+user_000541,Last-Item,0.0
+user_000541,Avg-Last-10,0.0
+user_000541,Recency-Weighted,0.0
+user_000547,Essence (K=10),0.18181818181818182
+user_000547,CF (ItemKNN),0.0
+user_000547,Last-Item,0.09090909090909091
+user_000547,Avg-Last-10,0.13636363636363635
+user_000547,Recency-Weighted,0.13636363636363635
+user_000548,Essence (K=10),0.1
+user_000548,CF (ItemKNN),0.0
+user_000548,Last-Item,0.0
+user_000548,Avg-Last-10,0.0
+user_000548,Recency-Weighted,0.0
+user_000556,Essence (K=10),0.0
+user_000556,CF (ItemKNN),0.0
+user_000556,Last-Item,0.18181818181818182
+user_000556,Avg-Last-10,0.0
+user_000556,Recency-Weighted,0.0
+user_000560,Essence (K=10),0.0
+user_000560,CF (ItemKNN),0.0
+user_000560,Last-Item,0.0
+user_000560,Avg-Last-10,0.0
+user_000560,Recency-Weighted,0.0
+user_000561,Essence (K=10),0.5714285714285714
+user_000561,CF (ItemKNN),0.0
+user_000561,Last-Item,0.5714285714285714
+user_000561,Avg-Last-10,0.5714285714285714
+user_000561,Recency-Weighted,0.5714285714285714
+user_000563,Essence (K=10),0.0
+user_000563,CF (ItemKNN),0.0
+user_000563,Last-Item,0.0
+user_000563,Avg-Last-10,0.0
+user_000563,Recency-Weighted,0.0
+user_000567,Essence (K=10),0.0
+user_000567,CF (ItemKNN),0.0
+user_000567,Last-Item,0.0
+user_000567,Avg-Last-10,0.0
+user_000567,Recency-Weighted,0.0
+user_000597,Essence (K=10),0.0
+user_000597,CF (ItemKNN),0.0
+user_000597,Last-Item,0.0
+user_000597,Avg-Last-10,0.0
+user_000597,Recency-Weighted,0.0
+user_000608,Essence (K=10),0.0
+user_000608,CF (ItemKNN),0.0
+user_000608,Last-Item,0.0
+user_000608,Avg-Last-10,0.0
+user_000608,Recency-Weighted,0.0
+user_000638,Essence (K=10),0.0
+user_000638,CF (ItemKNN),0.0
+user_000638,Last-Item,0.05263157894736842
+user_000638,Avg-Last-10,0.0
+user_000638,Recency-Weighted,0.0
+user_000657,Essence (K=10),0.0
+user_000657,CF (ItemKNN),0.0
+user_000657,Last-Item,0.0
+user_000657,Avg-Last-10,0.0
+user_000657,Recency-Weighted,0.0
+user_000664,Essence (K=10),0.0
+user_000664,CF (ItemKNN),0.0
+user_000664,Last-Item,0.02631578947368421
+user_000664,Avg-Last-10,0.0
+user_000664,Recency-Weighted,0.0
+user_000674,Essence (K=10),0.0
+user_000674,CF (ItemKNN),0.0
+user_000674,Last-Item,0.0
+user_000674,Avg-Last-10,0.0
+user_000674,Recency-Weighted,0.0
+user_000677,Essence (K=10),0.0
+user_000677,CF (ItemKNN),0.0
+user_000677,Last-Item,0.0
+user_000677,Avg-Last-10,0.0
+user_000677,Recency-Weighted,0.0
+user_000723,Essence (K=10),0.0
+user_000723,CF (ItemKNN),0.0
+user_000723,Last-Item,0.0
+user_000723,Avg-Last-10,0.0
+user_000723,Recency-Weighted,0.0
+user_000736,Essence (K=10),0.0
+user_000736,CF (ItemKNN),0.0
+user_000736,Last-Item,0.0
+user_000736,Avg-Last-10,0.0
+user_000736,Recency-Weighted,0.0
+user_000748,Essence (K=10),0.0
+user_000748,CF (ItemKNN),0.0
+user_000748,Last-Item,0.0
+user_000748,Avg-Last-10,0.0
+user_000748,Recency-Weighted,0.0
+user_000759,Essence (K=10),0.0
+user_000759,CF (ItemKNN),0.0
+user_000759,Last-Item,0.0
+user_000759,Avg-Last-10,0.0
+user_000759,Recency-Weighted,0.0
+user_000777,Essence (K=10),0.03125
+user_000777,CF (ItemKNN),0.0
+user_000777,Last-Item,0.03125
+user_000777,Avg-Last-10,0.0
+user_000777,Recency-Weighted,0.0
+user_000784,Essence (K=10),0.0
+user_000784,CF (ItemKNN),0.0
+user_000784,Last-Item,0.0
+user_000784,Avg-Last-10,0.0
+user_000784,Recency-Weighted,0.0
+user_000785,Essence (K=10),0.0
+user_000785,CF (ItemKNN),0.0
+user_000785,Last-Item,0.0
+user_000785,Avg-Last-10,0.0
+user_000785,Recency-Weighted,0.0
+user_000786,Essence (K=10),0.0
+user_000786,CF (ItemKNN),0.0
+user_000786,Last-Item,0.0
+user_000786,Avg-Last-10,0.0
+user_000786,Recency-Weighted,0.02631578947368421
+user_000796,Essence (K=10),0.0
+user_000796,CF (ItemKNN),0.0
+user_000796,Last-Item,0.05
+user_000796,Avg-Last-10,0.0
+user_000796,Recency-Weighted,0.0
+user_000805,Essence (K=10),0.0
+user_000805,CF (ItemKNN),0.0
+user_000805,Last-Item,0.0
+user_000805,Avg-Last-10,0.0
+user_000805,Recency-Weighted,0.0
+user_000817,Essence (K=10),0.0
+user_000817,CF (ItemKNN),0.0
+user_000817,Last-Item,0.0
+user_000817,Avg-Last-10,0.0
+user_000817,Recency-Weighted,0.0
+user_000843,Essence (K=10),0.0
+user_000843,CF (ItemKNN),0.0
+user_000843,Last-Item,0.0
+user_000843,Avg-Last-10,0.0
+user_000843,Recency-Weighted,0.0
+user_000846,Essence (K=10),0.0
+user_000846,CF (ItemKNN),0.0
+user_000846,Last-Item,0.0
+user_000846,Avg-Last-10,0.0
+user_000846,Recency-Weighted,0.0
+user_000853,Essence (K=10),0.041666666666666664
+user_000853,CF (ItemKNN),0.0
+user_000853,Last-Item,0.041666666666666664
+user_000853,Avg-Last-10,0.08333333333333333
+user_000853,Recency-Weighted,0.08333333333333333
+user_000855,Essence (K=10),0.5
+user_000855,CF (ItemKNN),0.0
+user_000855,Last-Item,0.3
+user_000855,Avg-Last-10,0.5
+user_000855,Recency-Weighted,0.5
+user_000859,Essence (K=10),0.05555555555555555
+user_000859,CF (ItemKNN),0.0
+user_000859,Last-Item,0.05555555555555555
+user_000859,Avg-Last-10,0.05555555555555555
+user_000859,Recency-Weighted,0.05555555555555555
+user_000864,Essence (K=10),0.0
+user_000864,CF (ItemKNN),0.0
+user_000864,Last-Item,0.0
+user_000864,Avg-Last-10,0.0
+user_000864,Recency-Weighted,0.0
+user_000883,Essence (K=10),0.0
+user_000883,CF (ItemKNN),0.0
+user_000883,Last-Item,0.0
+user_000883,Avg-Last-10,0.0
+user_000883,Recency-Weighted,0.0
+user_000907,Essence (K=10),0.0
+user_000907,CF (ItemKNN),0.0
+user_000907,Last-Item,0.0
+user_000907,Avg-Last-10,0.0
+user_000907,Recency-Weighted,0.0
+user_000916,Essence (K=10),0.0
+user_000916,CF (ItemKNN),0.0
+user_000916,Last-Item,0.0
+user_000916,Avg-Last-10,0.0
+user_000916,Recency-Weighted,0.0
+user_000948,Essence (K=10),0.0
+user_000948,CF (ItemKNN),0.0
+user_000948,Last-Item,0.0
+user_000948,Avg-Last-10,0.0
+user_000948,Recency-Weighted,0.0
+user_000955,Essence (K=10),0.125
+user_000955,CF (ItemKNN),0.0
+user_000955,Last-Item,0.0
+user_000955,Avg-Last-10,0.125
+user_000955,Recency-Weighted,0.125
+user_000956,Essence (K=10),0.0
+user_000956,CF (ItemKNN),0.0
+user_000956,Last-Item,0.029411764705882353
+user_000956,Avg-Last-10,0.0
+user_000956,Recency-Weighted,0.0
+user_000967,Essence (K=10),0.0
+user_000967,CF (ItemKNN),0.0
+user_000967,Last-Item,0.0
+user_000967,Avg-Last-10,0.0
+user_000967,Recency-Weighted,0.0
+user_000972,Essence (K=10),0.04878048780487805
+user_000972,CF (ItemKNN),0.0
+user_000972,Last-Item,0.04878048780487805
+user_000972,Avg-Last-10,0.04878048780487805
+user_000972,Recency-Weighted,0.04878048780487805
+user_000982,Essence (K=10),0.0
+user_000982,CF (ItemKNN),0.0
+user_000982,Last-Item,0.0
+user_000982,Avg-Last-10,0.0
+user_000982,Recency-Weighted,0.0
+user_000985,Essence (K=10),0.0
+user_000985,CF (ItemKNN),0.0
+user_000985,Last-Item,0.0
+user_000985,Avg-Last-10,0.0
+user_000985,Recency-Weighted,0.0
+user_000996,Essence (K=10),0.05263157894736842
+user_000996,CF (ItemKNN),0.0
+user_000996,Last-Item,0.0
+user_000996,Avg-Last-10,0.0
+user_000996,Recency-Weighted,0.0
