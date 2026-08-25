@@ -1025,7 +1025,7 @@ under $|d|\approx0.30$).
 This pattern is consistent and well-evidenced across all three datasets.
 We treat it as a genuine domain-dependence finding rather than an
 architectural strength: it is Essence's \emph{relative standing} that
-tracks domain conditions, not necessarily anything specific to the
+is associated with domain conditions, not necessarily anything specific to the
 $K$-means clustering mechanism as opposed to the underlying content
 embeddings more generally (Section~\ref{sec:limitations-findings}
 addresses this directly).
@@ -1154,6 +1154,20 @@ general --- two implementations is not an exhaustive survey of the
 collaborative-filtering family --- but it is evidence against the
 narrower concern that the finding is specific to one, possibly
 unrepresentative, CF baseline.
+
+BPR-MF's significance tests are reported above as raw $p$-values rather
+than folded into one of this paper's existing FDR-corrected families
+(Section~\ref{sec:stats-methodology}): BPR-MF was added as an ad hoc,
+late-stage robustness probe, not part of the pre-specified evaluation
+design those families were built from, so it is disclosed standalone
+rather than artificially forced into a family it was never planned
+alongside. Leaving BPR-MF untuned also raises the same concern that
+motivated tuning CF-ItemKNN as a separate robustness check
+(Section~\ref{sec:limitations}): an untuned baseline could understate
+collaborative-baseline strength. That check's validation search
+selected the untuned configuration itself as optimal on MovieLens-25M
+specifically --- the domain where BPR-MF's robustness matters most ---
+so leaving BPR-MF untuned here does not introduce a comparable risk.
 
 \subsection{Statistical Validation Methodology}
 \label{sec:stats-methodology}
