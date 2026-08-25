@@ -77,6 +77,7 @@ Essence's rank is **associated with** collaborative/popularity signal strength i
 6. **The artist/author shortcut (not yet re-verified at the validated $K$).** At $K{=}3$, roughly a fifth of Essence's recommendations shared an artist (Last.fm-1K, 20.6%) or author (Amazon Books, 19.8%) with an item in the active cluster; excluding those candidates collapsed Recall@10 sharply (0.0119→0.0014 Last.fm-1K, 0.0221→0.0073 Amazon Books). This analysis has not been re-run at the validated $K$; the $K{=}3$ figures are reported as the most recent verified numbers rather than assumed unchanged.
 7. **A caught implementation bug in MIND, not an architecture flaw.** An early version of the hand-implemented MIND baseline zero-initialized its routing logits, which — because MIND's bilinear routing matrix is shared across capsules — silently collapsed the model's effective interest count to 1 regardless of the nominal $K$. A synthetic conformance test caught this before any number in this repo was generated; see [MIND/ComiRec training and verification](#mindcomirec-training-and-verification).
 8. **Multi-seed MIND/ComiRec robustness, re-checked at the validated $K$.** At $K{=}3$, ComiRec (SA) beat Essence on 2 of 4 Last.fm-1K training seeds — characterized as a statistical tie. At Essence's validated $K{=}10$, Essence's own Recall@10 rises enough ($0.0119\to0.0281$) that ComiRec no longer beats it on any seed (0/4). MIND never outranks Essence on Last.fm-1K/Amazon Books and always outranks it on MovieLens-25M (3/3), across every seed tested at either $K$.
+9. **A second, independent collaborative baseline (BPR-MF) replicates the domain-dependence pattern exactly.** CF-ItemKNN is the only collaborative-filtering baseline behind the domain-dependence finding above; to check this isn't an artifact of that one implementation, BPR-MF (Bayesian Personalized Ranking Matrix Factorization — a pairwise-ranking method sharing no code or architecture with ItemKNN) was implemented and conformance-tested on synthetic data before trusting any real-dataset number (the conformance test itself needed one correction — an overly strict pass/fail threshold — before all checks passed; see [MIND/ComiRec training and verification](#mindcomirec-training-and-verification) for the same discipline applied to the original neural baselines). Essence significantly beats BPR-MF where collaborative signal is weak (Last.fm-1K, $d{=}{+}0.296$; Amazon Books, $d{=}{+}0.261$) and significantly loses to it where collaborative signal is strong (MovieLens-25M, $d{=}{-}0.518$, BPR-MF ranking immediately behind CF-ItemKNN and ComiRec). BPR-MF's own LT-Recall@10 is $0.0000$ on all three datasets, including MovieLens-25M where it wins decisively on Recall@10. Full numbers: `results/scratch_bprmf_{lastfm,amazon,movielens}.csv` and `results/scratch_bprmf_bootstrap_{lastfm,amazon,movielens}.csv`.
 
 ## Paper Status
 
@@ -282,6 +283,41 @@ python experiments/adaptive_weighting/pilot_movielens_combined.py --n-users 200
 
 **This is unvalidated exploratory work, not a reported result.** It tests whether adaptively weighting two embedding channels per user (rather than a single metadata embedding) could improve on Recency-Weighted. It found no directional win in any variant tried. It is not cited in either paper submission beyond a single disclosure sentence, and should not be treated as evidence of anything beyond "this specific idea, tried this way, didn't pan out."
 
+### 11. Overnight robustness-check batch (rating-threshold, multi-seed, ItemKNN tuning, global-cutoff, BPR-MF)
+
+```bash
+# Rating-threshold sensitivity (restrict to rating>=4, both datasets, both scales checked directly)
+python evaluation/step1_ratingthresh_filter_build.py
+python evaluation/step1_ratingthresh_evaluate.py
+
+# Multi-seed resampling (2 additional user-sampling seeds each, Amazon Books / MovieLens-25M)
+python evaluation/step2_multiseed_amazon.py 43
+python evaluation/step2_multiseed_amazon.py 44
+python evaluation/step2_multiseed_movielens.py 43
+python evaluation/step2_multiseed_movielens.py 44
+
+# Validation-based ItemKNN hyperparameter tuning (neighbor count, shrinkage; test data never touched)
+python evaluation/step4_itemknn_tuning.py lastfm
+python evaluation/step4_itemknn_tuning.py amazon
+python evaluation/step4_itemknn_tuning.py movielens
+
+# Global-timestamp-cutoff split, all three datasets (robustness check, not adopted — see Known Limitations)
+python evaluation/step5_globalcutoff_build_evaluate.py lastfm
+python evaluation/step5_globalcutoff_build_evaluate.py amazon
+python evaluation/step5_globalcutoff_build_evaluate.py movielens
+
+# BPR-MF: mandatory conformance test first, then real-dataset evaluation on the canonical splits
+python models/test_bpr_mf.py
+python evaluation/step6_bprmf_evaluate.py lastfm
+python evaluation/step6_bprmf_evaluate.py amazon
+python evaluation/step6_bprmf_evaluate.py movielens
+
+# ItemKNN tuning also has its own conformance test (equivalence to the untuned canonical model)
+python models/test_itemknn_tunable.py
+```
+
+The rating-threshold, multi-seed, and global-cutoff scripts write to sibling `_rt4`/`_seed{43,44}`/`_globalcutoff` data directories rather than overwriting the canonical `data/*_processed/` directories. All outputs use a `scratch_*` naming convention in `results/`, matching every other scratch output in this repository. See [Key Findings](#key-findings) #9 and [Known Limitations](#known-limitations) for what these checks found.
+
 ## Data Attribution
 
 - **Last.fm-1K**: Celma, O. (2010). *Music Recommendation and Discovery.* Springer.
@@ -309,11 +345,12 @@ All experiments in this session ran on a single consumer laptop: **Apple M4 Pro,
 
 These match what the paper itself states — see `paper/essence_paper_v2.tex`, Sections 5.6/6/7, for the full statements this summarizes:
 
-- **Scale.** Last.fm-1K uses 99 users; its long-tail comparisons are directional (as few as 2 of 92 eligible users per method). Amazon Books and MovieLens-25M (2,000 users each) carry the statistical weight.
+- **Scale.** Last.fm-1K uses 99 users; its long-tail comparisons are directional (as few as 2 of 92 eligible users per method). Amazon Books and MovieLens-25M (2,000 users each) carry the statistical weight. A global-timestamp-cutoff split (tested as a robustness check, not adopted) strands 39% of Last.fm-1K's users (60/99 remain with data on both sides) and is uninformative at this scale — under it, Essence's Last.fm-1K standing genuinely reverses (significant losses to Recency-Weighted and Avg-Last-10, both currently reported as ties, and LT-Recall@10 collapses to 0.0000). Amazon Books, run identically, held up close to its reported findings; MovieLens-25M strands 98.6% of users (28/2,000 remain) and is too underpowered to be informative either way. This is reported as a real, disclosed sensitivity of the per-user-split protocol at Last.fm-1K's scale specifically — the per-user-split results remain what this repository reports as findings.
 - **Cross-user temporal leakage.** The chronological split is computed independently per user, with no shared global time cutoff. This preserves within-user chronology but does not enforce a global temporal cutoff; possible cross-user temporal leakage for population-based baselines (CF, Popularity) is a limitation of this evaluation protocol, not eliminated by it.
 - **$K$-selection anchoring.** $K$ is validation-selected per dataset, replacing an earlier fixed $K{=}3$. The one real caveat on the procedure itself: the stopping rule was applied moving forward from an already-established $K{=}8$ checkpoint, not from $K{=}2$; applied retroactively to $K \in \{2,\ldots,5\}$, it would have fired earlier for Amazon Books/MovieLens-25M.
-- **Rating threshold.** All Amazon and MovieLens ratings/reviews are treated as positive interactions regardless of rating value; this evaluates engagement/consumption prediction rather than preference prediction specifically. A sensitivity analysis using a positive-rating threshold (e.g., rating ≥ 4) was not performed due to time constraints.
+- **Rating threshold.** All Amazon and MovieLens ratings/reviews are treated as positive interactions regardless of rating value; this evaluates engagement/consumption prediction rather than preference prediction specifically. A sensitivity analysis using a positive-rating threshold (rating ≥ 4, verified against each dataset's actual scale — Amazon is 1–5 integer stars, MovieLens-25M is 0.5–5.0 half-stars) was performed as a robustness check; it did not reverse the domain-dependence or clustering-null-result findings, though sample sizes drop 20–28% once users below the stricter floor are excluded.
 - **MIND/ComiRec are hand-implemented, not pre-trained.** Both are trained from scratch per dataset rather than via production-tuned checkpoints; a well-tuned, larger-scale deployment could plausibly outperform the versions evaluated here, particularly on MovieLens-25M, where both already outrank Essence substantially.
 - **The domain-dependence mechanism is not fully explained.** "Collaborative/popularity signal strength" is measured post hoc via the baselines' own performance in each domain, not from an independent domain property decided in advance; this association has not been shown to be predictive.
+- **Additional robustness checks.** Multi-seed resampling (Amazon Books, MovieLens-25M) and validation-based ItemKNN hyperparameter tuning (neighbor count, shrinkage; test data never touched during the search) were each tested; neither reversed any reported finding's direction. CF-ItemKNN's Recall@10 on Amazon Books roughly doubles under validation-tuned shrinkage, but Essence still leads it by roughly $4\times$; on MovieLens-25M, tuning selected the existing untuned configuration as optimal (0% change). See [Reproducing the Results](#11-overnight-robustness-check-batch-rating-threshold-multi-seed-itemknn-tuning-global-cutoff-bpr-mf) for exact commands.
 - **The artist/author shortcut analysis has not been re-verified at the validated $K$** — the $K{=}3$ figures (~20% of hits same-artist/author) are reported as the most recent verified numbers, not assumed unchanged.
 - **The adaptive-weighting pilot is unvalidated** — see [above](#10-adaptive-weighting-pilot--exploratory-not-a-result).

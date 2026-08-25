@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Random,0.016387,0.000000,0.016387,0.011840,0.021488,1.0000,0.2009,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Popularity,0.016387,0.000800,0.015587,0.011049,0.020650,1.0000,0.1888,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),CF (ItemKNN),0.016387,0.000428,0.015960,0.011472,0.021064,1.0000,0.1952,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Content (Avg Emb),0.016387,0.010665,0.005722,0.001917,0.009624,0.9986,0.0858,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Last-Item,0.016387,0.017256,-0.000869,-0.006213,0.004565,0.3777,-0.0095,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Avg-Last-10,0.016387,0.012867,0.003520,0.000044,0.007408,0.9757,0.0557,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Recency-Weighted,0.016387,0.014876,0.001512,-0.001955,0.005320,0.7876,0.0243,1124
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Random,0.006757,0.000000,0.006757,0.000614,0.014742,0.9832,0.0899,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Popularity,0.006757,0.000000,0.006757,0.000614,0.015356,0.9822,0.0899,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),CF (ItemKNN),0.006757,0.003079,0.003678,-0.004579,0.013059,0.7996,0.0405,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Content (Avg Emb),0.006757,0.002867,0.003890,-0.000410,0.010442,0.9286,0.0679,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Last-Item,0.006757,0.011548,-0.004791,-0.014622,0.004545,0.1596,-0.0477,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Avg-Last-10,0.006757,0.002867,0.003890,-0.000410,0.010033,0.9315,0.0679,407
+"Amazon Books (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Recency-Weighted,0.006757,0.002867,0.003890,-0.000410,0.010442,0.9326,0.0679,407

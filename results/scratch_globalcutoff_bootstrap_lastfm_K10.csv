@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Random,0.003194,0.000040,0.003154,0.000000,0.008592,0.9538,0.1606,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Popularity,0.003194,0.000885,0.002309,-0.001187,0.008035,0.7760,0.1147,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),CF (ItemKNN),0.003194,0.000320,0.002873,-0.000376,0.008496,0.9056,0.1451,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Content (Avg Emb),0.003194,0.002364,0.000829,-0.001174,0.003158,0.7691,0.0959,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Last-Item,0.003194,0.005006,-0.001813,-0.005768,0.000731,0.1350,-0.1329,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Avg-Last-10,0.003194,0.006162,-0.002969,-0.008356,0.000000,0.0000,-0.1519,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",Recall@10,Essence (K=10),Recency-Weighted,0.003194,0.006625,-0.003431,-0.009207,-0.000081,0.0000,-0.1733,60
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Random,0.000000,0.000000,0.000000,0.000000,0.000000,0.0000,nan,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Popularity,0.000000,0.000000,0.000000,0.000000,0.000000,0.0000,nan,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),CF (ItemKNN),0.000000,0.000000,0.000000,0.000000,0.000000,0.0000,nan,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Content (Avg Emb),0.000000,0.000000,0.000000,0.000000,0.000000,0.0000,nan,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Last-Item,0.000000,0.005395,-0.005395,-0.014922,0.000000,0.0000,-0.2698,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Avg-Last-10,0.000000,0.001263,-0.001263,-0.003788,0.000000,0.0000,-0.2132,22
+"Last.fm-1K (global cutoff) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Recency-Weighted,0.000000,0.001263,-0.001263,-0.003788,0.000000,0.0000,-0.2132,22

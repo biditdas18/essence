@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Random,0.005981,0.001373,0.004608,0.002929,0.006377,1.0000,0.1375,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Popularity,0.005981,0.050334,-0.044352,-0.049778,-0.039019,0.0000,-0.4319,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),CF (ItemKNN),0.005981,0.079172,-0.073190,-0.079709,-0.066870,0.0000,-0.5853,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Content (Avg Emb),0.005981,0.004893,0.001089,-0.000768,0.003008,0.8735,0.0300,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Last-Item,0.005981,0.010057,-0.004076,-0.006751,-0.001614,0.0004,-0.0819,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Avg-Last-10,0.005981,0.005845,0.000137,-0.001663,0.001958,0.5592,0.0039,1432
+"MovieLens-25M (rating>=4, K=15)",Recall@10,Essence (K=15),Recency-Weighted,0.005981,0.007113,-0.001131,-0.003133,0.000823,0.1265,-0.0295,1432
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Random,0.008121,0.000000,0.008121,0.002320,0.016241,0.9947,0.1021,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Popularity,0.008121,0.000000,0.008121,0.001160,0.016241,0.9942,0.1021,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),CF (ItemKNN),0.008121,0.005027,0.003094,-0.006187,0.012761,0.7217,0.0304,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Content (Avg Emb),0.008121,0.006961,0.001160,-0.008121,0.009281,0.5543,0.0124,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Last-Item,0.008121,0.007734,0.000387,-0.009281,0.010441,0.5035,0.0036,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Avg-Last-10,0.008121,0.002320,0.005800,-0.001160,0.013921,0.9316,0.0727,431
+"MovieLens-25M (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Recency-Weighted,0.008121,0.002320,0.005800,-0.001160,0.013921,0.9267,0.0727,431

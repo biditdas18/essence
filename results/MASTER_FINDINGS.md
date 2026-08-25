@@ -5,10 +5,18 @@
 > Books), and $K{=}15$ (MovieLens-25M) per dataset, and found the headline
 > findings — domain-dependence, the clustering-mechanism null result, the
 > cold-start/singleton scope boundary — replicate at the validated $K$'s.
-> Several *numbers* below changed materially (ranks, effect sizes,
-> significance counts): see `paper/essence_paper_v2.tex` Sections 3-5 for
-> current, authoritative results. **This file has not been updated to
-> match and should not be cited for current figures.**
+> A further pass (completed 2026-08-25) added a second, independent
+> collaborative baseline (BPR-MF) that replicates the same
+> domain-dependence pattern, plus rating-threshold, multi-seed, and
+> global-cutoff robustness checks; none reversed a reported finding
+> except a global-timestamp-cutoff split on Last.fm-1K specifically
+> (see the paper's Limitations). Several *numbers* below have changed
+> materially (ranks, effect sizes, significance counts) across both
+> passes: see `paper/essence_paper_v2.tex` in full for current,
+> authoritative results — do not rely on a specific section number, as
+> the paper's structure has shifted across revisions since this file was
+> last updated. **This file has not been updated to match and should not
+> be cited for current figures.**
 
 Reference document for the paper-writing pass. Not paper text. Every number
 below is pulled fresh from the cited CSV, not recalled from conversation —

@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Random,0.029976,0.000104,0.029872,0.025124,0.034874,1.0000,0.3036,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Popularity,0.029976,0.001563,0.028413,0.023668,0.033380,1.0000,0.2839,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),CF (ItemKNN),0.029976,0.003771,0.026204,0.021498,0.031142,1.0000,0.2608,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Content (Avg Emb),0.029976,0.018023,0.011953,0.007711,0.016398,1.0000,0.1331,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Last-Item,0.029976,0.035100,-0.005125,-0.010255,-0.000148,0.0217,-0.0500,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Avg-Last-10,0.029976,0.024222,0.005753,0.002001,0.009497,0.9988,0.0773,1602
+"Amazon Books (rating>=4, K=10)",Recall@10,Essence (K=10),Recency-Weighted,0.029976,0.028503,0.001473,-0.002158,0.005096,0.7810,0.0199,1602
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Random,0.024475,0.000000,0.024475,0.016563,0.033250,1.0000,0.1845,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Popularity,0.024475,0.000000,0.024475,0.016391,0.033213,1.0000,0.1845,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),CF (ItemKNN),0.024475,0.019903,0.004572,-0.006729,0.015787,0.7876,0.0256,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Content (Avg Emb),0.024475,0.012595,0.011880,0.003364,0.020742,0.9968,0.0861,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Last-Item,0.024475,0.028798,-0.004323,-0.013840,0.004957,0.1834,-0.0285,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Avg-Last-10,0.024475,0.023647,0.000828,-0.007195,0.008851,0.5781,0.0064,966
+"Amazon Books (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Recency-Weighted,0.024475,0.025027,-0.000552,-0.008230,0.007126,0.4531,-0.0045,966

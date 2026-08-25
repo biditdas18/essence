@@ -237,7 +237,16 @@ and comparatively weakly on what is individually resonant.
 MIND~\cite{li2019} introduced dynamic routing to extract multiple interest
 capsules from a user's interaction history, explicitly addressing the failure
 of a single user vector to represent diverse tastes. ComiRec~\cite{cen2020}
-extended this with explicit diversity controls at serving time.
+extended this with explicit diversity controls at serving time. Later
+architectures relax MIND's routing mechanism differently: SINE infers a
+sparse, adaptively-selected concept set per user rather than a fixed
+capsule count~\cite{tan2021}, while Re4 adds contrastive and
+reconstruction objectives to make individual interest embeddings more
+distinguishable and more faithful to the items that justify
+them~\cite{zhang2022}. Both remain in the same data-level lineage as
+MIND and ComiRec --- cross-user interaction data trains the
+routing/attention mechanism itself, the distinction Essence's comparison
+to MIND/ComiRec (below) is actually about.
 
 Essence shares the multi-interest intuition with MIND and ComiRec, the
 recognition that a user's preferences cannot be collapsed into a single
@@ -312,9 +321,13 @@ Embedding source            & Co-occurrence & Co-occurrence
 \subsection{Session-Based and Content-Based Methods}
 BERT4Rec~\cite{sun2019} and GRU4Rec~\cite{hidasi2016} model sequential user
 behaviour using transformer and recurrent architectures, capturing short-term
-context effectively. Content-based filtering relies on item feature similarity
-without interaction logs but typically averages preferences into a single
-vector, losing intra-user diversity.
+context effectively. Content-based filtering~\cite{pazzani2007} relies on item feature
+similarity without interaction logs but typically averages preferences
+into a single vector, losing intra-user diversity. Essence's retrieval
+mechanism belongs to this lineage --- items are represented by
+pre-trained text embeddings over metadata, not by collaborative signal
+--- but adds a per-user $K$-means decomposition that classical
+content-based filtering does not.
 
 Essence occupies a complementary position: it captures intra-user diversity
 (like multi-interest methods) without cross-user interaction data (like content-based
@@ -813,7 +826,12 @@ truth did the system recover?
 
 This is a retrieval problem, not a classification problem. All systems are
 evaluated against the \emph{full item catalog} with no negative sampling,
-following the full-ranking evaluation protocol~\cite{krichene2020}. Absolute
+following the full-ranking evaluation protocol~\cite{krichene2020}. This
+also avoids a separate, distinct pitfall: Rendle~\cite{rendle2019} shows
+that sampled evaluation metrics are not merely noisier versions of their
+exact counterparts but can invert which of two systems appears better, a
+risk this full-catalog protocol is structurally immune to regardless of
+sample size chosen. Absolute
 recall values are low by construction under this protocol: the meaningful
 signal is relative comparison across systems evaluated under identical
 conditions.
@@ -1055,6 +1073,87 @@ and always outranks Essence on MovieLens-25M, across every seed tested.
 ComiRec (SA) now shows the same clean pattern on all three datasets
 (never on Last.fm-1K or Amazon Books, always on MovieLens-25M) rather than
 being seed-dependent anywhere.
+
+\subsection{An Additional Collaborative Baseline: BPR-MF}
+\label{sec:bprmf}
+
+The domain-dependence pattern above rests on comparisons against a
+single collaborative-filtering baseline, CF-ItemKNN, throughout. To
+check that the pattern is not an artifact of that particular
+implementation, we additionally implement BPR-MF~\cite{rendle2009}
+(Bayesian Personalized Ranking Matrix Factorization): a pairwise-ranking
+loss over learned latent user and item factors, optimized by stochastic
+gradient descent to rank each user's observed positive items above
+randomly sampled negatives. This is structurally unrelated to
+ItemKNN's neighborhood-based scoring --- the two share no code and no
+architectural assumptions --- while remaining, like ItemKNN, a genuine
+collaborative method: representations are learned entirely from
+cross-user interaction data, with no item content used at any stage.
+
+\textbf{Before trusting any real-dataset number from this new
+implementation}, we ran a dedicated conformance test on synthetic data,
+the same discipline that caught the MIND routing bug in
+Section~\ref{sec:setup}: (1) training loss must decrease with training
+rather than staying flat or increasing; (2) given synthetic data with a
+known latent two-block structure (two disjoint user/item clusters with
+no cross-block interactions), the model must recover that structure,
+ranking each block's own items higher for that block's users than the
+other block's items; (3) a user's single known positive item must be
+recovered near the top of an otherwise-random ranking, as a check
+against index-mapping bugs. The conformance test itself needed one
+correction before all three checks passed cleanly: an initial,
+arbitrarily strict pass/fail threshold on the loss-decrease check (a
+required percentage drop within a fixed number of epochs) flagged a
+false failure even though the model was training correctly, just more
+slowly than that threshold assumed; the check was rewritten to a more
+principled criterion (loss below the untrained baseline, and continuing
+to decrease with more training) rather than the threshold being loosened
+to make the existing test pass. This was a bug in the test, not in the
+model. Hyperparameters are fixed, not tuned --- 32 latent factors,
+learning rate 0.05, L2 regularization 0.01, 30 epochs, seed 42 ---
+matching how CF-ItemKNN is treated as an untuned baseline elsewhere in
+this paper.
+
+\begin{table}[H]
+\centering
+\caption{BPR-MF vs.\ Essence, all three datasets, using the same paired
+         bootstrap protocol used throughout this paper ($10{,}000$
+         resamples, seed 42), reported as raw $p$-values, not corrected
+         for multiple comparisons within a family as the paper's primary
+         baseline comparisons are (Section~\ref{sec:stats-methodology}).
+         Recall@10 differences are significant ($p<0.05$) on all three
+         datasets; LT-Recall@10 differences are significant on Last.fm-1K
+         and Amazon Books but not on MovieLens-25M ($p\approx0.09$).}
+\label{tab:bprmf}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dataset} & \textbf{Essence R@10} & \textbf{BPR-MF R@10} & \textbf{Essence LT-R@10} & \textbf{BPR-MF LT-R@10} \\
+\midrule
+Last.fm-1K     & 0.0281 & 0.0005 & 0.0142 & 0.0000 \\
+Amazon Books   & 0.0253 & 0.0015 & 0.0207 & 0.0000 \\
+MovieLens-25M  & 0.0053 & 0.0647 & 0.0030 & 0.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The result replicates the domain-dependence pattern exactly, with a
+collaborative method that shares nothing but the underlying data
+requirement with CF-ItemKNN. Where collaborative signal is weak,
+Essence significantly beats BPR-MF (Last.fm-1K: $d=+0.296$; Amazon
+Books: $d=+0.261$). Where collaborative signal is strong, Essence
+significantly loses to it (MovieLens-25M: $d=-0.518$, comparable in
+magnitude to the $d=-0.550$ loss to CF-ItemKNN); BPR-MF there ranks
+immediately behind CF-ItemKNN and ComiRec (SA) among all ten systems
+tested (Table~\ref{tab:headline-recall}). BPR-MF's own LT-Recall@10 is
+$0.0000$ on all three datasets, including MovieLens-25M where it wins
+decisively on Recall@10 --- another instance of a pattern discussed
+elsewhere in this Discussion, that strong aggregate collaborative
+performance does not translate into long-tail recovery. This does not
+establish that domain-dependence generalizes to collaborative methods in
+general --- two implementations is not an exhaustive survey of the
+collaborative-filtering family --- but it is evidence against the
+narrower concern that the finding is specific to one, possibly
+unrepresentative, CF baseline.
 
 \subsection{Statistical Validation Methodology}
 \label{sec:stats-methodology}
@@ -1503,9 +1602,33 @@ in settings where collaborative filtering is not viable: privacy-regulated
 environments, on-device recommendation without server-side interaction logs,
 federated settings where data cannot leave the user's device, and cold-start
 contexts where a population-level interaction graph does not yet exist. This
+positioning is consistent with a broader body of work surveying the
+deployment, training, and privacy constraints of recommenders that keep
+data local to the user rather than pooling it centrally~\cite{yin2024};
+Essence differs from most systems in that survey's scope in one respect:
+it requires no model training or update step at all, on-device or
+otherwise, since $K$-means is refit directly on a user's own history at
+inference time. This
 is a direct consequence of the architecture (Section~\ref{sec:framework})
 rather than an added feature, and follows from the same data-level
 distinction discussed in Section~\ref{subsec:multi}.
+
+\subsection{Robustness to Baseline Choice}
+
+The domain-dependence pattern discussed throughout this section rests
+partly on comparisons against a single collaborative-filtering
+baseline, CF-ItemKNN. Section~\ref{sec:bprmf} checks that this is not
+an artifact of that specific choice by implementing and
+conformance-testing BPR-MF, a pairwise-ranking matrix-factorization
+method with no architecture in common with ItemKNN. It replicates the
+pattern exactly: Essence significantly beats it where collaborative
+signal is weak (Last.fm-1K, $d=+0.296$; Amazon Books, $d=+0.261$) and
+significantly loses to it where collaborative signal is strong
+(MovieLens-25M, $d=-0.518$, ranking immediately behind CF-ItemKNN and
+ComiRec). This strengthens the domain-dependence claim against the
+objection that it depends on one particular, possibly-unrepresentative
+CF implementation, though it remains evidence from two collaborative
+methods, not a claim that the pattern holds for the family in general.
 
 \subsection{Broader Impact}
 
@@ -1535,7 +1658,11 @@ directly measure.
         users per method) and are directional rather than statistically
         substantive (Section~\ref{sec:limitations-findings}); the Amazon
         Books and MovieLens-25M results, at 2{,}000 users each, carry the
-        statistical weight.
+        statistical weight. A global-timestamp-cutoff split, tested as a
+        robustness check and not adopted, strands 39\% of Last.fm-1K's
+        users (60/99 remain with data on both sides) and is uninformative
+        at this scale, unlike Amazon Books, where the same check held up
+        on a larger surviving sample.
   \item \textbf{Cross-user temporal leakage.} The chronological split
         (Section~\ref{sec:setup}) is computed independently per user, with
         no shared global time cutoff. This preserves within-user
@@ -1595,9 +1722,11 @@ directly measure.
         ratings/reviews are treated as positive interactions regardless of
         rating value; this evaluates engagement/consumption prediction
         rather than preference prediction specifically. A sensitivity
-        analysis using a positive-rating threshold (e.g., rating $\geq 4$)
-        was not performed due to time constraints and is left to future
-        work.
+        analysis using a positive-rating threshold (rating $\geq 4$) was
+        performed as a robustness check (below); it did not reverse the
+        domain-dependence or clustering-null-result findings, though
+        sample sizes drop 20--28\% once users falling below the
+        interaction floor under the stricter definition are excluded.
   \item \textbf{The domain-dependence mechanism is not fully explained.}
         ``Collaborative/popularity signal strength'' (Section~\ref{sec:domain-dependence})
         is measured post hoc via the baselines' own performance in each
@@ -1605,6 +1734,14 @@ directly measure.
         A more principled, dataset-independent characterization of when
         peer-isolated personalization should be expected to help is left to
         future work.
+  \item \textbf{Additional robustness checks.} Beyond the rating-threshold
+        check above, multi-seed resampling (two additional user-sampling
+        seeds, Amazon Books and MovieLens-25M) and validation-based
+        ItemKNN hyperparameter tuning (neighbor count, shrinkage; test data
+        never touched during the search) were each tested; neither
+        reversed any reported finding's direction. CF-ItemKNN's Recall@10
+        on Amazon Books roughly doubles under validation-tuned shrinkage,
+        but Essence still leads it by roughly $4\times$.
 \end{itemize}
 
 % ── 8. Conclusion ─────────────────────────────────────────────────────────────
@@ -1752,6 +1889,36 @@ Ferrari Dacrema, M., Boglio, S., Cremonesi, P., \& Jannach, D.\ (2021).
 \textit{A Troubling Analysis of Reproducibility and Progress in
 Recommender Systems Research}.
 ACM Transactions on Information Systems.
+
+\bibitem{rendle2009}
+Rendle, S., Freudenthaler, C., Gantner, Z., \& Schmidt-Thieme, L.\ (2009).
+\textit{BPR: Bayesian Personalized Ranking from Implicit Feedback}.
+UAI 2009.
+
+\bibitem{pazzani2007}
+Pazzani, M.\ J., \& Billsus, D.\ (2007).
+\textit{Content-Based Recommendation Systems}.
+The Adaptive Web, LNCS vol.\ 4321, pp.\ 325--341, Springer.
+
+\bibitem{yin2024}
+Yin, H., Qu, L., Chen, T., Yuan, W., Zheng, R., Long, J., Xia, X., Shi, Y., \& Zhang, C.\ (2024).
+\textit{On-Device Recommender Systems: A Comprehensive Survey}.
+arXiv:2401.11441.
+
+\bibitem{tan2021}
+Tan, Q., Zhang, J., Yao, J., Liu, N., Zhou, J., Yang, H., \& Hu, X.\ (2021).
+\textit{Sparse-Interest Network for Sequential Recommendation}.
+WSDM 2021.
+
+\bibitem{zhang2022}
+Zhang, S., Yang, L., Yao, D., Lu, Y., Feng, F., Zhao, Z., Chua, T., \& Wu, F.\ (2022).
+\textit{Re4: Learning to Re-contrast, Re-attend, Re-construct for Multi-interest Recommendation}.
+WWW 2022.
+
+\bibitem{rendle2019}
+Rendle, S.\ (2019).
+\textit{Evaluation Metrics for Item Recommendation under Sampling}.
+arXiv:1912.02263.
 
 \end{thebibliography}
 

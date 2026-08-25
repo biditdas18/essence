@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Random,0.025835,0.000241,0.025594,0.021458,0.029897,1.0000,0.2664,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Popularity,0.025835,0.001472,0.024362,0.020221,0.028752,1.0000,0.2499,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),CF (ItemKNN),0.025835,0.005391,0.020443,0.016253,0.024671,1.0000,0.2110,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Content (Avg Emb),0.025835,0.015547,0.010288,0.006788,0.013829,1.0000,0.1298,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Last-Item,0.025835,0.033207,-0.007372,-0.012227,-0.002535,0.0011,-0.0670,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Avg-Last-10,0.025835,0.025463,0.000371,-0.002527,0.003240,0.6023,0.0056,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",Recall@10,Essence (K=10),Recency-Weighted,0.025835,0.027928,-0.002093,-0.005366,0.001075,0.0988,-0.0285,2000
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Random,0.019017,0.000398,0.018619,0.012181,0.025679,1.0000,0.1495,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Popularity,0.019017,0.000000,0.019017,0.012632,0.026316,1.0000,0.1537,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),CF (ItemKNN),0.019017,0.012327,0.006690,-0.001039,0.014883,0.9544,0.0473,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Content (Avg Emb),0.019017,0.008108,0.010910,0.003956,0.018240,0.9991,0.0856,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Last-Item,0.019017,0.024897,-0.005880,-0.014241,0.002576,0.0821,-0.0389,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Avg-Last-10,0.019017,0.015825,0.003192,-0.002495,0.008974,0.8602,0.0304,1256
+"Amazon Books (seed=43) (rating>=4, K=10)",LT-Recall@10,Essence (K=10),Recency-Weighted,0.019017,0.019249,-0.000231,-0.006476,0.006297,0.4729,-0.0021,1256

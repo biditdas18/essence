@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,cohens_d_paired,n_paired_users
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Random,0.006644,0.001879,0.004765,0.003070,0.006616,1.0000,0.1178,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Popularity,0.006644,0.049110,-0.042466,-0.046947,-0.037914,0.0000,-0.4174,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),CF (ItemKNN),0.006644,0.080193,-0.073549,-0.079840,-0.067389,0.0000,-0.5200,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Content (Avg Emb),0.006644,0.003879,0.002765,0.001185,0.004393,0.9999,0.0751,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Last-Item,0.006644,0.008350,-0.001706,-0.003620,0.000141,0.0353,-0.0390,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Avg-Last-10,0.006644,0.005653,0.000991,-0.000429,0.002449,0.9143,0.0302,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",Recall@10,Essence (K=15),Recency-Weighted,0.006644,0.006760,-0.000116,-0.001652,0.001438,0.4345,-0.0033,2000
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Random,0.002013,0.005106,-0.003093,-0.010358,0.002651,0.1701,-0.0430,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Popularity,0.002013,0.000000,0.002013,0.000000,0.005056,0.9496,0.0719,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),CF (ItemKNN),0.002013,0.000000,0.002013,0.000000,0.004762,0.9498,0.0719,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Content (Avg Emb),0.002013,0.002062,-0.000049,-0.002798,0.002356,0.4721,-0.0017,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Last-Item,0.002013,0.009229,-0.007216,-0.015169,-0.000393,0.0174,-0.0850,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Avg-Last-10,0.002013,0.006701,-0.004688,-0.010874,0.000000,0.0241,-0.0776,485
+"MovieLens-25M (seed=44) (rating>=4, K=15)",LT-Recall@10,Essence (K=15),Recency-Weighted,0.002013,0.008763,-0.006750,-0.014089,-0.000859,0.0076,-0.0895,485
