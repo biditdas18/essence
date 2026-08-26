@@ -39,6 +39,36 @@ embeddings/*.npy
 experiments/adaptive_weighting/*_channel_a.pkl
 experiments/adaptive_weighting/*_channel_b.pkl
 
+# MovieLens-25M row-level interaction data (userId/movieId/rating/timestamp):
+# GroupLens's license prohibits redistribution without separate permission,
+# with no exception for derived/processed subsets. Regenerate locally via
+# experiments/movielens/preprocess_movielens_step1.py (sampled_ratings.csv)
+# and preprocess_movielens_step2.py (train.csv/test.csv), or the
+# evaluation/step2_multiseed_movielens.py / step5_globalcutoff_build_evaluate.py /
+# step1_ratingthresh_filter_build.py variants for the seed/globalcutoff/rt4
+# copies. Movie catalog metadata (item_candidates.csv, item_text.csv,
+# longtail_items.csv, tmdb_overviews.jsonl, tmdb_failures.jsonl) carries no
+# per-user rating rows and is NOT covered by this rule -- see paper checklist
+# Q12/README for the explicit distinction.
+data/movielens_processed/train.csv
+data/movielens_processed/test.csv
+data/movielens_processed/sampled_ratings.csv
+data/movielens_processed_*/train.csv
+data/movielens_processed_*/test.csv
+
+# Amazon Reviews 2023 row-level interaction/review data: license unverifiable
+# (no explicit license file or tag published as of this writing), gitignored
+# pending explicit confirmation rather than assumed permissible. Regenerate
+# locally via experiments/amazon_books/preprocess_amazon.py (canonical) or the
+# evaluation/step1_ratingthresh_filter_build.py / step2_multiseed_amazon.py /
+# step5_globalcutoff_build_evaluate.py variants for the seed/globalcutoff/rt4
+# copies. item_meta.csv (title/author/description, no user rows) is NOT
+# covered by this rule -- see paper checklist Q12/README.
+data/amazon_processed/train.csv
+data/amazon_processed/test.csv
+data/amazon_processed_*/train.csv
+data/amazon_processed_*/test.csv
+
 # Scratch / debug
 debug/
 
