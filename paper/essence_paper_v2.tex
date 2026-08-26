@@ -633,14 +633,18 @@ citation of the originating paper, so redistribution/commercial terms
 cannot be independently verified and none are claimed here.
 \texttt{all-MiniLM-L6-v2} --- Apache~2.0 (permissive, commercial use
 allowed), per its Hugging Face model card. The accompanying repository
-includes filtered, chronologically-split, interaction-level subsets
-derived from each dataset (user/item identifiers, ratings or plays,
-timestamps, and for Amazon Books and MovieLens-25M, associated
-review/metadata text) for reproducibility --- not the full raw
-datasets, but more than aggregate statistics alone. For MovieLens-25M
-specifically, this is in tension with GroupLens's redistribution
-restriction quoted above; separate permission has not been sought. This
-is disclosed here directly rather than elided.
+includes catalog-level metadata (item titles, genres, authors,
+descriptions, and, for MovieLens-25M, TMDb overview text) and our own
+code, but not row-level user interaction data for MovieLens-25M or
+Amazon Books: those train/test files are regenerated locally via the
+included preprocessing scripts from each dataset's original source
+download rather than redistributed directly, given GroupLens's explicit
+redistribution restriction quoted above and Amazon's unverifiable
+license. An earlier revision of this repository had tracked those files
+directly; this was corrected, though the pre-correction commits remain
+retrievable from the repository's git history. Last.fm-1K's row-level
+interactions remain included, consistent with its license, which has no
+equivalent redistribution prohibition.
 
 \subsection{Train/Test Split}
 For each user on all three datasets, interactions are sorted chronologically and
