@@ -33,6 +33,8 @@ data/*.zip
 data/amazon_processed/embeddings_metadata.pkl
 data/amazon_processed/embeddings_user_review.pkl
 data/movielens_processed/embeddings_metadata.pkl
+data/amazon_processed_*/embeddings_metadata.pkl
+data/movielens_processed_*/embeddings_metadata.pkl
 embeddings/item_embeddings.pkl
 embeddings/*.index
 embeddings/*.npy
