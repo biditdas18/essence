@@ -180,7 +180,7 @@ python evaluation/step6c_full_chain_amazon_scratch.py       # ~1,057.1s (17.6 mi
 python evaluation/step6c_full_chain_movielens_scratch.py    # ~473.6s (7.9 min)
 ```
 
-Each script runs, at that dataset's validated $K$: (1) full 8/10-system evaluation, (2) paired bootstrap significance, (3) BH-FDR correction, (4) decile/cold-start analysis, (5) silhouette-stratification test, (6) active-cluster-selection ablation — end to end, with real per-stage timing printed. All outputs use a `scratch_*_K{10,15}` naming convention so nothing overwrites the original $K{=}3$ result files. Timings above measured on a single Apple M4 Pro (macOS, no CUDA GPU); MIND/ComiRec use Apple's MPS backend when available.
+Each script runs, at that dataset's validated $K$: (1) full 8/10-system evaluation, (2) paired bootstrap significance, (3) BH-FDR correction, (4) decile/cold-start analysis, (5) silhouette-stratification test, (6) active-cluster-selection ablation — end to end, with real per-stage timing printed. All outputs use a `scratch_*_K{10,15}` naming convention so nothing overwrites the original $K{=}3$ result files. Timings above measured on a single Apple M4 Pro (macOS, no CUDA GPU) running alone; MIND/ComiRec use Apple's MPS backend when available. **These figures assume an otherwise-idle machine** — running multiple heavy jobs concurrently extends this substantially due to CPU contention (observed ~91 min each for the Amazon and MovieLens chains when run simultaneously during a reproducibility check).
 
 ### 4. MIND/ComiRec training and verification
 
