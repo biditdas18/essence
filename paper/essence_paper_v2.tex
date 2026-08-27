@@ -1669,11 +1669,13 @@ not establish an independently measurable prospective predictor.
 
 \subsection{Privacy and Deployment Constraints}
 
-Because Essence consults no cross-user interaction data at any stage, it is deployable
-in settings where collaborative filtering is not viable: privacy-regulated
-environments, on-device recommendation without server-side interaction logs,
-federated settings where data cannot leave the user's device, and cold-start
-contexts where a population-level interaction graph does not yet exist. This
+Essence may be well-suited to settings where collaborative filtering is not
+viable --- privacy-regulated environments, on-device recommendation without
+server-side interaction logs, federated settings where data cannot leave the
+user's device, and cold-start contexts where a population-level interaction
+graph does not yet exist --- given it consults no cross-user interaction data
+at any stage; this is a property of the architecture, not a claim of verified
+regulatory compliance in any specific jurisdiction. This
 positioning is consistent with a broader body of work surveying the
 deployment, training, and privacy constraints of recommenders that keep
 data local to the user rather than pooling it centrally~\cite{yin2024};
