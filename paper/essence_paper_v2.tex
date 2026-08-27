@@ -135,7 +135,7 @@ these being a minority of its recommendations. We frame Essence not as a
 universally superior candidate generator, but as a data point on when
 peer-isolated, content-only personalization is and isn't the right
 architectural choice.
-Code: \url{https://github.com/biditdas18/essence}
+Code and data: \url{https://github.com/biditdas18/essence}
 \end{abstract}
 
 % ── 1. Introduction ───────────────────────────────────────────────────────────
@@ -897,7 +897,7 @@ Significance testing methodology (paired bootstrap, FDR correction, effect
 sizes, BCa cross-checks) is described once, in
 Section~\ref{sec:stats-methodology}, and applied identically across all
 three datasets rather than being re-derived per dataset.
-Code available at:
+Code and data available at:
 \url{https://github.com/biditdas18/essence}
 
 % ── 5. Results ────────────────────────────────────────────────────────────────
@@ -1196,25 +1196,32 @@ canonical numbers.
          the canonical per-user-split, seed-42 Recall@10 to each
          check's result; ``CF R@10'' (tuning row only) compares
          CF-ItemKNN's own Recall@10, since that is what was tuned, not
-         Essence.}
+         Essence. ``Conclusion preserved?'' states whether both (i)
+         Essence's baseline rank order and (ii) the clustering-null
+         result (no stratum shows Essence significantly ahead of
+         Recency-Weighted, BH-FDR corrected within each check's own
+         family, degenerate zero-variance cells excluded) hold under
+         the perturbation, computed from each check's already-collected
+         per-user silhouette/recall data.}
 \label{tab:robustness}
-\begin{tabular}{lll}
+\small
+\begin{tabular}{llll}
 \toprule
-\textbf{Check} & \textbf{Sample size / users affected} & \textbf{Recall@10 outcome} \\
+\textbf{Check} & \textbf{Sample size / users affected} & \textbf{Recall@10 outcome} & \textbf{Conclusion preserved?} \\
 \midrule
-Rating-threshold ($\geq 4$) & Amazon: 1{,}602/2{,}000 (20\% dropped); & Amazon: $0.0253\to0.0300$; \\
- & MovieLens: 1{,}432/2{,}000 (28\% dropped) & MovieLens: $0.0053\to0.0060$ \\
+Rating-threshold ($\geq 4$) & Amazon: 1{,}602/2{,}000 (20\% dropped); & Amazon: $0.0253\to0.0300$; & \multirow{2}{*}{Yes} \\
+ & MovieLens: 1{,}432/2{,}000 (28\% dropped) & MovieLens: $0.0053\to0.0060$ & \\
 \midrule
-Multi-seed resampling (2 extra seeds) & Amazon/MovieLens: 2{,}000/2{,}000 each seed & Amazon: $0.0253\to0.0256$--$0.0258$; \\
- & (different users, same count) & MovieLens: $0.0053\to0.0056$--$0.0066$ \\
+Multi-seed resampling (2 extra seeds) & Amazon/MovieLens: 2{,}000/2{,}000 each seed & Amazon: $0.0253\to0.0256$--$0.0258$; & \multirow{2}{*}{Yes} \\
+ & (different users, same count) & MovieLens: $0.0053\to0.0056$--$0.0066$ & \\
 \midrule
-Global-timestamp cutoff & Last.fm-1K: 60/99 (39\% stranded); & Last.fm-1K: $0.0281\to0.0032$; \\
- & Amazon: 1{,}124/2{,}000 (44\%); & Amazon: $0.0253\to0.0164$; \\
- & MovieLens: 28/2{,}000 (98.6\%) & MovieLens: $0.0053\to0.0014$ \\
+Global-timestamp cutoff & Last.fm-1K: 60/99 (39\% stranded); & Last.fm-1K: $0.0281\to0.0032$; & No (rank reverses; null still holds) \\
+ & Amazon: 1{,}124/2{,}000 (44\%); & Amazon: $0.0253\to0.0164$; & Yes \\
+ & MovieLens: 28/2{,}000 (98.6\%) & MovieLens: $0.0053\to0.0014$ & N/A (underpowered) \\
 \midrule
-ItemKNN validation-based tuning & All users, all three datasets & CF R@10: Last.fm $0.0018\to0.0005$ ($-69\%$); \\
- & (no exclusions; CF-ItemKNN retuned) & CF R@10: Amazon $0.0031\to0.0062$ ($+98\%$); \\
- & & CF R@10: MovieLens $0.0850\to0.0850$ ($0\%$) \\
+ItemKNN validation-based tuning & All users, all three datasets & CF R@10: Last.fm $0.0018\to0.0005$ ($-69\%$); & \multirow{3}{*}{Yes} \\
+ & (no exclusions; CF-ItemKNN retuned) & CF R@10: Amazon $0.0031\to0.0062$ ($+98\%$); & \\
+ & & CF R@10: MovieLens $0.0850\to0.0850$ ($0\%$) & \\
 \bottomrule
 \end{tabular}
 \end{table}
