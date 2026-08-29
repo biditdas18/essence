@@ -86,7 +86,12 @@ across the three evaluated datasets, Essence's rank among the ten evaluated
 systems is associated with the performance of the evaluated collaborative
 baselines in the domain; establishing this as predictive would require
 additional datasets and an independently-defined domain property, not one
-measured post hoc via baseline performance. $K$ (the number
+measured post hoc via baseline performance. This domain-dependence is not
+unique to Essence: Recency-Weighted, a non-clustering baseline using
+identical embeddings, shows the identical win/loss pattern against the same
+baselines on Recall@10 (Section~\ref{sec:domain-dependence}), indicating the
+property belongs to the broader no-cross-user-pooling architecture family
+rather than to $K$-means clustering specifically. $K$ (the number
 of interest clusters) is selected per dataset on a validation split
 carved from training data, not fixed in advance --- $K=10$ for Last.fm-1K
 and Amazon Books, $K=15$ for MovieLens-25M. On Amazon Books, where
@@ -132,9 +137,9 @@ in moderately-rare-but-observed items rather than true cold-start items, and
 an artist/author-identity shortcut analysis showing that a disproportionate
 share of Essence's hits come from same-artist/author candidates despite
 these being a minority of its recommendations. We frame Essence not as a
-universally superior candidate generator, but as a data point on when
-peer-isolated, content-only personalization is and isn't the right
-architectural choice.
+universally superior candidate generator, but as a data point on the
+domain conditions under which peer-isolated, content-only personalization
+is or isn't the right architectural choice.
 Code and data: \url{https://github.com/biditdas18/essence}
 \end{abstract}
 
@@ -195,17 +200,25 @@ The contributions of this work are:
         independently-defined domain property), evidenced by effect sizes
         ranging from Essence's strongest win
         (Last.fm-1K, beating Random with $d=+0.301$) to its strongest
-        loss (MovieLens-25M, losing to CF-ItemKNN with $d=-0.550$).
+        loss (MovieLens-25M, losing to CF-ItemKNN with $d=-0.550$) ---
+        the losses are consistently the larger-magnitude effects
+        throughout this evaluation. This domain-dependence pattern is
+        shown to belong to the broader no-cross-user-pooling architecture
+        family rather than to $K$-means clustering specifically, since
+        Recency-Weighted alone reproduces it on Recall@10
+        (Section~\ref{sec:domain-dependence}).
   \item The \textbf{Essence architecture} itself: a personal recommendation
         framework requiring no collaborative signal and no supervised or cross-user
         recommender training, operating entirely on a single user's history.
-  \item A \textbf{recency-based active-cluster-selection} mechanism,
-        evaluated against a static mean-embedding alternative via ablation
-        (Section~\ref{sec:ablation}) \emph{and} against three recency-only
-        baselines that do not cluster at all (last-item, uniform-average,
-        exponentially-weighted retrieval) --- the comparison against
-        simpler, non-clustering alternatives that the original evaluation
-        did not include.
+  \item A \textbf{recency-based active-cluster-selection} mechanism: an
+        ablation against a static mean-embedding alternative
+        (Section~\ref{sec:ablation}) supports retaining it, while a
+        separate comparison against three recency-only baselines that do
+        not cluster at all (last-item, uniform-average,
+        exponentially-weighted retrieval) --- absent from the original
+        evaluation --- finds Essence rarely significantly ahead of them,
+        evidence against clustering's distinct value rather than for it
+        (Section~\ref{sec:limitations-findings}).
   \item \textbf{Two hand-implemented, from-scratch multi-interest baselines}
         (MIND, following Li et al.~\cite{li2019}; ComiRec, following Cen et
         al.~\cite{cen2020}) --- neither is available in standard
@@ -1040,6 +1053,58 @@ $K$-means clustering mechanism as opposed to the underlying content
 embeddings more generally (Section~\ref{sec:limitations-findings}
 addresses this directly).
 
+\textbf{Is domain-dependence specific to Essence's clustering?} A direct
+check: Recency-Weighted uses the identical item embeddings as Essence but
+no $K$-means clustering at all, so comparing its own win/loss pattern
+against CF-ItemKNN, Popularity, MIND, and ComiRec isolates whether the
+domain-dependence property above is something clustering adds, or
+something already present in content-embedding/recency-based retrieval
+regardless of clustering. On Recall@10, the answer is unambiguous:
+Recency-Weighted shows the identical significance pattern Essence does
+against all four baselines, on all three datasets (paired bootstrap,
+$10{,}000$ resamples, BH-FDR within the same family structure as
+Section~\ref{sec:stats-methodology}: Last.fm-1K/Amazon Books pooled as one
+16-comparison family, MovieLens-25M as its own 8-comparison family).
+Where collaborative signal is weak, both significantly beat all four
+baselines on both datasets (Last.fm-1K: Essence $d\in[0.220,0.281]$,
+Recency-Weighted $d\in[0.250,0.299]$; Amazon Books: $d\in[0.220,0.252]$
+vs.\ $d\in[0.216,0.248]$; 4 of 4 comparisons significant for each system,
+each dataset). Where it is strong (MovieLens-25M), both lose significantly
+to all four (Essence $d\in[-0.550,-0.378]$, Recency-Weighted
+$d\in[-0.539,-0.349]$; 4 of 4 each). Recency-Weighted's own rank tracks
+the same direction as Essence's across the three datasets: 1st of 10 on
+Last.fm-1K, 2nd on Amazon Books, falling to 6th on MovieLens-25M.
+Domain-dependence on Recall@10 is therefore a property of the broader
+no-cross-user-pooling architecture family --- content embeddings retrieved
+by recency, clustered or not --- not something specific to $K$-means
+clustering.
+
+On LT-Recall@10 the pattern does not replicate as cleanly.
+Recency-Weighted's long-tail win pattern against the same four baselines
+is flatter across datasets: 2 of 4 significant wins on Last.fm-1K
+($d\in[0.109,0.174]$), 2 of 4 on Amazon Books ($d\in[0.030,0.157]$), and 2
+of 4 even on MovieLens-25M ($d\in[0.011,0.082]$) --- compared to Essence's
+0 of 4, 3 of 4, and 0 of 4 respectively. Recency-Weighted retains
+long-tail wins on MovieLens-25M where Essence has none, so its long-tail
+domain-dependence is weaker than Essence's, not identical to it. More
+directly relevant to whether clustering itself contributes anything:
+Essence and Recency-Weighted are not significantly different from each
+other on LT-Recall@10 on any of the three datasets ($d=-0.051$,
+$q=0.643$, Last.fm-1K; $d=+0.024$, $q=0.446$, Amazon Books; $d=-0.045$,
+$q=0.376$, MovieLens-25M) --- consistent with, and reinforcing, the
+clustering-null result already reported in
+Section~\ref{sec:limitations-findings}: $K$-means clustering shows no
+detectable long-tail advantage over simple recency-weighting on any
+dataset tested, weak-collaborative-signal or strong.
+
+The practical implication is direct. Since clustering is not currently
+contributing any measurable long-tail advantage over Recency-Weighted
+alone, on any of the three datasets, future work aimed at closing a
+long-tail recall gap is unlikely to succeed by refining the
+interest-selection or clustering mechanism specifically; the embedding
+representation itself, or the retrieval mechanism built on top of it, is
+the more promising target (Section~\ref{sec:limitations}).
+
 \subsection{MIND/ComiRec Multi-Seed Robustness}
 \label{sec:multiseed}
 
@@ -1853,14 +1918,18 @@ baselines by the largest effect sizes observed anywhere in this study.
 Whether peer-isolated, content-only personalization helps is associated
 with how well the evaluated collaborative baselines already perform in a
 given domain, across the three domains evaluated here; this association is not
-established as predictive of behavior on domains not yet tested. A
-targeted stratification test
+established as predictive of behavior on domains not yet tested.
+Recency-Weighted, a baseline sharing Essence's embeddings but no
+clustering, shows the identical pattern on Recall@10, so this
+domain-dependence is a property of the broader no-cross-user-pooling
+architecture family, not of $K$-means clustering specifically
+(Section~\ref{sec:domain-dependence}). A targeted stratification test
 (Section~\ref{sec:limitations-findings}) finds no evidence that the
 $K$-means clustering step, isolated from recency-weighted retrieval, is
 itself the source of Essence's advantage where an advantage exists.
-Essence is a data point on when peer-isolated, content-only
-personalization is and isn't the right architectural choice, not a
-universally superior candidate generator.
+Essence is a data point on the domain conditions under which
+peer-isolated, content-only personalization is or isn't the right
+architectural choice, not a universally superior candidate generator.
 
 An ablation (Section~\ref{sec:ablation}), now run on all three datasets at
 their validation-selected $K$, indicates that Essence's long-tail
@@ -1889,6 +1958,14 @@ Section~\ref{sec:limitations}, including dataset scale, sensitivity to the
 choice of $K$, and the increased recall degradation observed when taste
 profiles are built from noisy, user-authored text (Section~\ref{sec:pass2})
 rather than structured item metadata.
+
+Future work should prioritize richer, disentangled item features and a
+more principled characterization of the domain property behind this
+pattern, validated against real user feedback rather than offline metrics
+alone; since clustering shows no measurable long-tail advantage over
+simple recency-weighting on any dataset tested, the more promising target
+for closing a long-tail gap is the embedding representation and retrieval
+mechanism, not the clustering step itself.
 
 % ── References ────────────────────────────────────────────────────────────────
 \begin{thebibliography}{9}
