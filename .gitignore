@@ -71,6 +71,9 @@ data/amazon_processed/test.csv
 data/amazon_processed_*/train.csv
 data/amazon_processed_*/test.csv
 
+# Personal notes (Bidit's own reference, never committed or pushed)
+paper/personal_notes/
+
 # Scratch / debug
 debug/
 
