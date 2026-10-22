@@ -98,7 +98,28 @@ adopted $K$ the dependence is substantially larger. Report the adopted-$K$ figur
 
 ---
 
-## 6. Not verified / out of scope
+## 6. Closed after the camera-ready was built (22 Oct 2026)
+
+Two gaps the README carried are now closed, both re-run at the adopted $K$:
+
+- **Active-cluster-selection ablation**, previously only at the earlier $K$ (10/10/15).
+  At 10/8/10, recency-select leads mean-select on Recall@10 on all three datasets
+  (0.0281/0.0016, 0.0246/0.0197, 0.0055/0.0045) and on LT-Recall on two of three.
+  MovieLens-25M stays mixed: Essence's LT-Recall is exactly 0.0000 against mean-select's
+  0.0005, which is also one of the cells section 3 declines to call a null.
+  `results/scratch_ablation_lt_{lastfm_K10,amazon_K8,movielens_K10}.csv`; the script now
+  takes `--lastfm-k/--amazon-k/--movielens-k` and tags its output with $K$.
+- **Architecture-family test** (Recency-Weighted vs the four collaborative baselines) had
+  no script behind it -- the repository's one such gap. Now
+  `evaluation/recency_weighted_family_test.py` ->
+  `results/recency_weighted_family_test.csv`. At the adopted $K$ the Recall@10 sign flip
+  is identical to Essence's: **8/8 ahead in the sparse family, 0/4 in the dense one**
+  (baselines ahead 4/4). Removing clustering does not remove the pattern. LT-Recall is
+  flatter: 4/8 sparse, 2/4 on MovieLens-25M where Essence has none.
+
+---
+
+## 7. Not verified / out of scope
 
 - Last.fm chain not patched for Recall@5/@20/NDCG@10.
 - MovieLens baseline re-runs used $\mathrm{lr}=10^{-3}$, $K=4$: Recall@10 within $-0.8\%$ and

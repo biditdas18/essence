@@ -132,17 +132,28 @@ def run_dataset(label, K, train_df, test_df, emb_meta, lt_set, item_col, out_pat
 
 
 def main():
-    # Last.fm-1K, K=10
+    # K is a per-dataset argument rather than a literal. Defaults reproduce the
+    # previously published run (10/10/15) exactly; the adopted values are 10/8/10.
+    # The output filename carries K, so a run at one K cannot overwrite another.
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--lastfm-k", type=int, default=10)
+    ap.add_argument("--amazon-k", type=int, default=10)
+    ap.add_argument("--movielens-k", type=int, default=15)
+    args = ap.parse_args()
+    K_LF, K_AM, K_ML = args.lastfm_k, args.amazon_k, args.movielens_k
+
+    # Last.fm-1K
     train_df = pd.read_pickle("data/train_interactions.pkl")
     test_df = pd.read_pickle("data/test_interactions.pkl")
     with open("embeddings/item_embeddings.pkl", "rb") as f:
         emb = pickle.load(f)
     with open("data/long_tail_ids.pkl", "rb") as f:
         lt_set = pickle.load(f)
-    run_dataset("Last.fm-1K", 10, train_df, test_df, emb, lt_set, "track_id",
-               "results/scratch_ablation_lt_lastfm_K10.csv")
+    run_dataset("Last.fm-1K", K_LF, train_df, test_df, emb, lt_set, "track_id",
+               f"results/scratch_ablation_lt_lastfm_K{K_LF}.csv")
 
-    # Amazon Books, K=10
+    # Amazon Books
     PROC = Path("data/amazon_processed")
     train_df = pd.read_csv(PROC / "train.csv")
     test_df = pd.read_csv(PROC / "test.csv")
@@ -152,10 +163,10 @@ def main():
         emb = pickle.load(f)
     lt_df = pd.read_csv(PROC / "longtail_items.csv")
     lt_set = set(lt_df["item_id"])
-    run_dataset("Amazon Books", 10, train_df, test_df, emb, lt_set, "item_id",
-               "results/scratch_ablation_lt_amazon_K10.csv")
+    run_dataset("Amazon Books", K_AM, train_df, test_df, emb, lt_set, "item_id",
+               f"results/scratch_ablation_lt_amazon_K{K_AM}.csv")
 
-    # MovieLens-25M, K=15
+    # MovieLens-25M
     PROC = Path("data/movielens_processed")
     train_df = pd.read_csv(PROC / "train.csv")
     test_df = pd.read_csv(PROC / "test.csv")
@@ -165,8 +176,8 @@ def main():
         emb = pickle.load(f)
     lt_df = pd.read_csv(PROC / "longtail_items.csv")
     lt_set = set(lt_df["item_id"])
-    run_dataset("MovieLens-25M", 15, train_df, test_df, emb, lt_set, "item_id",
-               "results/scratch_ablation_lt_movielens_K15.csv")
+    run_dataset("MovieLens-25M", K_ML, train_df, test_df, emb, lt_set, "item_id",
+               f"results/scratch_ablation_lt_movielens_K{K_ML}.csv")
 
 
 if __name__ == "__main__":
