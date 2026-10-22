@@ -1,0 +1,19 @@
+dataset,stratum,metric,observed_diff,p_two_sided_before,q_value_bh_before,significant_after_fdr_before,p_two_sided_after,q_value_bh_after,significant_after_fdr_after,frac_resamples_tied
+MovieLens-25M,high,LT-Recall@10,-0.0047169811320754,0.0,0.0,True,0.7382,0.88584,False,0.3691
+Last.fm-1K,low,LT-Recall@10,0.0,0.0,0.0,True,1.0,1.0,False,1.0
+Last.fm-1K,medium,LT-Recall@10,-0.0073178642377393,0.0,0.0,True,0.0852,0.2106,False,0.0426
+MovieLens-25M,low,LT-Recall@10,-0.0066137566137566,0.0,0.0,True,0.2596,0.4247999999999999,False,0.1298
+Last.fm-1K,high,Recall@10,-0.035057944255902,0.0002,0.00072,True,0.0002,0.0036,True,0.0
+Last.fm-1K,medium,Recall@10,-0.0165415671421632,0.0068,0.0203999999999999,True,0.0068,0.0564,False,0.0
+MovieLens-25M,high,Recall@10,-0.0046341453785046,0.0094,0.0241714285714285,True,0.0094,0.0564,False,0.0
+MovieLens-25M,medium,Recall@10,-0.0022368340756048,0.026,0.0584999999999999,False,0.026,0.1169999999999999,False,0.0
+Amazon Books,high,Recall@10,-0.0083530253659254,0.0368,0.0736,False,0.0368,0.13248,False,0.0
+Amazon Books,low,Recall@10,-0.0013567053460038,0.0706,0.12708,False,0.0706,0.2106,False,0.0
+MovieLens-25M,low,Recall@10,-0.0015229666556063,0.0936,0.1531636363636363,False,0.0936,0.2106,False,0.0
+Last.fm-1K,low,Recall@10,-0.0037509828827533,0.1106,0.1659,False,0.1182,0.2364,False,0.0038
+Amazon Books,medium,Recall@10,-0.0019109426265509,0.249,0.3447692307692308,False,0.249,0.4247999999999999,False,0.0
+Amazon Books,medium,LT-Recall@10,0.0037290715372907,0.4436,0.56952,False,0.4436,0.6654,False,0.0113
+Last.fm-1K,high,LT-Recall@10,-0.0214892553723138,0.4746,0.56952,False,0.7212,0.88584,False,0.1233
+Amazon Books,low,LT-Recall@10,0.0014788524105294,0.623,0.700875,False,0.623,0.8626153846153847,False,0.0562
+MovieLens-25M,medium,LT-Recall@10,0.0025641025641025,0.913,0.9667058823529412,False,0.913,1.0,False,0.2024
+Amazon Books,high,LT-Recall@10,-0.0001347708894878,0.9822,0.9822,False,0.99,1.0,False,0.0039

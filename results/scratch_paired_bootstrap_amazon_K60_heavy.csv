@@ -1,0 +1,15 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,p_two_sided_tie_aware,cohens_d_paired,n_paired_users
+Amazon Books (K=60),Recall@10,Essence (K=60),Random,0.003057,0.000102,0.002955,0.002298,0.003689,1.0000,0.000000,0.1984,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),Popularity,0.003057,0.000990,0.002067,0.001356,0.002862,1.0000,0.000000,0.1308,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),CF (ItemKNN),0.003057,0.002450,0.000607,-0.000214,0.001436,0.9257,0.148600,0.0349,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),Content (Avg Emb),0.003057,0.001184,0.001873,0.001303,0.002488,1.0000,0.000000,0.1483,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),Last-Item,0.003057,0.004472,-0.001415,-0.002134,-0.000711,0.0001,0.000200,-0.0925,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),Avg-Last-10,0.003057,0.003083,-0.000026,-0.000539,0.000474,0.4654,0.930800,-0.0024,1757
+Amazon Books (K=60),Recall@10,Essence (K=60),Recency-Weighted,0.003057,0.003345,-0.000288,-0.000810,0.000208,0.1333,0.266600,-0.0267,1757
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Random,0.003533,0.000078,0.003455,0.002231,0.004846,1.0000,0.000000,0.1230,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Popularity,0.003533,0.000000,0.003533,0.002319,0.004939,1.0000,0.000000,0.1262,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),CF (ItemKNN),0.003533,0.001114,0.002419,0.000939,0.004031,0.9995,0.001000,0.0723,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Content (Avg Emb),0.003533,0.001009,0.002524,0.001366,0.003814,1.0000,0.000000,0.0965,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Last-Item,0.003533,0.004285,-0.000753,-0.002141,0.000750,0.1595,0.319000,-0.0244,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Avg-Last-10,0.003533,0.002061,0.001471,0.000290,0.002698,0.9922,0.015600,0.0570,1744
+Amazon Books (K=60),LT-Recall@10,Essence (K=60),Recency-Weighted,0.003533,0.002452,0.001081,-0.000079,0.002342,0.9651,0.069800,0.0420,1744

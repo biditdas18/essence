@@ -1,0 +1,2 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (tuned_mind_lr1e-4_K4),movielens,0.04727530013545491,0.0,2000,490,2679.242373943329,50,2.1152902336120607,0.0001,42,4,pretrained

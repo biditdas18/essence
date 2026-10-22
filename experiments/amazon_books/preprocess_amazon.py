@@ -19,8 +19,23 @@ import random
 from collections import defaultdict
 from pathlib import Path
 
+import argparse
+
+# The user-activity band is a parameter, not a constant, so the published
+# moderate-activity population (20-200 interactions) and a heavy-user
+# replication (201-1000) can be built by the same code path. Defaults
+# reproduce the published configuration exactly.
+_ap = argparse.ArgumentParser(add_help=False)
+_ap.add_argument("--min-interactions", type=int, default=20)
+_ap.add_argument("--max-interactions", type=int, default=200)
+_ap.add_argument("--max-users", type=int, default=2000)
+_ap.add_argument("--out-suffix", type=str, default="",
+                 help="appended to data/amazon_processed<suffix>; empty = published dir")
+_args = _ap.parse_known_args()[0]
+
 RAW_DIR  = Path(__file__).resolve().parents[2] / "data" / "amazon_raw"
-PROC_DIR = Path(__file__).resolve().parents[2] / "data" / "amazon_processed"
+PROC_DIR = (Path(__file__).resolve().parents[2] / "data"
+            / f"amazon_processed{_args.out_suffix}")
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 RATINGS_FILE = RAW_DIR / "Books_5core_ratings.csv"
@@ -28,9 +43,9 @@ REVIEWS_FILE = RAW_DIR / "Books_reviews_filtered.jsonl"
 META_FILE    = RAW_DIR / "meta_Books_filtered.jsonl"
 
 SEED = 42
-MIN_INTERACTIONS = 20
-MAX_INTERACTIONS = 200
-MAX_USERS        = 2000
+MIN_INTERACTIONS = _args.min_interactions
+MAX_INTERACTIONS = _args.max_interactions
+MAX_USERS        = _args.max_users
 
 
 # ─── 1. Load metadata ────────────────────────────────────────────────────────
@@ -97,7 +112,7 @@ filtered_users = {
     for uid, items in user_items.items()
     if MIN_INTERACTIONS <= len(items) <= MAX_INTERACTIONS
 }
-print(f"  Users after 20–200 filter: {len(filtered_users):,}")
+print(f"  Users after {MIN_INTERACTIONS}–{MAX_INTERACTIONS} filter: {len(filtered_users):,}")
 
 
 # ─── 5. Subsample to 2000 users (seed 42) ─────────────────────────────────────

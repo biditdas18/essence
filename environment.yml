@@ -1,0 +1,12 @@
+# Environment that produces every number in the Essence paper.
+# See results/REPRODUCIBILITY.md for the known 0.22% K-means gap against the
+# pre-lockfile published figure, and why it does not affect the adopted K values.
+name: essence
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy=1.26.4
+  - pandas=2.2.3
+  - scikit-learn=1.6.1
+  - tqdm=4.67.1

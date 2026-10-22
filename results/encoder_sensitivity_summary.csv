@@ -1,0 +1,3 @@
+dataset,K,essence_minilm,essence_mpnet,rank_minilm,rank_mpnet,sig_minilm,sig_mpnet,verdicts_changed,clustering_null_holds_both
+Amazon Books,8,0.024619,0.025431,3,2,10,11,1,True
+MovieLens-25M,10,0.005511,0.008829,8,8,7,6,3,False

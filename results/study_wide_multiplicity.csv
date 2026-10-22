@@ -1,0 +1,137 @@
+family,metric,comparison,p,within_family_sig,q_study,study_sig
+Main: Last.fm K=10,Recall@10,Random,0.0,True,0.0,True
+Main: Last.fm K=10,Recall@10,Popularity,0.0166,True,0.041047272727272724,True
+Main: Last.fm K=10,Recall@10,CF (ItemKNN),0.0068,True,0.018873469387755103,True
+Main: Last.fm K=10,Recall@10,Content (Avg Emb),0.024,False,0.05726315789473684,False
+Main: Last.fm K=10,Recall@10,Last-Item,0.0,True,0.0,True
+Main: Last.fm K=10,Recall@10,Avg-Last-10,0.0004,True,0.0012651162790697675,True
+Main: Last.fm K=10,Recall@10,Recency-Weighted,0.0,True,0.0,True
+Main: Last.fm K=10,Recall@10,ComiRec (SA),0.775,False,0.8535096774193549,False
+Main: Last.fm K=10,Recall@10,MIND,0.17,False,0.3002597402597403,False
+Main: Last.fm K=10,LT-Recall@10,Random,0.2628,False,0.40098064516129034,False
+Main: Last.fm K=10,LT-Recall@10,Popularity,0.259,False,0.40098064516129034,False
+Main: Last.fm K=10,LT-Recall@10,CF (ItemKNN),0.2588,False,0.40098064516129034,False
+Main: Last.fm K=10,LT-Recall@10,Content (Avg Emb),0.7782,False,0.8535096774193549,False
+Main: Last.fm K=10,LT-Recall@10,Last-Item,0.8706,False,0.9361511811023622,False
+Main: Last.fm K=10,LT-Recall@10,Avg-Last-10,0.3504,False,0.4912824742268041,False
+Main: Last.fm K=10,LT-Recall@10,Recency-Weighted,0.0596,False,0.11747246376811595,False
+Main: Last.fm K=10,LT-Recall@10,ComiRec (SA),0.9406,False,0.9765007633587786,False
+Main: Last.fm K=10,LT-Recall@10,MIND,0.6226,False,0.7628252252252253,False
+Main: Amazon K=8,Recall@10,Random,0.0,True,0.0,True
+Main: Amazon K=8,Recall@10,Popularity,0.0,True,0.0,True
+Main: Amazon K=8,Recall@10,CF (ItemKNN),0.0,True,0.0,True
+Main: Amazon K=8,Recall@10,Content (Avg Emb),0.0,True,0.0,True
+Main: Amazon K=8,Recall@10,Last-Item,0.0032,True,0.009671111111111111,True
+Main: Amazon K=8,Recall@10,Avg-Last-10,0.4814,False,0.6418666666666667,False
+Main: Amazon K=8,Recall@10,Recency-Weighted,0.4056,False,0.551616,False
+Main: Amazon K=8,Recall@10,ComiRec (SA),0.0,True,0.0,True
+Main: Amazon K=8,Recall@10,MIND,0.0,True,0.0,True
+Main: Amazon K=8,LT-Recall@10,Random,0.0,True,0.0,True
+Main: Amazon K=8,LT-Recall@10,Popularity,0.0,True,0.0,True
+Main: Amazon K=8,LT-Recall@10,CF (ItemKNN),0.176,False,0.30298734177215186,False
+Main: Amazon K=8,LT-Recall@10,Content (Avg Emb),0.0656,False,0.12565633802816903,False
+Main: Amazon K=8,LT-Recall@10,Last-Item,0.6068,False,0.7502254545454545,False
+Main: Amazon K=8,LT-Recall@10,Avg-Last-10,0.9378,False,0.9765007633587786,False
+Main: Amazon K=8,LT-Recall@10,Recency-Weighted,0.6358,False,0.7704280701754386,False
+Main: Amazon K=8,LT-Recall@10,ComiRec (SA),0.0616,False,0.11968000000000002,False
+Main: Amazon K=8,LT-Recall@10,MIND,0.0,True,0.0,True
+Main: MovieLens K=10,Recall@10,Random,0.0,True,0.0,True
+Main: MovieLens K=10,Recall@10,Popularity,0.0,True,0.0,True
+Main: MovieLens K=10,Recall@10,CF (ItemKNN),0.0,True,0.0,True
+Main: MovieLens K=10,Recall@10,Content (Avg Emb),0.1346,False,0.24407466666666663,False
+Main: MovieLens K=10,Recall@10,Last-Item,0.0004,True,0.0012651162790697675,True
+Main: MovieLens K=10,Recall@10,Avg-Last-10,0.2722,False,0.40098064516129034,False
+Main: MovieLens K=10,Recall@10,Recency-Weighted,0.0128,True,0.033358490566037735,True
+Main: MovieLens K=10,Recall@10,MIND,0.0,True,0.0,True
+Main: MovieLens K=10,Recall@10,ComiRec (SA),0.0,True,0.0,True
+Main: MovieLens K=10,LT-Recall@10,Random,1.0,False,1.0,False
+Main: MovieLens K=10,LT-Recall@10,Popularity,1.0,False,1.0,False
+Main: MovieLens K=10,LT-Recall@10,CF (ItemKNN),0.1004,False,0.18704657534246577,False
+Main: MovieLens K=10,LT-Recall@10,Content (Avg Emb),0.7338,False,0.8393466666666667,False
+Main: MovieLens K=10,LT-Recall@10,Last-Item,0.268,False,0.40098064516129034,False
+Main: MovieLens K=10,LT-Recall@10,Avg-Last-10,0.2732,False,0.40098064516129034,False
+Main: MovieLens K=10,LT-Recall@10,Recency-Weighted,0.033,False,0.07469206349206349,False
+Main: MovieLens K=10,LT-Recall@10,MIND,1.0,False,1.0,False
+Main: MovieLens K=10,LT-Recall@10,ComiRec (SA),0.2742,False,0.40098064516129034,False
+Encoder: Amazon mpnet,Recall@10,Random,0.0,True,0.0,True
+Encoder: Amazon mpnet,Recall@10,Popularity,0.0,True,0.0,True
+Encoder: Amazon mpnet,Recall@10,CF (ItemKNN),0.0,True,0.0,True
+Encoder: Amazon mpnet,Recall@10,Content (Avg Emb),0.0,True,0.0,True
+Encoder: Amazon mpnet,Recall@10,Last-Item,0.0092,True,0.025023999999999998,True
+Encoder: Amazon mpnet,Recall@10,Avg-Last-10,0.004,True,0.011574468085106383,True
+Encoder: Amazon mpnet,Recall@10,Recency-Weighted,0.7642,False,0.8518950819672131,False
+Encoder: Amazon mpnet,Recall@10,ComiRec (SA),0.0,True,0.0,True
+Encoder: Amazon mpnet,Recall@10,MIND,0.0,True,0.0,True
+Encoder: Amazon mpnet,LT-Recall@10,Random,0.0,True,0.0,True
+Encoder: Amazon mpnet,LT-Recall@10,Popularity,0.0,True,0.0,True
+Encoder: Amazon mpnet,LT-Recall@10,CF (ItemKNN),0.3268,False,0.4629666666666666,False
+Encoder: Amazon mpnet,LT-Recall@10,Content (Avg Emb),0.0492,False,0.0984,False
+Encoder: Amazon mpnet,LT-Recall@10,Last-Item,0.8286,False,0.9015168,False
+Encoder: Amazon mpnet,LT-Recall@10,Avg-Last-10,0.401,False,0.550868686868687,False
+Encoder: Amazon mpnet,LT-Recall@10,Recency-Weighted,0.5162,False,0.6813076923076924,False
+Encoder: Amazon mpnet,LT-Recall@10,ComiRec (SA),0.1336,False,0.24407466666666663,False
+Encoder: Amazon mpnet,LT-Recall@10,MIND,0.0,True,0.0,True
+Encoder: MovieLens mpnet,Recall@10,Random,0.0,True,0.0,True
+Encoder: MovieLens mpnet,Recall@10,Popularity,0.0,True,0.0,True
+Encoder: MovieLens mpnet,Recall@10,CF (ItemKNN),0.0,True,0.0,True
+Encoder: MovieLens mpnet,Recall@10,Content (Avg Emb),0.0112,True,0.029866666666666666,True
+Encoder: MovieLens mpnet,Recall@10,Last-Item,0.045,False,0.09134328358208954,False
+Encoder: MovieLens mpnet,Recall@10,Avg-Last-10,0.2874,False,0.4158127659574468,False
+Encoder: MovieLens mpnet,Recall@10,Recency-Weighted,0.0262,False,0.06143448275862069,False
+Encoder: MovieLens mpnet,Recall@10,MIND,0.0,True,0.0,True
+Encoder: MovieLens mpnet,Recall@10,ComiRec (SA),0.0,True,0.0,True
+Encoder: MovieLens mpnet,LT-Recall@10,Random,0.0342,False,0.07469206349206349,False
+Encoder: MovieLens mpnet,LT-Recall@10,Popularity,0.0366,False,0.07657846153846154,False
+Encoder: MovieLens mpnet,LT-Recall@10,CF (ItemKNN),0.7076,False,0.8229743589743589,False
+Encoder: MovieLens mpnet,LT-Recall@10,Content (Avg Emb),0.6448,False,0.7704280701754386,False
+Encoder: MovieLens mpnet,LT-Recall@10,Last-Item,0.5294,False,0.6856990476190475,False
+Encoder: MovieLens mpnet,LT-Recall@10,Avg-Last-10,0.6606,False,0.7812313043478261,False
+Encoder: MovieLens mpnet,LT-Recall@10,Recency-Weighted,0.5628,False,0.7087111111111111,False
+Encoder: MovieLens mpnet,LT-Recall@10,MIND,0.0382,False,0.07871515151515152,False
+Encoder: MovieLens mpnet,LT-Recall@10,ComiRec (SA),0.2042,False,0.34285432098765434,False
+Heavy users: Amazon K=60,Recall@10,Random,0.0,True,0.0,True
+Heavy users: Amazon K=60,Recall@10,Popularity,0.0,True,0.0,True
+Heavy users: Amazon K=60,Recall@10,CF (ItemKNN),0.1486,False,0.2659157894736842,False
+Heavy users: Amazon K=60,Recall@10,Content (Avg Emb),0.0,True,0.0,True
+Heavy users: Amazon K=60,Recall@10,Last-Item,0.0002,True,0.0006634146341463415,True
+Heavy users: Amazon K=60,Recall@10,Avg-Last-10,0.9308,False,0.9765007633587786,False
+Heavy users: Amazon K=60,Recall@10,Recency-Weighted,0.2666,False,0.40098064516129034,False
+Heavy users: Amazon K=60,LT-Recall@10,Random,0.0,True,0.0,True
+Heavy users: Amazon K=60,LT-Recall@10,Popularity,0.0,True,0.0,True
+Heavy users: Amazon K=60,LT-Recall@10,CF (ItemKNN),0.001,True,0.0030909090909090908,True
+Heavy users: Amazon K=60,LT-Recall@10,Content (Avg Emb),0.0,True,0.0,True
+Heavy users: Amazon K=60,LT-Recall@10,Last-Item,0.319,False,0.45667368421052634,False
+Heavy users: Amazon K=60,LT-Recall@10,Avg-Last-10,0.0156,True,0.03928888888888889,True
+Heavy users: Amazon K=60,LT-Recall@10,Recency-Weighted,0.0698,False,0.13184444444444443,False
+Global cutoff: Amazon K=8,Recall@10,Random,0.0,True,0.0,True
+Global cutoff: Amazon K=8,Recall@10,Popularity,0.0,True,0.0,True
+Global cutoff: Amazon K=8,Recall@10,CF (ItemKNN),0.0,True,0.0,True
+Global cutoff: Amazon K=8,Recall@10,Content (Avg Emb),0.0196,True,0.0476,True
+Global cutoff: Amazon K=8,Recall@10,Last-Item,0.5364,False,0.6882113207547169,False
+Global cutoff: Amazon K=8,Recall@10,Avg-Last-10,0.0354,True,0.075225,False
+Global cutoff: Amazon K=8,Recall@10,Recency-Weighted,0.5574,False,0.7084710280373832,False
+Global cutoff: Amazon K=8,LT-Recall@10,Random,0.004,True,0.011574468085106383,True
+Global cutoff: Amazon K=8,LT-Recall@10,Popularity,0.0056,True,0.015866666666666664,True
+Global cutoff: Amazon K=8,LT-Recall@10,CF (ItemKNN),0.2322,False,0.37594285714285713,False
+Global cutoff: Amazon K=8,LT-Recall@10,Content (Avg Emb),0.0334,True,0.07469206349206349,False
+Global cutoff: Amazon K=8,LT-Recall@10,Last-Item,0.521,False,0.6813076923076924,False
+Global cutoff: Amazon K=8,LT-Recall@10,Avg-Last-10,0.0346,True,0.07469206349206349,False
+Global cutoff: Amazon K=8,LT-Recall@10,Recency-Weighted,0.0342,True,0.07469206349206349,False
+Clustering value (stratified),Recall@10,low,0.3616,False,0.5018122448979592,False
+Clustering value (stratified),LT-Recall@10,low,1.0,False,1.0,False
+Clustering value (stratified),Recall@10,medium,0.924,False,0.9765007633587786,False
+Clustering value (stratified),LT-Recall@10,medium,0.708,False,0.8229743589743589,False
+Clustering value (stratified),Recall@10,high,0.1808,False,0.30735999999999997,False
+Clustering value (stratified),LT-Recall@10,high,0.4492,False,0.6048633663366336,False
+Clustering value (stratified),Recall@10,low,0.6458,False,0.7704280701754386,False
+Clustering value (stratified),LT-Recall@10,low,0.2268,False,0.3716240963855421,False
+Clustering value (stratified),Recall@10,medium,0.7516,False,0.8447735537190084,False
+Clustering value (stratified),LT-Recall@10,medium,0.8742,False,0.9361511811023622,False
+Clustering value (stratified),Recall@10,high,0.1758,False,0.30298734177215186,False
+Clustering value (stratified),LT-Recall@10,high,0.996,False,1.0,False
+Clustering value (stratified),Recall@10,low,0.2232,False,0.3701853658536586,False
+Clustering value (stratified),LT-Recall@10,low,0.2584,False,0.40098064516129034,False
+Clustering value (stratified),Recall@10,medium,0.5724,False,0.7141871559633027,False
+Clustering value (stratified),LT-Recall@10,medium,0.7406,False,0.8393466666666667,False
+Clustering value (stratified),Recall@10,high,0.013,False,0.033358490566037735,True
+Clustering value (stratified),LT-Recall@10,high,0.7368,False,0.8393466666666667,False

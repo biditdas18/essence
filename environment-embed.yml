@@ -1,0 +1,14 @@
+# Item-embedding environment (sentence-transformers). Separate from the
+# evaluation env because it pulls torch and a newer numpy.
+# NOTE: on a sandboxed/proxied network also `pip install socksio` and export
+# HF_HUB_DISABLE_XET=1, or model downloads fail.
+name: essence-embed
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scikit-learn
+  - pytorch
+  - sentence-transformers

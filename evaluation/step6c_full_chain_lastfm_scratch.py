@@ -32,7 +32,26 @@ from models.recommenders import essence_recommend, essence_recommend_meanselect,
 from evaluation.evaluate import recall_at_k, long_tail_recall_at_k
 
 RESULTS_DIR = BASE_DIR / "results"
-K = 10
+import argparse as _ap_mod
+_ap = _ap_mod.ArgumentParser(add_help=False)
+_ap.add_argument("--users", type=int, default=99,
+                 help="users to evaluate; 99 is the published Last.fm-1K cohort size")
+_ap.add_argument("--data-suffix", type=str, default="",
+                 help="read data/{train,test}_interactions<suffix>.pkl (e.g. _full)")
+_ap.add_argument("--emb-file", type=str, default="item_embeddings.pkl",
+                 help="embeddings file under embeddings/ (expanded cohorts need the superset)")
+_ap.add_argument("--K", type=int, default=10,
+                 help="interest clusters; default 10 is the adopted value for Last.fm-1K")
+_cli = _ap.parse_known_args()[0]
+K = _cli.K
+DSUF = _cli.data_suffix
+NUSERS = _cli.users
+# Output tag must reflect EVERY input that changes the numbers, or a run silently
+# overwrites another configuration's results. The embedding file is one of them.
+ESUF = "" if _cli.emb_file == "item_embeddings.pkl" else \
+       "_" + _cli.emb_file.replace("item_embeddings_", "").replace(".pkl", "")
+TAGSUF = DSUF + ESUF
+EMB = _cli.emb_file
 SEED = 42
 M = 10
 N_BOOT = 10_000
@@ -52,16 +71,33 @@ def timed(name, fn):
 # ── Stage 1: full 10-system per-user evaluation at K=10 ──────────────────
 
 def stage_evaluate():
-    out_path = RESULTS_DIR / "scratch_evaluation_results_K10_lastfm.csv"
+    out_path = RESULTS_DIR / f"scratch_evaluation_results_K{K}_lastfm{TAGSUF}.csv"
     subprocess.run(
-        [sys.executable, "evaluation/evaluate.py", "--K", str(K), "--users", "99",
+        [sys.executable, "evaluation/evaluate.py", "--K", str(K),
+         "--users", str(NUSERS), "--data-suffix", DSUF, "--emb-file", EMB,
          "--output", str(out_path)],
         cwd=str(BASE_DIR), check=True,
     )
     base_df = pd.read_csv(out_path)
     mind_comirec = pd.read_csv(RESULTS_DIR / "mind_comirec_results_lastfm.csv")
+    # MIND/ComiRec come from a SEPARATE run with its own user sample. Concatenating
+    # them is only valid when that run covered this same cohort; on an expanded or
+    # re-sampled cohort it silently mixes populations (it corrupted a ranking on the
+    # Amazon heavy-user cohort before this guard existed).
+    base_u, ext_u = set(base_df.user_id), set(mind_comirec.user_id)
+    inter = len(base_u & ext_u)
+    # Check BOTH directions. Requiring only inter/|ext| lets a small external run
+    # pass as a subset of a larger cohort: its rows then sit alongside systems
+    # evaluated on many more users, and any ranking read off the merged file mixes
+    # populations. Coverage of the base cohort must hold too.
+    overlap = min(inter / max(1, len(ext_u)), inter / max(1, len(base_u)))
+    if overlap < 0.99:
+        print(f"[step6c] WARNING: external MIND/ComiRec rows cover a DIFFERENT user "
+              f"sample (overlap {100*overlap:.1f}%). Dropping them from the merged "
+              f"file; rerun those models on this cohort to include them.")
+        mind_comirec = mind_comirec.iloc[0:0]
     merged = pd.concat([base_df, mind_comirec], ignore_index=True)
-    merged_path = RESULTS_DIR / "scratch_evaluation_results_K10_lastfm_merged.csv"
+    merged_path = RESULTS_DIR / f"scratch_evaluation_results_K{K}_lastfm{TAGSUF}_merged.csv"
     merged.to_csv(merged_path, index=False)
     print(f"[step6c] merged 10-system CSV: {len(merged)} rows -> {merged_path}")
     return merged_path
@@ -70,7 +106,7 @@ def stage_evaluate():
 # ── Stage 2: paired bootstrap ─────────────────────────────────────────────
 
 def stage_bootstrap(merged_path):
-    out_path = RESULTS_DIR / "scratch_paired_bootstrap_lastfm_K10.csv"
+    out_path = RESULTS_DIR / f"scratch_paired_bootstrap_lastfm_K{K}{TAGSUF}.csv"
     subprocess.run(
         [sys.executable, "evaluation/paired_bootstrap.py",
          "--input", str(merged_path), "--label", "Last.fm-1K (K=10)",
@@ -88,7 +124,14 @@ def stage_fdr(bootstrap_path):
     def two_sided_p(f):
         return min(1.0, 2 * min(f, 1 - f))
 
-    df["p_two_sided"] = df["frac_resamples_diff_gt_0"].apply(two_sided_p)
+    # Prefer the tie-aware p emitted by paired_bootstrap.py. The frac_gt_0 form
+    # below counts resamples with diff == 0 as evidence against the null, which
+    # makes a one-sided-with-ties difference (LT-Recall@10, where most users
+    # score exactly 0) look maximally significant.
+    if "p_two_sided_tie_aware" in df.columns:
+        df["p_two_sided"] = df["p_two_sided_tie_aware"].astype(float)
+    else:
+        df["p_two_sided"] = df["frac_resamples_diff_gt_0"].apply(two_sided_p)
     p = df["p_two_sided"].values
     m = len(p)
     order = np.argsort(p)
@@ -100,7 +143,7 @@ def stage_fdr(bootstrap_path):
     q[order] = q_mono
     df["q_value_bh"] = q
     df["significant_after_fdr"] = q <= 0.05
-    out_path = RESULTS_DIR / "scratch_fdr_lastfm_K10.csv"
+    out_path = RESULTS_DIR / f"scratch_fdr_lastfm_K{K}{TAGSUF}.csv"
     df.to_csv(out_path, index=False)
     print(f"[step6c] {df['significant_after_fdr'].sum()}/{m} significant after FDR")
     return out_path
@@ -117,9 +160,9 @@ def stage_decile():
     from collections import defaultdict
     import hashlib
 
-    train_df = pd.read_pickle(BASE_DIR / "data" / "train_interactions.pkl")
-    test_df = pd.read_pickle(BASE_DIR / "data" / "test_interactions.pkl")
-    with open(BASE_DIR / "embeddings" / "item_embeddings.pkl", "rb") as f:
+    train_df = pd.read_pickle(BASE_DIR / "data" / f"train_interactions{DSUF}.pkl")
+    test_df = pd.read_pickle(BASE_DIR / "data" / f"test_interactions{DSUF}.pkl")
+    with open(BASE_DIR / "embeddings" / EMB, "rb") as f:
         emb = pickle.load(f)
 
     all_users = sorted(set(train_df["user_id"].unique()) & set(test_df["user_id"].unique()))
@@ -168,7 +211,7 @@ def stage_decile():
             vals = per_system_decile_recalls[s].get(d, [])
             mean_r = float(np.mean(vals)) if vals else float("nan")
             decile_rows.append({"decile": d, "system": s, "recall@10": mean_r, "n_opportunities": len(vals)})
-    out_path = RESULTS_DIR / "scratch_decile_recall_lastfm_K10.csv"
+    out_path = RESULTS_DIR / f"scratch_decile_recall_lastfm_K{K}{TAGSUF}.csv"
     pd.DataFrame(decile_rows).to_csv(out_path, index=False)
     return out_path
 
@@ -176,8 +219,8 @@ def stage_decile():
 # ── Stage 5: silhouette / clustering-mechanism stratification (K=10) ─────
 
 def stage_silhouette(merged_path):
-    train_df = pd.read_pickle(BASE_DIR / "data" / "train_interactions.pkl")
-    with open(BASE_DIR / "embeddings" / "item_embeddings.pkl", "rb") as f:
+    train_df = pd.read_pickle(BASE_DIR / "data" / f"train_interactions{DSUF}.pkl")
+    with open(BASE_DIR / "embeddings" / EMB, "rb") as f:
         emb = pickle.load(f)
     sil = {}
     for uid, g in train_df.groupby("user_id"):
@@ -209,7 +252,7 @@ def stage_silhouette(merged_path):
     sil_df = pd.DataFrame(rows)
     if len(sil_df) >= 3:
         sil_df["stratum"] = pd.qcut(sil_df["silhouette"], 3, labels=["low", "medium", "high"], duplicates="drop")
-    out_path = RESULTS_DIR / "scratch_multimodality_stratified_lastfm_K10.csv"
+    out_path = RESULTS_DIR / f"scratch_multimodality_stratified_lastfm_K{K}{TAGSUF}.csv"
     sil_df.to_csv(out_path, index=False)
     return out_path
 
@@ -217,9 +260,9 @@ def stage_silhouette(merged_path):
 # ── Stage 6: active-cluster-selection ablation (K=10) ─────────────────────
 
 def stage_ablation():
-    train_df = pd.read_pickle(BASE_DIR / "data" / "train_interactions.pkl")
-    test_df = pd.read_pickle(BASE_DIR / "data" / "test_interactions.pkl")
-    with open(BASE_DIR / "embeddings" / "item_embeddings.pkl", "rb") as f:
+    train_df = pd.read_pickle(BASE_DIR / "data" / f"train_interactions{DSUF}.pkl")
+    test_df = pd.read_pickle(BASE_DIR / "data" / f"test_interactions{DSUF}.pkl")
+    with open(BASE_DIR / "embeddings" / EMB, "rb") as f:
         emb = pickle.load(f)
     all_users = sorted(set(train_df["user_id"].unique()) & set(test_df["user_id"].unique()))
 
@@ -234,7 +277,7 @@ def stage_ablation():
             "meanselect_recall@10": recall_at_k(recs_mean, actual, k=M),
         })
     out = pd.DataFrame(rows)
-    out_path = RESULTS_DIR / "scratch_ablation_lastfm_K10.csv"
+    out_path = RESULTS_DIR / f"scratch_ablation_lastfm_K{K}{TAGSUF}.csv"
     out.to_csv(out_path, index=False)
     print(f"[step6c] Recency-select mean Recall@10={out['recency_recall@10'].mean():.4f}  "
           f"Mean-select mean Recall@10={out['meanselect_recall@10'].mean():.4f}")

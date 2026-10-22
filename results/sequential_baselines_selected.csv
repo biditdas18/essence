@@ -1,0 +1,5 @@
+dataset,model,sel_lr,sel_val,test_recall,grid_best_test,val_sel_is_grid_best,essence_recall,essence_over_baseline
+amazon,GRU4Rec,0.003,0.0026,0.000415,0.002065,False,0.024619306557943532,59.3
+amazon,SASRec,0.001,0.0103,0.000141,0.000565,False,0.024619306557943532,174.6
+lastfm,GRU4Rec,0.0003,0.0031,0.001207,0.001207,True,0.02807493446780804,23.3
+lastfm,SASRec,0.003,0.0169,0.001341,0.001341,True,0.02807493446780804,20.9

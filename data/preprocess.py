@@ -28,15 +28,24 @@ RAW_DIR  = DATA_DIR / "raw"
 
 TARGET_TSV = "userid-timestamp-artid-artname-traid-traname.tsv"
 
-TRAIN_OUT      = DATA_DIR / "train_interactions.pkl"
-TEST_OUT       = DATA_DIR / "test_interactions.pkl"
-LONG_TAIL_OUT  = DATA_DIR / "long_tail_ids.pkl"
+import argparse as _ap_mod
+_ap = _ap_mod.ArgumentParser(add_help=False)
+_ap.add_argument("--max-interactions", type=int, default=500,
+                 help="upper bound on distinct tracks per user; 500 is the published value")
+_ap.add_argument("--out-suffix", type=str, default="",
+                 help="suffix for output pickles, e.g. _cap2000")
+_cli = _ap.parse_known_args()[0]
+_SUF = _cli.out_suffix
+
+TRAIN_OUT      = DATA_DIR / f"train_interactions{_SUF}.pkl"
+TEST_OUT       = DATA_DIR / f"test_interactions{_SUF}.pkl"
+LONG_TAIL_OUT  = DATA_DIR / f"long_tail_ids{_SUF}.pkl"
 
 # ---------------------------------------------------------------------------
 # Filtering constants
 # ---------------------------------------------------------------------------
 MIN_INTERACTIONS = 50
-MAX_INTERACTIONS = 500
+MAX_INTERACTIONS = _cli.max_interactions
 LONG_TAIL_PERCENTILE = 20   # bottom 20% by play count
 TEST_FRACTION = 0.20         # randomly held-out 20% of each user's unique tracks
 RANDOM_SEED   = 42

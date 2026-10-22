@@ -38,11 +38,18 @@ from sentence_transformers import SentenceTransformer
 # ---------------------------------------------------------------------------
 BASE_DIR        = Path(__file__).parent.parent
 TRAIN_PATH      = BASE_DIR / "data" / "train_interactions.pkl"
+import argparse as _ap_mod
+_ap = _ap_mod.ArgumentParser(add_help=False)
+_ap.add_argument("--model", type=str, default="all-MiniLM-L6-v2",
+                 help="sentence-transformers model; the published run used all-MiniLM-L6-v2")
+_ap.add_argument("--out-suffix", type=str, default="",
+                 help="appended to item_embeddings<suffix>.pkl")
+_cli = _ap.parse_known_args()[0]
 TEST_PATH       = BASE_DIR / "data" / "test_interactions.pkl"
-EMBEDDINGS_OUT  = Path(__file__).parent / "item_embeddings.pkl"
+EMBEDDINGS_OUT  = Path(__file__).parent / f"item_embeddings{_cli.out_suffix}.pkl"
 
 BATCH_SIZE      = 256
-MODEL_NAME      = "all-MiniLM-L6-v2"
+MODEL_NAME      = _cli.model
 
 
 # ---------------------------------------------------------------------------

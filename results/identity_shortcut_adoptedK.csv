@@ -1,0 +1,3 @@
+K,adopted,shortcut_fraction,full_recall,holdout_recall,collapse_pct
+3,False,0.2061,0.011919,0.001438,87.9
+10,True,0.3293,0.028075,0.001316,95.3

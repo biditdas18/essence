@@ -77,7 +77,15 @@ def paired_bootstrap_diff(essence_vals, baseline_vals, rng, n_boot=N_BOOT):
 
     ci_lo, ci_hi = np.percentile(diffs, [2.5, 97.5])
     frac_gt_0 = float(np.mean(diffs > 0))
-    return observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d_paired
+    # Two-sided p that counts exact ties in BOTH tails. Using frac_gt_0 alone,
+    # via min(1, 2*min(f, 1-f)), treats every resample with diff == 0 as
+    # evidence against the null; for LT-Recall@10 (most users exactly 0) that
+    # reports a one-sided-with-ties difference as p = 0.0, and declares a
+    # zero-vs-zero comparison maximally significant.
+    frac_ge_0 = float(np.mean(diffs >= 0))
+    frac_le_0 = float(np.mean(diffs <= 0))
+    p_two_sided = min(1.0, 2 * min(frac_ge_0, frac_le_0))
+    return observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d_paired, p_two_sided
 
 
 def run(input_csv: Path, label: str, output_csv: Path = None):
@@ -121,7 +129,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
             essence_vals = [essence_users[u][metric_key] for u in common_users]
             baseline_vals = [baseline_users[u][metric_key] for u in common_users]
 
-            observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d = paired_bootstrap_diff(
+            observed_diff, ci_lo, ci_hi, frac_gt_0, cohens_d, p_two_sided = paired_bootstrap_diff(
                 essence_vals, baseline_vals, rng
             )
             e_mean = float(np.mean(essence_vals))
@@ -142,6 +150,7 @@ def run(input_csv: Path, label: str, output_csv: Path = None):
                 "ci_lo": f"{ci_lo:.6f}",
                 "ci_hi": f"{ci_hi:.6f}",
                 "frac_resamples_diff_gt_0": f"{frac_gt_0:.4f}",
+                "p_two_sided_tie_aware": f"{p_two_sided:.6f}",
                 "cohens_d_paired": f"{cohens_d:.4f}",
                 "n_paired_users": len(common_users),
             })

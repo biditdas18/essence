@@ -1,0 +1,19 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,p_two_sided_tie_aware,cohens_d_paired,n_paired_users,p_two_sided,q_value_bh,significant_after_fdr
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Random,0.005511,0.001174,0.004338,0.002894,0.005875,1.0,0.0,0.1294,2000,0.0,0.0,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Popularity,0.005511,0.051728,-0.046217,-0.050788,-0.041601,0.0,0.0,-0.4352,2000,0.0,0.0,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),CF (ItemKNN),0.005511,0.085047,-0.079536,-0.086083,-0.07319,0.0,0.0,-0.5518,2000,0.0,0.0,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Content (Avg Emb),0.005511,0.00426,0.001251,-0.000375,0.002903,0.9327,0.1346,0.0336,2000,0.1346,0.24228,False
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Last-Item,0.005511,0.009066,-0.003554,-0.005767,-0.001501,0.0002,0.0004,-0.0735,2000,0.0004,0.0012000000000000001,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Avg-Last-10,0.005511,0.006395,-0.000884,-0.002441,0.000701,0.1361,0.2722,-0.0248,2000,0.2722,0.35254285714285716,False
+MovieLens-25M (K=10),Recall@10,Essence (K=10),Recency-Weighted,0.005511,0.007604,-0.002093,-0.003705,-0.000488,0.0064,0.0128,-0.0565,2000,0.0128,0.032914285714285715,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),MIND,0.005511,0.042288,-0.036777,-0.041087,-0.032482,0.0,0.0,-0.378,2000,0.0,0.0,True
+MovieLens-25M (K=10),Recall@10,Essence (K=10),ComiRec (SA),0.005511,0.070611,-0.0651,-0.070708,-0.059713,0.0,0.0,-0.517,2000,0.0,0.0,True
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Random,0.0,0.0,0.0,0.0,0.0,0.0,1.0,,490,1.0,1.0,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Popularity,0.0,0.0,0.0,0.0,0.0,0.0,1.0,,490,1.0,1.0,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),CF (ItemKNN),0.0,0.003741,-0.003741,-0.009184,0.0,0.0,0.1004,-0.0711,490,0.1004,0.2008,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Content (Avg Emb),0.0,0.002041,-0.002041,-0.006122,0.0,0.0,0.7338,-0.0452,490,0.7338,0.8805600000000001,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Last-Item,0.0,0.003061,-0.003061,-0.008163,0.0,0.0,0.268,-0.0607,490,0.268,0.35254285714285716,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Avg-Last-10,0.0,0.002551,-0.002551,-0.007653,0.0,0.0,0.2732,-0.0548,490,0.2732,0.35254285714285716,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),Recency-Weighted,0.0,0.004592,-0.004592,-0.010204,-0.00051,0.0,0.033,-0.0815,490,0.033,0.07425000000000001,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),MIND,0.0,0.0,0.0,0.0,0.0,0.0,1.0,,490,1.0,1.0,False
+MovieLens-25M (K=10),LT-Recall@10,Essence (K=10),ComiRec (SA),0.0,0.001361,-0.001361,-0.003741,0.0,0.0,0.2742,-0.0572,490,0.2742,0.35254285714285716,False

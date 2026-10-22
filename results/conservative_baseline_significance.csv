@@ -1,0 +1,9 @@
+dataset,baseline,config,metric,n,essence,baseline_mean,diff,cohens_d,p,mde_80,q_bh,significant
+Last.fm-1K,MIND,validation-tuned,Recall@10,99,0.028075,0.008187,0.019888,0.243,0.0,0.023227,0.0,True
+Last.fm-1K,MIND,validation-tuned,LT-Recall@10,92,0.014241,0.002104,0.012138,0.136,0.1622,0.025822,0.1854,False
+Last.fm-1K,ComiRec (SA),validation-tuned,Recall@10,99,0.028075,0.024325,0.00375,0.065,0.5366,0.015916,0.5366,False
+Last.fm-1K,ComiRec (SA),validation-tuned,LT-Recall@10,92,0.014241,0.000836,0.013405,0.153,0.0828,0.025186,0.1104,False
+Amazon Books,MIND,validation-tuned,Recall@10,2000,0.024619,0.007154,0.017465,0.205,0.0,0.005252,0.0,True
+Amazon Books,MIND,validation-tuned,LT-Recall@10,1292,0.019307,0.005722,0.013585,0.113,0.0,0.009427,0.0,True
+Amazon Books,ComiRec (SA),as-published,Recall@10,2000,0.024619,0.005554,0.019065,0.224,0.0,0.005294,0.0,True
+Amazon Books,ComiRec (SA),as-published,LT-Recall@10,1292,0.019307,0.012126,0.007182,0.052,0.0612,0.010738,0.0979,False

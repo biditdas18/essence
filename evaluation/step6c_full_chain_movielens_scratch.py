@@ -21,6 +21,8 @@ Run:
     python evaluation/step6c_full_chain_movielens_scratch.py
 """
 
+import argparse
+import math
 import pickle
 import subprocess
 import sys
@@ -39,7 +41,15 @@ sys.path.insert(0, str(BASE_DIR))
 PROC_DIR = BASE_DIR / "data" / "movielens_processed"
 RESULTS_DIR = BASE_DIR / "results"
 
-K = 15
+_ap = argparse.ArgumentParser(add_help=False)
+_ap.add_argument("--K", type=int, default=15,
+                 help="number of interest clusters; output filenames derive from it")
+_ap.add_argument("--emb-suffix", type=str, default="",
+                 help="read embeddings_metadata<suffix>.pkl (e.g. _mpnet)")
+_cli = _ap.parse_known_args()[0]
+K = _cli.K
+TAG = _cli.emb_suffix
+EMB_FILE = f"embeddings_metadata{_cli.emb_suffix}.pkl"
 SEED = 42
 M = 10
 N_DECILES = 10
@@ -86,10 +96,28 @@ def recency_weighted_query(recent_vecs, decay=RECENCY_DECAY):
     return np.average(np.array(recent_vecs), axis=0, weights=weights)
 
 
-def recall_at_k(recs, test_items):
+def recall_at_k(recs, test_items, k=None):
+    """Recall@K. k=None scores the whole list, which is the original behaviour
+    (callers passed an already-truncated top-10), so existing call sites are
+    unchanged. Pass k to slice explicitly for a different cutoff."""
     if not test_items:
         return 0.0
+    if k is not None:
+        recs = recs[:k]
     return sum(1 for r in recs if r in test_items) / len(test_items)
+
+
+def ndcg_at_k(recs, test_items, k=10):
+    """NDCG@K, binary relevance. Same definition as evaluation/evaluate.py:
+    IDCG normalises by min(|test_items|, k), i.e. the best ranking achievable
+    within K -- deliberately unlike recall_at_k above, which divides by the
+    full test-set size. See evaluate.ndcg_at_k for the rationale."""
+    if not test_items:
+        return 0.0
+    ts = set(test_items)
+    dcg = sum(1.0 / math.log2(i + 2) for i, r in enumerate(recs[:k]) if r in ts)
+    idcg = sum(1.0 / math.log2(i + 2) for i in range(min(len(ts), k)))
+    return dcg / idcg if idcg > 0 else 0.0
 
 
 def lt_recall_at_k(recs, test_items, lt_set):
@@ -104,7 +132,7 @@ def _load_common():
     test_df = pd.read_csv(PROC_DIR / "test.csv")
     if "timestamp" not in train_df.columns:
         train_df["timestamp"] = train_df.index
-    with open(PROC_DIR / "embeddings_metadata.pkl", "rb") as f:
+    with open(PROC_DIR / EMB_FILE, "rb") as f:
         emb_meta = pickle.load(f)
     item_ids, C, item_index = build_candidate_matrix(emb_meta)
     return train_df, test_df, emb_meta, item_ids, C, item_index
@@ -150,43 +178,74 @@ def stage_evaluate():
         unseen_pool = [i for i in item_ids if i not in seen_set]
         rng_u = np.random.default_rng(_stable_user_seed(uid))
         recs_random = rng_u.choice(unseen_pool, size=min(M, len(unseen_pool)), replace=False).tolist()
+        # Recall@20 needs 10 more items. They are drawn as a CONTINUATION of the
+        # same generator over the pool minus what was already drawn, so the
+        # top-10 list is byte-identical to the published one and the @20 list is
+        # a strict superset of it. Re-drawing with size=20 would have produced a
+        # different first 10 and silently changed every published Random number.
+        _rem = [i for i in unseen_pool if i not in set(recs_random)]
+        _extra = (rng_u.choice(_rem, size=min(M, len(_rem)), replace=False).tolist()
+                  if _rem else [])
+        recs_random20 = recs_random + _extra
         recs_pop = [iid for iid in popularity.index if iid not in seen_set][:M]
+        recs_pop20 = [iid for iid in popularity.index if iid not in seen_set][:2 * M]
         recs_knn = cf_itemknn_recommend(uid, train_df, itemknn, M)
+        recs_knn20 = cf_itemknn_recommend(uid, train_df, itemknn, 2 * M)
 
         seen_vecs = [emb_meta[i] for i in train_items if i in emb_meta]
         if seen_vecs:
-            recs_content = top_k_unseen(normalized(np.mean(seen_vecs, axis=0)), seen_mask, C, item_ids, M)
-            recs_last_item = top_k_unseen(normalized(seen_vecs[-1]), seen_mask, C, item_ids, M)
+            q_content = normalized(np.mean(seen_vecs, axis=0))
+            q_last = normalized(seen_vecs[-1])
             recent_vecs = seen_vecs[-RECENCY_N:]
-            recs_avg_last10 = top_k_unseen(normalized(np.mean(recent_vecs, axis=0)), seen_mask, C, item_ids, M)
-            recs_recency_weighted = top_k_unseen(normalized(recency_weighted_query(recent_vecs)), seen_mask, C, item_ids, M)
+            q_avg10 = normalized(np.mean(recent_vecs, axis=0))
+            q_rw = normalized(recency_weighted_query(recent_vecs))
+            recs_content = top_k_unseen(q_content, seen_mask, C, item_ids, M)
+            recs_content20 = top_k_unseen(q_content, seen_mask, C, item_ids, 2 * M)
+            recs_last_item = top_k_unseen(q_last, seen_mask, C, item_ids, M)
+            recs_last_item20 = top_k_unseen(q_last, seen_mask, C, item_ids, 2 * M)
+            recs_avg_last10 = top_k_unseen(q_avg10, seen_mask, C, item_ids, M)
+            recs_avg_last1020 = top_k_unseen(q_avg10, seen_mask, C, item_ids, 2 * M)
+            recs_recency_weighted = top_k_unseen(q_rw, seen_mask, C, item_ids, M)
+            recs_recency_weighted20 = top_k_unseen(q_rw, seen_mask, C, item_ids, 2 * M)
             if len(seen_vecs) >= K:
                 km = KMeans(n_clusters=K, random_state=SEED, n_init=10)
                 km.fit(np.array(seen_vecs))
                 recent_mean = np.mean(recent_vecs, axis=0)
                 dists = np.linalg.norm(km.cluster_centers_ - recent_mean, axis=1)
                 centroid = km.cluster_centers_[np.argmin(dists)].astype(np.float32)
-                recs_essence = top_k_unseen(normalized(centroid), seen_mask, C, item_ids, M)
+                q_ess = normalized(centroid)
+                recs_essence = top_k_unseen(q_ess, seen_mask, C, item_ids, M)
+                recs_essence20 = top_k_unseen(q_ess, seen_mask, C, item_ids, 2 * M)
             else:
-                recs_essence = recs_content
+                recs_essence, recs_essence20 = recs_content, recs_content20
         else:
             recs_content = recs_last_item = recs_avg_last10 = recs_recency_weighted = recs_essence = recs_pop
+            recs_content20 = recs_last_item20 = recs_avg_last1020 = recs_recency_weighted20 = \
+                recs_essence20 = recs_pop20
 
-        for name, recs in zip(systems, [recs_random, recs_pop, recs_knn, recs_content,
-                                        recs_last_item, recs_avg_last10, recs_recency_weighted, recs_essence]):
+        tens = [recs_random, recs_pop, recs_knn, recs_content,
+                recs_last_item, recs_avg_last10, recs_recency_weighted, recs_essence]
+        twenties = [recs_random20, recs_pop20, recs_knn20, recs_content20,
+                    recs_last_item20, recs_avg_last1020, recs_recency_weighted20, recs_essence20]
+        for name, recs, recs20 in zip(systems, tens, twenties):
             rows.append({
                 "user_id": uid, "system": name,
+                # unchanged, and must stay byte-identical to the published files
                 "recall@10": recall_at_k(recs, test_items),
                 "long_tail_recall@10": lt_recall_at_k(recs, test_items, lt_set),
+                # added this revision: cutoff sensitivity and a ranking-aware metric
+                "recall@5": recall_at_k(recs, test_items, 5),
+                "recall@20": recall_at_k(recs20, test_items, 2 * M),
+                "ndcg@10": ndcg_at_k(recs, test_items, M),
             })
 
     base_df = pd.DataFrame(rows)
-    out_path = RESULTS_DIR / "scratch_evaluation_results_K15_movielens.csv"
+    out_path = RESULTS_DIR / f"scratch_evaluation_results_K{K}_movielens{TAG}.csv"
     base_df.to_csv(out_path, index=False)
 
     mind_comirec = pd.read_csv(RESULTS_DIR / "mind_comirec_results_movielens.csv")
     merged = pd.concat([base_df, mind_comirec], ignore_index=True)
-    merged_path = RESULTS_DIR / "scratch_evaluation_results_K15_movielens_merged.csv"
+    merged_path = RESULTS_DIR / f"scratch_evaluation_results_K{K}_movielens_merged{TAG}.csv"
     merged.to_csv(merged_path, index=False)
     print(f"[step6c-movielens] merged 10-system CSV: {len(merged)} rows -> {merged_path}")
     return merged_path
@@ -195,10 +254,10 @@ def stage_evaluate():
 # ── Stage 2/3: bootstrap + FDR ─────────────────────────────────────────────
 
 def stage_bootstrap(merged_path):
-    out_path = RESULTS_DIR / "scratch_paired_bootstrap_movielens_K15.csv"
+    out_path = RESULTS_DIR / f"scratch_paired_bootstrap_movielens_K{K}{TAG}.csv"
     subprocess.run(
         [sys.executable, "evaluation/paired_bootstrap.py",
-         "--input", str(merged_path), "--label", "MovieLens-25M (K=15)",
+         "--input", str(merged_path), "--label", f"MovieLens-25M (K={K})",
          "--output", str(out_path)],
         cwd=str(BASE_DIR), check=True,
     )
@@ -211,7 +270,14 @@ def stage_fdr(bootstrap_path):
     def two_sided_p(f):
         return min(1.0, 2 * min(f, 1 - f))
 
-    df["p_two_sided"] = df["frac_resamples_diff_gt_0"].apply(two_sided_p)
+    # Prefer the tie-aware p emitted by paired_bootstrap.py. The frac_gt_0 form
+    # below counts resamples with diff == 0 as evidence against the null, which
+    # makes a one-sided-with-ties difference (LT-Recall@10, where most users
+    # score exactly 0) look maximally significant.
+    if "p_two_sided_tie_aware" in df.columns:
+        df["p_two_sided"] = df["p_two_sided_tie_aware"].astype(float)
+    else:
+        df["p_two_sided"] = df["frac_resamples_diff_gt_0"].apply(two_sided_p)
     p = df["p_two_sided"].values
     m = len(p)
     order = np.argsort(p)
@@ -223,7 +289,7 @@ def stage_fdr(bootstrap_path):
     q[order] = q_mono
     df["q_value_bh"] = q
     df["significant_after_fdr"] = q <= 0.05
-    out_path = RESULTS_DIR / "scratch_fdr_movielens_K15.csv"
+    out_path = RESULTS_DIR / f"scratch_fdr_movielens_K{K}{TAG}.csv"
     df.to_csv(out_path, index=False)
     print(f"[step6c-movielens] {df['significant_after_fdr'].sum()}/{m} significant after FDR")
     return out_path
@@ -298,7 +364,7 @@ def stage_decile():
             vals = per_system_decile_recalls[s].get(d, [])
             mean_r = float(np.mean(vals)) if vals else float("nan")
             decile_rows.append({"decile": d, "system": s, "recall@10": mean_r, "n_opportunities": len(vals)})
-    out_path = RESULTS_DIR / "scratch_decile_recall_movielens_K15.csv"
+    out_path = RESULTS_DIR / f"scratch_decile_recall_movielens_K{K}{TAG}.csv"
     pd.DataFrame(decile_rows).to_csv(out_path, index=False)
     return out_path
 
@@ -335,7 +401,7 @@ def stage_silhouette(merged_path):
     sil_df = pd.DataFrame(rows)
     if len(sil_df) >= 3:
         sil_df["stratum"] = pd.qcut(sil_df["silhouette"], 3, labels=["low", "medium", "high"], duplicates="drop")
-    out_path = RESULTS_DIR / "scratch_multimodality_stratified_movielens_K15.csv"
+    out_path = RESULTS_DIR / f"scratch_multimodality_stratified_movielens_K{K}{TAG}.csv"
     sil_df.to_csv(out_path, index=False)
     return out_path
 
@@ -384,7 +450,7 @@ def stage_ablation():
             "meanselect_recall@10": recall_at_k(recs_mean, test_items),
         })
     out = pd.DataFrame(rows)
-    out_path = RESULTS_DIR / "scratch_ablation_movielens_K15.csv"
+    out_path = RESULTS_DIR / f"scratch_ablation_movielens_K{K}{TAG}.csv"
     out.to_csv(out_path, index=False)
     print(f"[step6c-movielens] Recency-select mean Recall@10={out['recency_recall@10'].mean():.4f}  "
           f"Mean-select mean Recall@10={out['meanselect_recall@10'].mean():.4f}")

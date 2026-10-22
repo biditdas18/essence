@@ -1,0 +1,2 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (tuned_mind_lr1e-3_K8),lastfm,0.005257140280401569,0.005376344086021506,99,92,55.9574499130249,6,4.4567155838012695,0.001,42,8,pretrained

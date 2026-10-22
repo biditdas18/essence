@@ -101,8 +101,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", required=True, choices=list(DATASETS.keys()))
     parser.add_argument("--k-list", default=None, help="comma-separated K values, overrides K_SWEEP")
+    parser.add_argument("--proc-suffix", default="",
+                        help="read data/<dataset>_processed<suffix>; also tags the output CSV")
+    parser.add_argument("--emb-suffix", default="",
+                        help="read embeddings_metadata<suffix>.pkl (e.g. _mpnet); also tags output")
     args = parser.parse_args()
-    cfg = DATASETS[args.dataset]
+    cfg = dict(DATASETS[args.dataset])
+    if args.proc_suffix:
+        cfg["proc_dir"] = Path(str(cfg["proc_dir"]) + args.proc_suffix)
+    if args.emb_suffix:
+        cfg["emb_file"] = f"embeddings_metadata{args.emb_suffix}.pkl"
     k_values = [int(k) for k in args.k_list.split(",")] if args.k_list else K_SWEEP
 
     t0 = time.time()
@@ -169,7 +177,8 @@ def main():
             "n_users": len(val_users),
         })
 
-    out_path = BASE_DIR / "results" / f"validation_k_sweep_{args.dataset}.csv"
+    out_path = (BASE_DIR / "results"
+                / f"validation_k_sweep_{args.dataset}{args.proc_suffix}{args.emb_suffix}.csv")
     new_df = pd.DataFrame(results)
     if out_path.exists():
         old_df = pd.read_csv(out_path)

@@ -18,18 +18,23 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 
 BASE_DIR = Path(__file__).resolve().parents[2]
+import argparse
+_ap = argparse.ArgumentParser(add_help=False)
+_ap.add_argument("--model", default="all-MiniLM-L6-v2")
+_ap.add_argument("--out-suffix", default="")
+_a = _ap.parse_known_args()[0]
 PROC_DIR = BASE_DIR / "data" / "movielens_processed"
 
 
 def main():
     item_text = pd.read_csv(PROC_DIR / "item_text.csv")
-    print(f"[embeddings] Encoding {len(item_text):,} items with all-MiniLM-L6-v2 ...")
+    print(f"[embeddings] Encoding {len(item_text):,} items with {_a.model} ...")
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = SentenceTransformer(_a.model)
     embeddings = model.encode(item_text["item_text"].tolist(), show_progress_bar=True, batch_size=64)
 
     emb_map = {int(iid): emb for iid, emb in zip(item_text["movieId"], embeddings)}
-    out_path = PROC_DIR / "embeddings_metadata.pkl"
+    out_path = PROC_DIR / f"embeddings_metadata{_a.out_suffix}.pkl"
     with open(out_path, "wb") as f:
         pickle.dump(emb_map, f)
     print(f"[embeddings] Saved {len(emb_map):,} embeddings to {out_path}")

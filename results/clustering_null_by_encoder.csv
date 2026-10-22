@@ -1,0 +1,13 @@
+dataset,encoder,metric,essence,recency,diff,q,verdict,essence_rank
+Last.fm-1K,MiniLM-L6 (384d),Recall@10,0.028075,0.030369,-0.002294,0.3099,not significant,2/10
+Last.fm-1K,MiniLM-L6 (384d),LT-Recall@10,0.014241,0.015147,-0.000906,0.6642,not significant,2/10
+Last.fm-1K,mpnet-base (768d),Recall@10,0.021217,0.022534,-0.001317,0.9324,not significant,2/10
+Last.fm-1K,mpnet-base (768d),LT-Recall@10,0.008373,0.008853,-0.00048,0.983,not significant,2/10
+Amazon Books,MiniLM-L6 (384d),Recall@10,0.024619,0.025996,-0.001377,0.5215,not significant,3/10
+Amazon Books,MiniLM-L6 (384d),LT-Recall@10,0.019307,0.017927,0.00138,0.6732,not significant,3/10
+Amazon Books,mpnet-base (768d),Recall@10,0.025431,0.025014,0.000417,0.8092,not significant,2/10
+Amazon Books,mpnet-base (768d),LT-Recall@10,0.017894,0.015968,0.001926,0.5807,not significant,2/10
+MovieLens-25M,MiniLM-L6 (384d),Recall@10,0.005511,0.007604,-0.002093,0.0329,clustering worse,8/10
+MovieLens-25M,MiniLM-L6 (384d),LT-Recall@10,0.0,0.004592,-0.004592,0.0742,not significant,8/10
+MovieLens-25M,mpnet-base (768d),Recall@10,0.008829,0.011068,-0.002239,0.0674,not significant,8/10
+MovieLens-25M,mpnet-base (768d),LT-Recall@10,0.005272,0.003061,0.002211,0.6754,not significant,8/10

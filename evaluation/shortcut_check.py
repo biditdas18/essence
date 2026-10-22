@@ -44,7 +44,13 @@ DATA_DIR = BASE_DIR / "data"
 EMBEDDINGS_DIR = BASE_DIR / "embeddings"
 RESULTS_DIR = BASE_DIR / "results"
 
-K = 3
+import argparse as _ap_mod
+_ap = _ap_mod.ArgumentParser(add_help=False)
+_ap.add_argument("--K", type=int, default=3,
+                 help="interest clusters; default 3 reproduces the originally published run")
+_cli = _ap.parse_known_args()[0]
+K = _cli.K
+TAG = "" if K == 3 else f"_K{K}"
 M = 10
 SEED = 42
 
@@ -174,7 +180,7 @@ def main():
     holdout_lt = [r["holdout_long_tail_recall@10"] for r in rows if r["holdout_long_tail_recall@10"] != ""]
 
     print(f"\n{'='*60}")
-    print("  ARTIST/TRACK SHORTCUT CHECK — Essence (K=3)")
+    print(f"  ARTIST/TRACK SHORTCUT CHECK — Essence (K={K})")
     print(f"{'='*60}")
     print(f"  Recs sharing an artist with the active cluster:")
     print(f"    pooled fraction (Σshared / Σrecs): {pooled_fraction:.4f}  ({total_shared}/{total_recs})")
@@ -184,14 +190,14 @@ def main():
     print(f"    LT-Recall@10: {np.mean(holdout_lt):.4f}  (n={len(holdout_lt)})")
     print()
 
-    out_path = RESULTS_DIR / "shortcut_analysis.csv"
+    out_path = RESULTS_DIR / f"shortcut_analysis{TAG}.csv"
     with open(out_path, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=rows[0].keys())
         w.writeheader()
         w.writerows(rows)
     print(f"[shortcut_check] Saved per-user rows to {out_path}")
 
-    summary_path = RESULTS_DIR / "shortcut_analysis_summary.csv"
+    summary_path = RESULTS_DIR / f"shortcut_analysis_summary{TAG}.csv"
     with open(summary_path, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["metric", "value"])

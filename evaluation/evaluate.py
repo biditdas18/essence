@@ -16,6 +16,7 @@ Run:
 
 import argparse
 import hashlib
+import math
 import pickle
 import sys
 from pathlib import Path
@@ -114,24 +115,78 @@ def long_tail_recall_at_k(recommended: list, actual: list,
     return hits / len(actual_lt)
 
 
+def ndcg_at_k(recommended: list, actual: list, k: int = 10) -> float:
+    """
+    Standard NDCG@K under binary relevance (implicit feedback).
+
+        DCG@K  = sum_{i=1..K} rel_i / log2(i + 1)
+        IDCG@K = sum_{i=1..min(|actual|, K)} 1 / log2(i + 1)
+        NDCG@K = DCG@K / IDCG@K
+
+    NOTE ON THE DENOMINATOR, because it differs deliberately from
+    recall_at_k above. Recall@K divides by the FULL test-set size, so a
+    user with more test items than K cannot reach 1.0 -- that is the
+    intended behaviour there (see recall_at_k's docstring). NDCG instead
+    normalises by the best ranking ACHIEVABLE within K, i.e.
+    min(|actual|, K) ideal hits, which is the conventional definition and
+    makes 1.0 attainable. The two metrics therefore answer different
+    questions: recall measures coverage of the test set, NDCG measures
+    ranking quality within the K slots available.
+
+    Same macro-averaging convention as the other metrics here: this returns
+    a PER-USER value and callers take the arithmetic mean over users.
+    """
+    if not actual:
+        return 0.0
+    actual_set = set(actual)
+    dcg = sum(1.0 / math.log2(i + 2)
+              for i, item in enumerate(recommended[:k]) if item in actual_set)
+    ideal_hits = min(len(actual_set), k)
+    idcg = sum(1.0 / math.log2(i + 2) for i in range(ideal_hits))
+    return dcg / idcg if idcg > 0 else 0.0
+
+
+def catalog_coverage(all_recommendations: list, catalog_size: int,
+                     k: int = 10) -> float:
+    """
+    Catalogue coverage: the fraction of the catalogue that appears in at
+    least one user's top-K list.
+
+        coverage@K = |union of top-K lists| / catalog_size
+
+    This is a SYSTEM-level metric, not a per-user one, so unlike the
+    metrics above it is not macro-averaged -- it is computed once over the
+    full set of users evaluated. `all_recommendations` is a list of
+    per-user recommendation lists.
+    """
+    if catalog_size <= 0:
+        return 0.0
+    shown = set()
+    for rec in all_recommendations:
+        shown.update(rec[:k])
+    return len(shown) / catalog_size
+
+
 # ---------------------------------------------------------------------------
 # Main evaluation loop
 # ---------------------------------------------------------------------------
 
 def run_evaluation(n_users: int = 200, K: int = 3, M: int = 10,
                    seed: int = 42,
-                   output_csv: Path = None) -> pd.DataFrame:
+                   output_csv: Path = None,
+                   data_suffix: str = "",
+                   emb_file: str = "item_embeddings.pkl") -> pd.DataFrame:
     # Load data
     print("[eval] Loading train/test interactions …")
-    train_df = pd.read_pickle(DATA_DIR / "train_interactions.pkl")
-    test_df  = pd.read_pickle(DATA_DIR / "test_interactions.pkl")
+    train_df = pd.read_pickle(DATA_DIR / f"train_interactions{data_suffix}.pkl")
+    test_df  = pd.read_pickle(DATA_DIR / f"test_interactions{data_suffix}.pkl")
 
     print("[eval] Loading item embeddings …")
-    with open(EMBEDDINGS_DIR / "item_embeddings.pkl", "rb") as fh:
+    with open(EMBEDDINGS_DIR / emb_file, "rb") as fh:
         item_embedding_map = pickle.load(fh)
 
     print("[eval] Loading long-tail item IDs …")
-    with open(DATA_DIR / "long_tail_ids.pkl", "rb") as fh:
+    with open(DATA_DIR / f"long_tail_ids{data_suffix}.pkl", "rb") as fh:
         long_tail_ids = pickle.load(fh)
 
     # Sample users present in both train and test
@@ -226,6 +281,10 @@ def print_summary(results_df: pd.DataFrame):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Evaluate Essence experiment")
+    parser.add_argument("--data-suffix", type=str, default="",
+                        help="read {train,test}_interactions<suffix>.pkl and long_tail_ids<suffix>.pkl")
+    parser.add_argument("--emb-file", type=str, default="item_embeddings.pkl",
+                        help="embeddings file under embeddings/")
     parser.add_argument("--users", type=int, default=200,
                         help="Number of users to sample (default: 200)")
     parser.add_argument("--K", type=int, default=3,
@@ -244,6 +303,8 @@ if __name__ == "__main__":
     out = RESULTS_DIR / args.output if args.output else None
     results_df = run_evaluation(
         n_users=args.users,
+        data_suffix=args.data_suffix,
+        emb_file=args.emb_file,
         K=args.K,
         M=args.M,
         seed=args.seed,

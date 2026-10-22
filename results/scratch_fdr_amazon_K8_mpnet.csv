@@ -1,0 +1,19 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,p_two_sided_tie_aware,cohens_d_paired,n_paired_users,p_two_sided,q_value_bh,significant_after_fdr
+Amazon Books (K=8),Recall@10,Essence (K=8),Random,0.025431,0.000117,0.025314,0.021463,0.029303,1.0,0.0,0.28,2000,0.0,0.0,True
+Amazon Books (K=8),Recall@10,Essence (K=8),Popularity,0.025431,0.002122,0.023309,0.019283,0.027517,1.0,0.0,0.2503,2000,0.0,0.0,True
+Amazon Books (K=8),Recall@10,Essence (K=8),CF (ItemKNN),0.025431,0.003123,0.022308,0.018417,0.026454,1.0,0.0,0.2425,2000,0.0,0.0,True
+Amazon Books (K=8),Recall@10,Essence (K=8),Content (Avg Emb),0.025431,0.016972,0.008459,0.004775,0.012145,1.0,0.0,0.1002,2000,0.0,0.0,True
+Amazon Books (K=8),Recall@10,Essence (K=8),Last-Item,0.025431,0.030799,-0.005368,-0.009485,-0.001351,0.0046,0.0092,-0.0565,2000,0.0092,0.015054545454545454,True
+Amazon Books (K=8),Recall@10,Essence (K=8),Avg-Last-10,0.025431,0.02119,0.004241,0.001383,0.007233,0.998,0.004,0.0644,2000,0.004,0.007200000000000001,True
+Amazon Books (K=8),Recall@10,Essence (K=8),Recency-Weighted,0.025431,0.025014,0.000417,-0.002485,0.003303,0.6179,0.7642,0.0063,2000,0.7642,0.8091529411764705,False
+Amazon Books (K=8),Recall@10,Essence (K=8),ComiRec (SA),0.025431,0.005554,0.019877,0.015999,0.0239,1.0,0.0,0.2179,2000,0.0,0.0,True
+Amazon Books (K=8),Recall@10,Essence (K=8),MIND,0.025431,0.005226,0.020205,0.016292,0.024182,1.0,0.0,0.2221,2000,0.0,0.0,True
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Random,0.017894,0.0,0.017894,0.011509,0.024842,1.0,0.0,0.1467,1292,0.0,0.0,True
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Popularity,0.017894,0.0,0.017894,0.011462,0.02486,1.0,0.0,0.1467,1292,0.0,0.0,True
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),CF (ItemKNN),0.017894,0.013707,0.004187,-0.004082,0.012734,0.8366,0.3268,0.0271,1292,0.3268,0.42017142857142853,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Content (Avg Emb),0.017894,0.011204,0.00669,4.6e-05,0.013785,0.9754,0.0492,0.0539,1292,0.0492,0.0738,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Last-Item,0.017894,0.018705,-0.000811,-0.007937,0.006723,0.4142,0.8286,-0.006,1292,0.8286,0.8286,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Avg-Last-10,0.017894,0.015296,0.002598,-0.003327,0.008634,0.7995,0.401,0.0238,1292,0.401,0.4812,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Recency-Weighted,0.017894,0.015968,0.001926,-0.003695,0.007712,0.7419,0.5162,0.0183,1292,0.5162,0.5807249999999999,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),ComiRec (SA),0.017894,0.012126,0.005768,-0.001613,0.013462,0.9332,0.1336,0.0408,1292,0.1336,0.18498461538461536,False
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),MIND,0.017894,0.00574,0.012154,0.005593,0.019276,1.0,0.0,0.0969,1292,0.0,0.0,True

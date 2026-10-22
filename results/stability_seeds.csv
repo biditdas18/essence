@@ -1,0 +1,6 @@
+variant,kind,essence,rank,n_sys,sig,n_tests,clust_null_holds,rw_recall_q
+"canonical (km=42, sample=base)",reference,0.024619,3,10,10,18,True,0.5215
+K-means seed 43,clustering seed,0.026928,2,10,10,18,True,0.6066
+K-means seed 44,clustering seed,0.026242,2,10,10,18,True,0.904
+user sample 43,user sample,0.025961,3,8,8,14,True,0.3156
+user sample 44,user sample,0.024202,3,8,8,14,True,0.1342

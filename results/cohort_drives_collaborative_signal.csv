@@ -1,0 +1,5 @@
+cohort,baseline,d,n,essence,baseline_mean,cooc_pct
+published (99 users),CF (ItemKNN),0.2812,99,0.028075,0.001756,10.3
+published (99 users),Popularity,0.2746,99,0.028075,0.002309,10.3
+cap2000 (374 users),CF (ItemKNN),-0.1596,374,0.002634,0.005475,28.4
+cap2000 (374 users),Popularity,0.0004,374,0.002634,0.002627,28.4

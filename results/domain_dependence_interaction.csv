@@ -1,0 +1,9 @@
+baseline,weak_dataset,d_weak,d_movielens,delta_d,ci_lo,ci_hi,p,sign_flip,baseline_config,q_bh,significant
+CF (ItemKNN),Last.fm-1K,0.2812,-0.5518,0.833,0.755,0.9456,0.0,True,chain,0.0,True
+CF (ItemKNN),Amazon Books,0.2472,-0.5518,0.799,0.7594,0.8409,0.0,True,chain,0.0,True
+MIND,Last.fm-1K,0.2427,-0.378,0.6207,0.5418,0.7558,0.0,True,validation-tuned,0.0,True
+MIND,Amazon Books,0.2052,-0.378,0.5832,0.5367,0.63,0.0,True,validation-tuned,0.0,True
+ComiRec (SA),Last.fm-1K,0.0654,-0.517,0.5824,0.3316,0.7158,0.0,True,validation-tuned,0.0,True
+ComiRec (SA),Amazon Books,0.2239,-0.517,0.7409,0.6995,0.7828,0.0,True,as-published,0.0,True
+Popularity,Last.fm-1K,0.2746,-0.4352,0.7098,0.6263,0.8226,0.0,True,chain,0.0,True
+Popularity,Amazon Books,0.2561,-0.4352,0.6913,0.6489,0.7371,0.0,True,chain,0.0,True

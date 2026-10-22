@@ -1,0 +1,4 @@
+dataset,published_K,stated_rule_from_K2,proposed_K_floor_only,proposed_K_floor_plus_all_clustered,published_K_items_per_cluster,published_K_floor_ok,published_K_frac_clustered,proposed_K_items_per_cluster,proposed_K_frac_clustered,adopted_K,adopted_rule
+Last.fm-1K,10,10,10,10,17.228,True,1.0,17.228,1.0,10,argmax validation Recall@10 s.t. items/cluster >= 3 and all users clusterable
+Amazon Books,10,2,8,8,2.584,False,1.0,3.23,1.0,8,argmax validation Recall@10 s.t. items/cluster >= 3 and all users clusterable
+MovieLens-25M,15,3,15,10,3.17,True,0.8965,3.17,0.8965,10,argmax validation Recall@10 s.t. items/cluster >= 3 and all users clusterable

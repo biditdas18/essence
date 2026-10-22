@@ -1,0 +1,5 @@
+dataset,model,as_published,validation_tuned,chosen,value_used,uplift_vs_published_pct,sel_lr,sel_K
+amazon,ComiRec (SA),0.005554,0.004677,as-published,0.005554,0.0,1e-4,8
+amazon,MIND,0.005226,0.007154,validation-tuned,0.007154,36.9,1e-3,2
+lastfm,ComiRec (SA),0.01366,0.024325,validation-tuned,0.024325,78.1,3e-4,8
+lastfm,MIND,0.007816,0.008187,validation-tuned,0.008187,4.7,1e-3,2

@@ -1,0 +1,2 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+ComiRec (SA) (tuned_comirec_lr3e-3_K2),amazon,0.004778779853187748,0.007223942208462331,2000,1292,231.77278995513916,6,4.177994125366211,0.003,42,2,pretrained

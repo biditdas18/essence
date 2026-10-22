@@ -21,8 +21,25 @@ from pathlib import Path
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-PROC_DIR = Path(__file__).resolve().parents[2] / "data" / "amazon_processed"
-MODEL_NAME = "all-MiniLM-L6-v2"
+import argparse
+
+# Processed-data directory and encoder are parameters so the same code path
+# builds the published embeddings, the heavy-user replication, and the
+# encoder-sensitivity replication. Defaults reproduce the published run.
+_ap = argparse.ArgumentParser(add_help=False)
+_ap.add_argument("--proc-suffix", type=str, default="",
+                 help="appended to data/amazon_processed<suffix>")
+_ap.add_argument("--model", type=str, default="all-MiniLM-L6-v2")
+_ap.add_argument("--out-suffix", type=str, default="",
+                 help="appended to embeddings_metadata<suffix>.pkl")
+_ap.add_argument("--skip-review", action="store_true",
+                 help="stop after item embeddings; skips the per-review pass")
+_args = _ap.parse_known_args()[0]
+
+PROC_DIR = (Path(__file__).resolve().parents[2] / "data"
+            / f"amazon_processed{_args.proc_suffix}")
+MODEL_NAME = _args.model
+OUT_SUFFIX = _args.out_suffix
 BATCH_SIZE = 64
 
 
@@ -85,7 +102,7 @@ def main():
 
     embeddings_metadata = {iid: vecs_p1[i] for i, iid in enumerate(unique_items)}
 
-    out1 = PROC_DIR / "embeddings_metadata.pkl"
+    out1 = PROC_DIR / f"embeddings_metadata{OUT_SUFFIX}.pkl"
     with open(out1, "wb") as f:
         pickle.dump(embeddings_metadata, f)
 
@@ -95,6 +112,15 @@ def main():
     print(f"    Saved to        : {out1}")
 
     # ── PASS 2: User-review enriched embeddings ─────────────────────────────
+    # Pass 2 is by far the expensive half (one embedding per user-item review,
+    # not per item) and neither the K sweep nor step6c_full_chain_amazon reads
+    # embeddings_user_review.pkl -- they load embeddings_metadata.pkl only. So
+    # replications that only need item vectors can stop here.
+    if _args.skip_review:
+        print("\n  PASS 2 skipped (--skip-review): the evaluation chain reads "
+              "embeddings_metadata.pkl only.")
+        return
+
     print("\n" + "="*55)
     print("PASS 2 — User-review enriched embeddings")
     print("="*55)
@@ -115,7 +141,7 @@ def main():
 
     embeddings_user_review = {pair: vecs_p2[i] for i, pair in enumerate(pairs)}
 
-    out2 = PROC_DIR / "embeddings_user_review.pkl"
+    out2 = PROC_DIR / f"embeddings_user_review{OUT_SUFFIX}.pkl"
     with open(out2, "wb") as f:
         pickle.dump(embeddings_user_review, f)
 

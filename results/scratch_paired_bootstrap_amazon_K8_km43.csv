@@ -1,0 +1,19 @@
+dataset,metric,essence_system,baseline_system,essence_mean,baseline_mean,observed_diff,ci_lo,ci_hi,frac_resamples_diff_gt_0,p_two_sided_tie_aware,cohens_d_paired,n_paired_users
+Amazon Books (K=8),Recall@10,Essence (K=8),Random,0.026928,0.000117,0.026811,0.022925,0.030821,1.0000,0.000000,0.2966,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),Popularity,0.026928,0.002122,0.024806,0.020818,0.029064,1.0000,0.000000,0.2663,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),CF (ItemKNN),0.026928,0.003123,0.023805,0.019784,0.028020,1.0000,0.000000,0.2582,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),Content (Avg Emb),0.026928,0.017307,0.009621,0.006185,0.013184,1.0000,0.000000,0.1188,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),Last-Item,0.026928,0.031066,-0.004138,-0.008604,0.000202,0.0314,0.062800,-0.0409,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),Avg-Last-10,0.026928,0.023549,0.003379,0.000454,0.006422,0.9873,0.025400,0.0494,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),Recency-Weighted,0.026928,0.025996,0.000931,-0.002094,0.004019,0.7304,0.539200,0.0134,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),ComiRec (SA),0.026928,0.005554,0.021374,0.017558,0.025367,1.0000,0.000000,0.2376,2000
+Amazon Books (K=8),Recall@10,Essence (K=8),MIND,0.026928,0.005226,0.021702,0.017836,0.025732,1.0000,0.000000,0.2391,2000
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Random,0.018609,0.000000,0.018609,0.012745,0.025284,1.0000,0.000000,0.1616,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Popularity,0.018609,0.000000,0.018609,0.012605,0.025221,1.0000,0.000000,0.1616,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),CF (ItemKNN),0.018609,0.013707,0.004902,-0.003096,0.013259,0.8798,0.240400,0.0327,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Content (Avg Emb),0.018609,0.012410,0.006199,-0.000534,0.013166,0.9640,0.072000,0.0498,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Last-Item,0.018609,0.021530,-0.002921,-0.011313,0.005706,0.2528,0.505600,-0.0191,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Avg-Last-10,0.018609,0.019641,-0.001032,-0.007361,0.005269,0.3756,0.752200,-0.0090,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),Recency-Weighted,0.018609,0.017927,0.000682,-0.005217,0.006680,0.5918,0.816400,0.0063,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),ComiRec (SA),0.018609,0.012126,0.006483,-0.000645,0.013694,0.9633,0.073400,0.0488,1292
+Amazon Books (K=8),LT-Recall@10,Essence (K=8),MIND,0.018609,0.005740,0.012869,0.006787,0.019518,1.0000,0.000000,0.1097,1292

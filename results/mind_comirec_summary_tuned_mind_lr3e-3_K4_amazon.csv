@@ -1,0 +1,2 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+MIND (tuned_mind_lr3e-3_K4),amazon,0.004710114165590171,0.005314757481940145,2000,1292,225.22839212417603,6,4.426040966033936,0.003,42,4,pretrained

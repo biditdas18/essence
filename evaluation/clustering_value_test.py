@@ -52,8 +52,20 @@ SEED = 42
 N_BOOT = 10_000
 
 
-def two_sided_p(f):
-    return min(1.0, 2 * min(f, 1 - f))
+def two_sided_p_from_boot(boot):
+    """Two-sided bootstrap p-value that counts exact ties in BOTH tails.
+
+    The previous form, min(1, 2*min(f, 1-f)) with f = mean(boot > 0), treats
+    every resample whose difference is exactly 0 as evidence against the null.
+    For LT-Recall@10 most users score exactly 0, so the resample distribution
+    has large mass at 0 and a one-sided-with-ties difference vector was being
+    reported as maximally significant (p = 0.0) -- including the degenerate
+    case where both arms are identically zero. Counting ties on both sides is
+    the standard correction.
+    """
+    frac_ge0 = float(np.mean(boot >= 0))
+    frac_le0 = float(np.mean(boot <= 0))
+    return min(1.0, 2 * min(frac_ge0, frac_le0))
 
 
 def paired_bootstrap(a_vals, b_vals, rng, n_boot=N_BOOT):
@@ -69,7 +81,9 @@ def paired_bootstrap(a_vals, b_vals, rng, n_boot=N_BOOT):
     lo, hi = np.percentile(boot, [2.5, 97.5])
     frac_gt0 = float(np.mean(boot > 0))
     return dict(a_mean=a_vals.mean(), b_mean=b_vals.mean(), n=n, observed_diff=observed,
-               ci_lo=lo, ci_hi=hi, cohens_d=d, frac_gt0=frac_gt0, p_two_sided=two_sided_p(frac_gt0))
+               ci_lo=lo, ci_hi=hi, cohens_d=d, frac_gt0=frac_gt0,
+               frac_resamples_tied=float(np.mean(boot == 0)),
+               p_two_sided=two_sided_p_from_boot(boot))
 
 
 def compute_silhouettes_lastfm():

@@ -1,0 +1,11 @@
+dataset,K,system,recall_at10_minilm,recall_at10_mpnet,uses_embeddings,rel_change_pct
+Amazon Books,8,Last-Item,0.031066,0.030799,True,-0.86
+Amazon Books,8,Recency-Weighted,0.025996,0.025014,True,-3.78
+Amazon Books,8,Essence (K=8),0.024619,0.025431,True,3.3
+Amazon Books,8,Avg-Last-10,0.023549,0.02119,True,-10.02
+Amazon Books,8,Content (Avg Emb),0.017307,0.016972,True,-1.94
+Amazon Books,8,ComiRec (SA),0.005554,0.005554,False,0.0
+Amazon Books,8,MIND,0.005226,0.005226,False,0.0
+Amazon Books,8,CF (ItemKNN),0.003123,0.003123,False,0.0
+Amazon Books,8,Popularity,0.002122,0.002122,False,0.0
+Amazon Books,8,Random,0.000117,0.000117,False,0.0

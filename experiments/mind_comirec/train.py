@@ -38,7 +38,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from dataset import load_dataset
 from model import MODELS, PAD_IDX
-from evaluation.evaluate import recall_at_k, long_tail_recall_at_k
+from evaluation.evaluate import recall_at_k, long_tail_recall_at_k, ndcg_at_k
 
 RESULTS_DIR = BASE_DIR / "results"
 
@@ -188,14 +188,21 @@ def full_catalog_eval(model, dataset_name, train_sequences, test_items, long_tai
             seen_idxs = [item2idx[i] - 1 for i in train_seq if i in item2idx]  # -1: item2idx is 1-based
             scores[seen_idxs] = -2.0
 
-            top_idx = np.lexsort((np.arange(n_items), -scores))[:M]
-            recs = [item_ids[idx] for idx in top_idx]
+            # Take 20 so Recall@20 is available; Recall@10 uses the first 10 of the
+            # SAME ranking, so previously published Recall@10 values are unchanged.
+            M20 = max(M, 20)
+            top_idx = np.lexsort((np.arange(n_items), -scores))[:M20]
+            recs20 = [item_ids[idx] for idx in top_idx]
+            recs = recs20[:M]
 
             actual = test_items[uid]
             r10 = recall_at_k(recs, actual, k=M)
             lt = long_tail_recall_at_k(recs, actual, long_tail_ids, k=M)
             rows.append({"user_id": uid, "recall@10": r10,
-                        "long_tail_recall@10": "" if lt is None else lt})
+                        "long_tail_recall@10": "" if lt is None else lt,
+                        "recall@5": recall_at_k(recs20[:5], actual, k=5),
+                        "recall@20": recall_at_k(recs20[:20], actual, k=20),
+                        "ndcg@10": ndcg_at_k(recs, actual, k=M)})
     return rows
 
 
@@ -310,11 +317,14 @@ def main():
 
     all_rows = existing_rows + [
         {"user_id": r["user_id"], "system": r["system"],
-         "recall@10": r["recall@10"], "long_tail_recall@10": r["long_tail_recall@10"]}
+         "recall@10": r["recall@10"], "long_tail_recall@10": r["long_tail_recall@10"],
+         "recall@5": r.get("recall@5", ""), "recall@20": r.get("recall@20", ""),
+         "ndcg@10": r.get("ndcg@10", "")}
         for r in rows
     ]
     with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["user_id", "system", "recall@10", "long_tail_recall@10"])
+        w = csv.DictWriter(f, fieldnames=["user_id", "system", "recall@10", "long_tail_recall@10",
+                                       "recall@5", "recall@20", "ndcg@10"])
         w.writeheader()
         w.writerows(all_rows)
     print(f"[train] Saved to {out_path}")

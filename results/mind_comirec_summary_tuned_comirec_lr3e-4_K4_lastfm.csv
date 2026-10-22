@@ -1,0 +1,2 @@
+system,dataset,recall@10,lt_recall@10,n_users,n_lt_users,train_seconds,epochs_run,best_val_loss,lr,seed,K,embed_init
+ComiRec (SA) (tuned_comirec_lr3e-4_K4),lastfm,0.026061357096236883,0.0026679841897233204,99,92,177.7195827960968,26,3.7069015502929688,0.0003,42,4,pretrained
