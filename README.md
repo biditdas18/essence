@@ -1,5 +1,47 @@
 # Essence: Peer-Isolated Recommendation
 
+## Papers and the code behind them
+
+Each paper is pinned to an annotated tag holding exactly the code and results that produced
+its numbers. `main` moves on; the tags do not.
+
+| Paper | Venue | Code |
+|---|---|---|
+| **When Is a User's Own History Enough? A Controlled Study of Peer-Isolated Personal Recommendation** | SOICT 2026, Springer CCIS (archival) | [`soict-2026`](https://github.com/biditdas18/essence/tree/soict-2026) |
+| **Peer-Isolated Recommendation: When Content-Only Personalization Beats Collaborative Signal, and When It Doesn't** | New In ML @ NeurIPS 2026 (non-archival poster) | [`newinml-neurips-2026`](https://github.com/biditdas18/essence/tree/newinml-neurips-2026) |
+
+**The two papers report different values for the same quantities, deliberately.** The later
+work corrects the earlier one, and both tags are kept so the correction can be audited rather
+than taken on trust:
+
+| | `newinml-neurips-2026` | `soict-2026` |
+|---|---|---|
+| Interest clusters $K$ (Last.fm / Amazon / MovieLens) | 10 / 10 / 15 | 10 / **8** / **10** |
+| Essence Recall@10 | 0.0281 / 0.0253 / 0.0052 | 0.0281 / **0.0246** / **0.0055** |
+| Essence rank, of 10 systems | 2nd / 3rd / 8th | 2nd / 3rd / 8th |
+| Clustering significantly ahead of recency-weighting | one of sixteen comparisons | **none of 18** |
+| What sets the boundary | the content domain | **cross-user co-occurrence density in the evaluated cohort** |
+
+Three things changed between them. (1) A two-sided bootstrap defect counted exactly-tied
+resamples as evidence against the null, inflating significance on sparse long-tail metrics;
+the one surviving "clustering helps" result was an artifact of it. (2) $K$ selection no longer
+walks forward from a $K{=}8$ checkpoint, which was anchoring; the replacement criterion is
+anchoring-free and forced two of the three values to change. (3) MIND and ComiRec are now
+tuned on held-out validation, which cost one previously significant result. Where the two
+disagree, **`soict-2026` supersedes**.
+
+> **Everything below this section reflects the earlier (`newinml-neurips-2026`) analysis**
+> and has not been rewritten. For current numbers see
+> [`results/MASTER_FINDINGS.md`](results/MASTER_FINDINGS.md), which is the source of truth, or
+> the camera-ready paper at [`paper/essence_soict_cameraready.pdf`](paper/essence_soict_cameraready.pdf).
+> In particular, the Last.fm-1K row in [Datasets](#datasets) describes its 99 users as "the
+> full filtered dataset, not a subsample"; that is wrong, and the correction is the SOICT
+> paper's central finding — 99 was the effect of a user cap, and lifting it to 374 users raises
+> the share of items heard by two or more users from 10.3% to 28.4% and reverses the verdict
+> against item-based collaborative filtering.
+
+---
+
 **Domain-dependence and clustering-mechanism results, with validated $K$ (2026 update):** the original framing of this project ("Essence recovers long-tail content better than collaborative filtering, full stop") does not hold up under a broader evaluation. Across three datasets and ten baseline systems, Essence's relative performance is **domain-dependent**: it ranks 2nd of 10 on Last.fm-1K and 3rd of 10 on Amazon Books, where collaborative/popularity signal is structurally weak, but 8th of 10 on MovieLens-25M, where collaborative signal is strong. A targeted stratification test further shows that **the $K$-means clustering step itself, isolated from recency-weighted retrieval, is not empirically supported as the source of Essence's advantage** where an advantage exists: no stratum, on any dataset or metric, shows Essence significantly ahead of Recency-Weighted retrieval alone. $K$ (the number of interest clusters) is now **validated per dataset** on a held-out validation split rather than fixed at an arbitrary $K{=}3$ — this changed several numbers substantially (see [Key Findings](#key-findings)) without changing the domain-dependence conclusion. This README documents the full, current picture — the wins, the losses, and the null result — not the original favorable framing, and not the earlier fixed-$K{=}3$ numbers.
 
 ## What Essence Is
