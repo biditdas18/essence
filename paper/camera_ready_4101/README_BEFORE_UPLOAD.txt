@@ -1,25 +1,33 @@
-SOICT 2026 camera-ready package -- paper 4101
+SOICT 2026 camera-ready — paper 4101
+====================================
 
-Contents:
-  essence_soict_cameraready.pdf   final paper, 11 pages (short-paper range 8-11, references included)
-  Source/                         everything needed to reproduce the PDF
-    essence_soict_cameraready.tex
-    fig_power.pdf
-    llncs.cls
-  corresponding_author.txt        single corresponding author, as required
+CONTENTS
+  essence_soict_cameraready.pdf   the camera-ready (11 pages, A4)
+  Source/                         complete LaTeX source; rebuilds standalone
+  corresponding_author.txt        author details as they appear on p1
 
-STILL TO ADD BEFORE ZIPPING -- one item, which cannot be produced here:
+STILL MISSING — you must add this by hand
+  The Licence to Publish, PRINTED, SIGNED IN INK, and SCANNED.
+  - Use the form attached to the 21 Oct EasyChair email, NOT the one linked
+    from the SOICT website (that version is outdated).
+  - Digital signatures are NOT accepted.
+  - One corresponding author may sign on behalf of all authors.
 
-  The signed Licence to Publish. Use the form attached to the 21 Oct EasyChair
-  email (ER_Book_ProceedingsPaper_LTP_ST_v.2.0.1 12_2025), NOT the one linked on
-  the conference website. Print it, sign IN INK, scan to PDF, and drop the scan
-  into this folder. Digital signatures are not accepted.
+BEFORE YOU UPLOAD
+  1. Title and author details on the form must match the PDF and the EasyChair
+     record exactly. If anything needs changing, change it in EasyChair FIRST —
+     edits made only on the form do not propagate to Springer.
+  2. Verify the paper still passes its format check:
+       python paper/format_check.py paper/essence_soict_cameraready.tex
+     Expected: 20/20, 11 pages, A4.
+  3. Registration: one full author registration must cover this paper for it to
+     appear in the proceedings.
 
-  Fill in: Proposed Title of the Contribution, Author(s) Full Name(s),
-  Corresponding Author Name, and the signature block.
+NOTE ON PAGE COUNT
+  The camera-ready limit (8-11 pages for short papers) COUNTS references,
+  figures and tables. The submission limit excluded references. This paper is
+  11 pages including everything — at the limit and legal.
 
-  The title and author details on the form must match this PDF and the EasyChair
-  record exactly. If anything needs changing, change it in EasyChair FIRST --
-  edits made only on the form do not sync to Springer.
-
-Then zip this folder and upload to EasyChair by 30 October 2026, alongside the PDF.
+CODE
+  The paper's footnote cites github.com/biditdas18/essence, tag soict-2026.
+  That tag is live and points at the commit that produced every number here.

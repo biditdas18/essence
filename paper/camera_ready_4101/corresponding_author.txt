@@ -1,6 +1,7 @@
 Paper ID: 4101
-Title: When Is a User's Own History Enough? A Controlled Study of Peer-Isolated Personal Recommendation
-
-Corresponding author: Bidit Das
-Email: biditdas18@gmail.com
-Affiliation: Independent Researcher, Plano, TX, USA
+Title:    When Is a User's Own History Enough? A Controlled Study of
+          Peer-Isolated Personal Recommendation
+Author:   Bidit Das (corresponding, marked with the envelope sign on p1)
+Affil.:   Independent Researcher, Plano, TX, USA
+Email:    biditdas18@gmail.com
+ORCID:    0009-0009-3810-2946

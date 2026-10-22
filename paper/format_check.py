@@ -106,6 +106,17 @@ def main(tex_path):
                              body <= TEX_PAGE_LIMIT_EXCL_REFS, f"{body} body pages"))
         sizes = {(round(doc[i].get_width()), round(doc[i].get_height())) for i in range(n)}
         results.append(check("page size consistent", len(sizes) == 1, f"{sizes}"))
+        # Springer's own llncs template compiles to A4, and llncs fixes the text
+        # block independently of paper size -- so A4 vs Letter changes only the
+        # surrounding margin, never the line breaking (verified: the two PDFs'
+        # text streams are byte-identical). Letter is what a US TeX install gives
+        # you by default and is easy to ship by accident, so this is asserted
+        # rather than left to chance.
+        A4 = (595, 842)
+        results.append(check("page size is A4 (Springer template default)",
+                             sizes == {A4},
+                             f"{sorted(sizes)[0]} -- add a4paper to \\documentclass"
+                             if sizes != {A4} else "595x842pt"))
         # 9. placeholders
         flat = re.sub(r"\s+", " ", " ".join(texts))
         toks = re.findall(r"\b(TODO|TBD|XXX|FIXME|CITE|PLACEHOLDER|Lorem ipsum)\b|@@\w+@@|\{\{\w+\}\}"
